@@ -1,3 +1,0 @@
-useDynlib(phtt)
-export(gafsa, select.nf)
-import(pspline)
