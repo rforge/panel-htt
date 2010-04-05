@@ -1,6 +1,6 @@
 gafsa <-
 function(dat, x=NULL, given.d, dim.crit = c("PC1", "PC2"
-   ,  "PC3", "IC1", "IC2", "IC3", "IPC1", "IPC2", "IPC3"
+   , "PC3", "IC1", "IC2", "IC3", "IPC1", "IPC2", "IPC3"
    , "ED", "KSS.C", "ER", "GR")                  
                   # arg for FUN.dim
    , d.max
