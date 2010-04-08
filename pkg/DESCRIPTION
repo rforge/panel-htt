@@ -3,8 +3,8 @@ Type: Package
 Title: Panel Data Models for HTT
 Version: 1.0
 Date: 2010-03-31
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Oualid Bada, Dominik Liebl
+Maintainer: <liebl@wiso.uni-koeln.de>
+Description: The Package implements a new class of panel data models. This class allow for unobserved heterogeneity in time trends. These can be interpreted in the classical way as realizations from a real random variable or as realizations from a functional random variable. The package comes with diverse recently developed tests on dimensionality as well as with a routine for (functional) principal component analysis. 
+License: GPL-2
 LazyLoad: yes

@@ -23,6 +23,7 @@ function(dat, x=NULL, given.d, dim.crit = c("PC1", "PC2"
   # smooth or not 
 
       d.crit <- match.arg(dim.crit)
+ 
  if(smooth.dat | d.crit=="KSS.C"){
   SMth <-smooth.Pspline(x=seq.int(0,1, length.out = nr), y=dat, method = method, spar = spar)
   smth.dat <- SMth$ysmth
