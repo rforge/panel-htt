@@ -3,10 +3,10 @@
 \alias{pca.fit}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+(Functional) Principal Component Analysis
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+(Functional) Principal Component Analysis
 }
 \usage{
 pca.fit(Q, given.d = NULL, calcul.scores = TRUE)

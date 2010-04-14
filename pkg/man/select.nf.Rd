@@ -3,10 +3,10 @@
 \alias{select.nf}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Selection of the Number of Factors 
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Different Tests for Number of Factors 
 }
 \usage{
 select.nf(obj, criteria = c("Bai", "Onatski", "KSS", "RH"), d.max = NULL, sig2.hat, alpha = 0.05, spar = 0.005)

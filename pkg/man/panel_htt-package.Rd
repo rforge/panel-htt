@@ -4,12 +4,16 @@
 \alias{phtt}
 \docType{package}
 \title{
-What the package does (short line)
-~~ package title ~~
+Panel Data Models for HTT
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+  The Package implements a new class of panel data models.
+  This class allow for unobserved heterogeneity in time trends.
+  These can be interpreted in the classical way as realizations
+  from a real random variable or as realizations from a functional
+  random variable. The package comes with diverse recently
+  developed tests on dimensionality as well as with a routine
+  for (functional) principal component analysis.  
 }
 \details{
 \tabular{ll}{
@@ -17,24 +21,21 @@ Package: \tab phtt\cr
 Type: \tab Package\cr
 Version: \tab 1.0\cr
 Date: \tab 2010-03-31\cr
-License: \tab What license is it under?\cr
+License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
-~~ An overview of how to use the package, including the most important ~~
-~~ functions ~~
+
 }
 \author{
-Who wrote it
-
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+  Oualid Bada,
+  Dominik Liebl
 }
-\references{
-~~ Literature or other references for background information ~~
-}
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in ~~
-~~ the R documentation directory ~~
-\keyword{ package }
+%\references{
+%~~ Literature or other references for background information ~~
+%}
+%~~ Optionally other standard keywords, one per line, from file KEYWORDS in ~~
+%~~ the R documentation directory ~~
+%\keyword{ package }
 %\seealso{
 %~~ Optional links to other man pages, e.g. ~~
 %~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~

@@ -3,10 +3,10 @@
 \alias{gafsa}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Generalized Analysis of the Factor Structure 
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Analyzes the factor structure.
 }
 \usage{
 gafsa(dat, x = NULL, given.d, dim.crit = c("PC1", "PC2", "PC3", "IC1", "IC2", "IC3", "IPC1", "IPC2", "IPC3", "ED", "KSS.C", "ER", "GR"), d.max, alpha = 0.05, smooth.dat = FALSE, spar = 0, method = 3, ...)
