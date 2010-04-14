@@ -4,7 +4,7 @@
 
 restrict.pca <- function(pca.fit.obj, restric.mode= c("standard","inverse.standard"))
 	{
-	if(class(pca.fit.obj)!="pca.fit") stopt(c("The pca.fit.obj is not a 'pca.fit' object"))
+	if(class(pca.fit.obj)!="pca.fit") stop(c("The pca.fit.obj is not a 'pca.fit' object"))
  # pca.fit object  
 	nr    <- nrow(pca.fit.obj$Q.fit)
 	nc    <- ncol(pca.fit.obj$Q.fit)
