@@ -88,14 +88,26 @@ gafsa <-
         factors <- all.factors[, 1:used.d, drop= FALSE]
         scores  <- all.scores[, 1:used.d, drop= FALSE]
         dat.fit <- tcrossprod(factors, scores)
-        R <- list(dat.fit, x, factors, scores, all.sd2.resi[used.d+1], used.d, d.opt)
+        R <- list("dat.fit"   = dat.fit
+                  , "x.seq"   = x
+                  , "factors" = factors
+                  , "scores"  = scores
+                  , "resi.sd2"= all.sd2.resi[used.d+1]
+                  , "used.d"  = used.d
+                  , "d.opt"   = d.opt)
       }
     else
       {
         factors <- matrix(0, nr, 1)
         scores  <- matrix(0, nc, 1)
         dat.fit <- tcrossprod(factors, scores)
-        R <- list(dat.fit, x, factors, scores, all.sd2.resi[used.d+1], used.d, d.opt)
+        R <- list("dat.fit"   = dat.fit
+                  , "x.seq"   = x
+                  , "factors" = factors
+                  , "scores"  = scores
+                  , "resi.sd2"= all.sd2.resi[used.d+1]
+                  , "used.d"  = used.d
+                  , "d.opt"   = d.opt)
       }
     R
   }
