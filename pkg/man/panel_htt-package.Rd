@@ -16,18 +16,17 @@ Panel Data Models for HTT
   for (functional) principal component analysis.  
 }
 \details{
-\tabular{ll}{
-Package: \tab phtt\cr
-Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2010-03-31\cr
-License: \tab GPL-2\cr
-LazyLoad: \tab yes\cr
-}
-
+  \tabular{ll}{
+    Package: \tab phtt\cr
+    Type: \tab Package\cr
+    Version: \tab 1.0\cr
+    Date: \tab 2010-03-31\cr
+    License: \tab GPL-2\cr
+    LazyLoad: \tab yes\cr
+  }
 }
 \author{
-  Oualid Bada,
+  Oualid Bada
   Dominik Liebl
 }
 %\references{
@@ -42,5 +41,4 @@ LazyLoad: \tab yes\cr
 %}
 %\examples{
 %~~ simple examples of the most important functions ~~
-
 %}
