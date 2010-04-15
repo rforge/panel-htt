@@ -55,9 +55,9 @@ FUN.kss <- function(formula, given.d, x.weights=NULL, norder=2, df=norder+2, spa
 
 
 
-## # reestimate beta
-##      factor.stract <- 
-## 	new.y.mat <- TR.Y.mat - factor.stract
+ # reestimate beta
+#       factor.stract <- tcrossprod(obj.gafsa$factors, obj.gafsa$scores)  
+# 	NEW.TR.Y.mat <- TR.Y.mat - factor.stract
 ## 	new.y.vec <- as.vector(new.y.mat)
 ## 	beta <- qr.solve(X.s, new.y.vec)
 
