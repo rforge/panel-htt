@@ -17,7 +17,7 @@ gafsa <-
     nr <- nrow(dat)
     nc <- ncol(dat)
 
-  # x axis 
+  # x axis blablablabala
 
     if(is.null(x)) x <- seq.int(1, nr)
 
