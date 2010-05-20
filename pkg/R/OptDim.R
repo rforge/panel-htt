@@ -89,16 +89,16 @@ B.OptDim <- function(Obj, criteria = c("PC1","PC2","PC3","IC1","IC2","IC3"
 	criteria <- match.arg(criteria, several.ok = TRUE)
 	return(result[result[,1] %in% criteria, ])
 	}
-#### Test
-Obj <- dat
-B.OptDim(pca.fit(Obj), d.max =3)
+## #### Test
+## Obj <- dat
+## B.OptDim(pca.fit(Obj), d.max =3)
 
-Obj <- svd.pca(dat)
-B.OptDim(Obj, criteria = c("IPC3"), d.max = 3)
+## Obj <- svd.pca(dat)
+## B.OptDim(Obj, criteria = c("IPC3"), d.max = 3)
 
-pcaObj <- svd.pca(dat)
-Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
-B.OptDim(Obj)
+## pcaObj <- svd.pca(dat)
+## Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
+## B.OptDim(Obj)
 
 
 #####################################################################################################################
@@ -182,15 +182,15 @@ O.OptDim <- function(Obj, d.max = NULL){
 	return(result)
 	}
 
-#### Test
-Obj <- dat
-O.OptDim(Obj)
-O.OptDim(svd.pca(Obj))
-O.OptDim(pca.fit(Obj))
+## #### Test
+## Obj <- dat
+## O.OptDim(Obj)
+## O.OptDim(svd.pca(Obj))
+## O.OptDim(pca.fit(Obj))
 
-pcaObj <- svd.pca(dat)
-Obj2 <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
-O.OptDim(Obj2)
+## pcaObj <- svd.pca(dat)
+## Obj2 <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
+## O.OptDim(Obj2)
 
 
 #####################################################################################################################
