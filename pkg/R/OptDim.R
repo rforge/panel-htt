@@ -263,16 +263,16 @@ RH.OptDim <- function(Obj, criteria = c("ER", "GR"), d.max = NULL){
 	return(result[result[,1] %in% criteria, ])
 	}
 
-#### Test
-Obj <- dat
-RH.OptDim(Obj, criteria = c("GR"))
-RH.OptDim(svd.pca(Obj))
-Obj <- pca.fit(dat)
-RH.OptDim(Obj, d.max = 10)
+## #### Test
+## Obj <- dat
+## RH.OptDim(Obj, criteria = c("GR"))
+## RH.OptDim(svd.pca(Obj))
+## Obj <- pca.fit(dat)
+## RH.OptDim(Obj, d.max = 10)
 
-pcaObj <- svd.pca(dat)
-Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
-RH.OptDim(Obj)
+## pcaObj <- svd.pca(dat)
+## Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
+## RH.OptDim(Obj)
 
 ############## compare
 
@@ -298,14 +298,14 @@ OptDim <- function(Obj, criteria.of = c("Bai", "Onatski","KSS", "RH")
 
 	}
 
-#### Test
-Obj <- dat
-OptDim(Obj)
+## #### Test
+## Obj <- dat
+## OptDim(Obj)
 
-Obj <- svd.pca(dat)
-OptDim(Obj, d.max = 10)
+## Obj <- svd.pca(dat)
+## OptDim(Obj, d.max = 10)
 
-pcaObj <- svd.pca(dat)
-Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
-OptDim(Obj)
+## pcaObj <- svd.pca(dat)
+## Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
+## OptDim(Obj)
 
