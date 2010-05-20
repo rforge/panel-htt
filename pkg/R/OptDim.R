@@ -274,6 +274,46 @@ RH.OptDim <- function(Obj, criteria = c("ER", "GR"), d.max = NULL){
 ## Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
 ## RH.OptDim(Obj)
 
+
+#####################################################################################################################
+KSS.Opt.Dim <- function(pca.fit.obj, sig2.hat, alpha, spar = spar){
+  nr      <- pca.fit.obj$nr
+  nc      <- pca.fit.obj$nc
+  w       <- pca.fit.obj$V.d/(nr*nc)  
+  evec    <- pca.fit.obj$U
+  Eval    <- pca.fit.obj$V.d#[-1]
+  max.rk  <- length(Eval)
+
+P             <- diag(1, nr) - tcrossprod(evec)
+pca.fit.p.obj <- eigen(P)
+W             <- pca.fit.p.obj[[2]]
+P.E           <- pca.fit.p.obj[[1]]
+
+W.smth  <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = W,               spar = spar, method = 1)$ysmth
+I.smth1 <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = diag(rep(1,nr)), spar = spar, method = 1)$ysmth
+I.smth2 <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = I.smth1,         spar = spar, method = 1)$ysmth
+tr.dim.zero     <- sum(diag(I.smth2))
+tr.dim.zero.sqr <- sum(diag(I.smth2)^2)
+
+diag.Wsmt <- diag(crossprod(W.smth))
+
+tr1 <- c(tr.dim.zero,     (sum(diag.Wsmt)   - cumsum(diag.Wsmt)))
+tr2 <- c(tr.dim.zero.sqr, (sum(diag.Wsmt^2) - cumsum(diag.Wsmt^2)))
+
+delta <- (Eval - (nc-1)*sig2.hat*tr1[1:max.rk])/(sig2.hat*sqrt(2*nc*tr2[1:max.rk]))
+thres <- qnorm(0.99999)
+crit <- delta - thres
+d.opt.KSS <- length(crit[crit > 0])# minus 1, weil start bei dim = 0
+                                   # plus 1, weil nur die dim, die das crit nicht erfüllen.
+
+result <- matrix(c(d.opt.KSS, w[d.opt.KSS+1]), 1, 2)
+	  rownames(result) <- c("KSS") 
+	  colnames(result) <- c("Optimal Dimension", "sd2")
+	  return(result)
+}
+#############################################################################################################
+
+
 ############## compare
 
 OptDim <- function(Obj, criteria.of = c("Bai", "Onatski","KSS", "RH")
