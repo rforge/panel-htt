@@ -73,4 +73,4 @@ AFactMod <- function(dat, dim.criterion = c("PC1", "PC2"
       }
   
 
-AFactMod(dat, dim.criterion = c("IPC1"), d.max = 3)
+## AFactMod(dat, dim.criterion = c("IPC1"), d.max = 3)
