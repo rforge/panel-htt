@@ -5,7 +5,11 @@ AFactMod <- function(dat, dim.criterion = c("PC1", "PC2"
 			, "ED", "ER", "GR")
 			, factor.dim , d.max, sig2.hat
 			, restrict.mode= c("restrict.factors","restrict.loadings")
-			, allow.dual = TRUE){                 
+			, allow.dual = TRUE){
+  
+        nr   <- nrow(dat)
+	nc   <- ncol(dat)
+  
   # missing parameters
 
 	if(missing(factor.dim)) factor.dim  <- NULL
