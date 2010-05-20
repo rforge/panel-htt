@@ -1,4 +1,4 @@
 useDynlib(phtt)
-export(gafsa, select.nf)
+export(pca.fit)
 import(pspline)
 
