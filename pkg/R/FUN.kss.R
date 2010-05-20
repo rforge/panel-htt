@@ -50,7 +50,7 @@ FUN.kss <- function(formula, given.d, x.weights=NULL, norder=2, df=norder+2, spa
 
 	Residu.mat    <- matrix((TR.Y - TR.X %*% com.slops.0), T, N)
 
-        obj.gafsa     <- gafsa(dat = Residu.mat, dim.crit="KSS.C")
+        obj.gafsa     <- AFactMod(dat = Residu.mat, dim.crit="KSS.C")
         # obj.gafsa: list: dat.fit, x, factors, scores, all.sd2.resi[used.d+1], used.d, d.opt
 
 
