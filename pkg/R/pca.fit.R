@@ -1,5 +1,6 @@
 ######## check the input data if is a regular panel (matrix or dataframe without NA NaN)
 
+
 is.regular.panel <- function(dat, comment = FALSE, stop = FALSE){
 	if(!is.matrix(dat)&!is.data.frame(dat)) {
 		if(stop) stop(expression("The data should be in a matrix forme or has a data.frame class"),  call. = FALSE)
@@ -23,6 +24,7 @@ is.regular.panel <- function(dat, comment = FALSE, stop = FALSE){
 		}
 
 	}
+
 ############# test
 #test <- matrix(c(1,2,0, 3), 2,2 )
 #data.frame(test)
