@@ -89,8 +89,8 @@ svd.pca <- function(Q, given.d=NULL, calcul.loadings = TRUE, allow.dual = TRUE
 		}
 
   # about dimension
-	d.seq <- seq.int(0, (given.d-1))
-	E 	<- Eval[1:given.d]
+	d.seq <- seq.int(0, (max.rk-1))
+	E 	<- Eval[1:max.rk]
 	sum.e <- sum(E)
 	cum.e <- cumsum(E)
 	V.d   <- c(sum.e, sum.e-cum.e[-length(cum.e)])
