@@ -88,8 +88,8 @@ fsvd.pca <- function(Q,
   cum.e <- cumsum(E)
   V.d   <- c(sum.e, sum.e-cum.e[-length(cum.e)])
 
-  structure(list(L.fun   = L.fun,
-                 R.fun   = R.fun,
+  structure(list(L       = L.fun,
+                 R       = R.fun,
                  Q.fit   = Q.fit,
                  E       = E,
                  sqr.E   = sqr.E,
@@ -104,55 +104,7 @@ fsvd.pca <- function(Q,
 }
 
 
-##########################
-# restrict mode "restrict.factors": F'F/T = I
-# restrict mode "restrict.loadings" : Lamd'Lamd/N = I 
 
-frestrict.pca <- function(fsvd.pca.obj,
-                         restrict.mode = c("restrict.factors","restrict.loadings")){
-  
-  if(class(fsvd.pca.obj)!="fsvd.pca") stop(c("The fsvd.pca.obj is not a 'fsvd.pca' object"))
-  if(is.null(fsvd.pca.obj$R.fun))     stop(c("Loadings-parameter are missing."))
-  
- # fsvd.pca object  
-  
-  cov.mat           <- fsvd.pca.obj$cov.mat
-  fitted.values     <- fsvd.pca.obj$Q.fit
-  given.d	    <- fsvd.pca.obj$given.d
-  L.fun             <- fsvd.pca.obj$L.fun[, 1:given.d , drop= FALSE]
-  R.fun             <- fsvd.pca.obj$R.fun[, 1:given.d , drop= FALSE]
-  sqr.E             <- fsvd.pca.obj$sqr.E
-  E	            <- fsvd.pca.obj$E
-  dual              <- fsvd.pca.obj$dual
-  nr                <- nrow(fitted.values)
-  nc                <- ncol(fitted.values)
-  cov.matrix        <- cov.mat/(nr*nc)
-  Sd2               <- fsvd.pca.obj$V.d/(nr*nc)
-  Eval	            <- E/(nr*nc)
-
- # restric factors and loadings
-  re.mo <-match.arg(restrict.mode)
-  switch(re.mo,
-         restrict.factors  ={
-           factors.fun   <- L.fun  *  sqrt(nr)
-           loadings.fun  <- R.fun %*% diag(sqr.E[1:given.d], given.d)/sqrt(nr)
-         },
-         restrict.loadings ={
-           factors.fun   <- L.fun %*% diag(sqr.E[1:given.d], given.d)/sqrt(nc)
-           loadings.fun  <- R.fun  *  sqrt(nc)
-         }
-         )
-
-  list(factors.fun    = factors.fun,
-       loadings.fun   = loadings.fun,
-       fitted.values  = fitted.values,
-       cov.matrix     = cov.matrix,
-       eigen.values   = Eval,
-       Sd2            = Sd2,
-       given.d        = given.d,
-       data.dim       = c(nr, nc),
-       dual           = dual)		
-}
 
 ############################
 # Main function: fpac.fit  #
