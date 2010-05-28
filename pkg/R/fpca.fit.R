@@ -113,13 +113,13 @@ fsvd.pca <- function(Q,
 # fsvc.pca()               #
 # frestrict.pca()          #
 # Takes:                   #
-# dat                    (smoothed raw-data for fPCA)
-# given.d = NULL         (user given dimension)
-# restrict.mode          ("restrict.factors" or "restrict.loadings")
-# allow.dual = TRUE      (possibility to switch of the dual-matrix calculations)
-# neglect.neg.ev = TRUE  (if TRUE:  max.rk = number of pos. eigenvalues
-#                         if FALSE: max.rk = number of pos. and evtl. numerical neg. eigenvalues)
-############################
+# dat                      (smoothed raw-data for fPCA)
+# given.d = NULL           (user given dimension)
+# restrict.mode            ("restrict.factors" or "restrict.loadings")                             
+# allow.dual = TRUE        (possibility to switch of the dual-matrix calculations)                 #
+# neglect.neg.ev = TRUE    (if TRUE:  max.rk = number of pos. eigenvalues                          #
+#                           if FALSE: max.rk = number of pos. and evtl. numerical neg. eigenvalues)#
+####################################################################################################
 
 fpca.fit <- function(dat,
                      given.d        = NULL,

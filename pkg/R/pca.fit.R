@@ -109,8 +109,8 @@ svd.pca <- function(Q, given.d=NULL, calcul.loadings = TRUE, allow.dual = TRUE
 
 restrict.pca <- function(svd.pca.obj
 		, restrict.mode= c("restrict.factors","restrict.loadings")){
-  if(class(svd.pca.obj)!="svd.pca"|class(svd.pca.obj)!="fsvd.pca"){
-    stop(c("The svd.pca.obj is not a 'svd.pca' or a 'fsvd.pca' object"))
+  if(class(svd.pca.obj)!="svd.pca"&&class(svd.pca.obj)!="fsvd.pca"){
+    stop(c("The svd.pca.obj is not a 'svd.pca' or a 'svd.pca' object"))
   }
   if(is.null(svd.pca.obj$R))  stop(c("Loadings-parameter are missing."))
         
