@@ -1,29 +1,29 @@
 ######## check the input data if is a regular panel (matrix or dataframe without NA NaN)
-
-
-is.regular.panel <- function(dat, comment = FALSE, stop = FALSE){
-	if(!is.matrix(dat)&!is.data.frame(dat)) {
-		if(stop) stop(expression("The data should be in a matrix forme or has a data.frame class"),  call. = FALSE)
-		if(comment) message(expression("The data should be in a matrix forme or has a data.frame class"))
-		FALSE
-		}
-	else{
-		if(!is.numeric(dat)){
-			if(stop) stop(expression("The data is not numeric"),  call. = FALSE)
-			if(comment) message(expression("The data is not numeric"))
-			FALSE
-			}
-		else{
-			if(any(is.na(dat))| any(is.nan(dat))){
-				if(stop) stop(expression("The data has NA or NaN values"),  call. = FALSE)
-				if(comment) message(expression("The data has NA or NaN values"))
-				FALSE
-				}
-			else TRUE
-			}
-		}
-
-	}
+is.regular.panel <- function(dat,
+                             comment = FALSE,
+                             stopper = FALSE){
+  
+  if(!is.matrix(dat)&!is.data.frame(dat)){
+    if(stopper) stop(expression("The data should be in a matrix forme or has a data.frame class"),  call. = FALSE)
+    if(comment) message(expression("The data should be in a matrix forme or has a data.frame class"))
+    FALSE
+  }
+  else{
+    if(!is.numeric(dat)){
+      if(stopper) stop(expression("The data is not numeric"),  call. = FALSE)
+      if(comment) message(expression("The data is not numeric"))
+      FALSE
+    }
+    else{
+      if(any(is.na(dat))| any(is.nan(dat))){
+        if(stopper) stop(expression("The data has NA or NaN values"),  call. = FALSE)
+        if(comment) message(expression("The data has NA or NaN values"))
+        FALSE
+      }
+      else TRUE
+    }
+  }
+}
 
 ############# test
 #test <- matrix(c(1,2,0, 3), 2,2 )

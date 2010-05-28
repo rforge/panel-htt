@@ -1,36 +1,3 @@
-######## check the input data if is a regular panel (matrix or dataframe without NA NaN)
-is.regular.panel <- function(dat,
-                             comment = FALSE,
-                             stopper = FALSE){
-  
-  if(!is.matrix(dat)&!is.data.frame(dat)){
-    if(stopper) stop(expression("The data should be in a matrix forme or has a data.frame class"),  call. = FALSE)
-    if(comment) message(expression("The data should be in a matrix forme or has a data.frame class"))
-    FALSE
-  }
-  else{
-    if(!is.numeric(dat)){
-      if(stopper) stop(expression("The data is not numeric"),  call. = FALSE)
-      if(comment) message(expression("The data is not numeric"))
-      FALSE
-    }
-    else{
-      if(any(is.na(dat))| any(is.nan(dat))){
-        if(stopper) stop(expression("The data has NA or NaN values"),  call. = FALSE)
-        if(comment) message(expression("The data has NA or NaN values"))
-        FALSE
-      }
-      else TRUE
-    }
-  }
-}
-
-############# test
-## test <- matrix(c(1,2,0, 3), 2,2 )
-## data.frame(test)
-## test[1,1] <- "a" 
-## is.regular.panel(test)
-
 ########### spectral variance decomposition and pca fitting if asked ###########################
 
 fsvd.pca <- function(Q,
@@ -49,12 +16,13 @@ fsvd.pca <- function(Q,
   
   # Achtung hier wird angenommen, dass beide indizes i bzw. t bei 1 beginnen!== 
   len.Interval    <- ifelse(dual, nc-1, nr-1)                                 #
-  n.discr         <- ifelse(dual, nc,   nr  )                                 #
+  n.discr         <- ifelse(dual, nc,   nr  )                                 #  
+  h               <- (len.Interval)/(n.discr-1)                               #
+  w               <- c(h/2, rep(h, n.discr-2), h/2)                           #
+  cov.mat         <- diag(sqrt(w)) %*% tcrossprod(Q) %*% diag(sqrt(w))        #
   #============================================================================
-  h               <- (len.Interval)/(n.discr-1)
-  w               <- c(h/2, rep(h, n.discr-2), h/2)
-  cov.mat         <- diag(sqrt(w)) %*% tcrossprod(Q) %*% diag(sqrt(w))
-                
+
+  
   # Compute spectral decomposion 
 
   Spdec           <- eigen(cov.mat, symmetric= TRUE)
