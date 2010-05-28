@@ -46,9 +46,11 @@ fsvd.pca <- function(Q,
   if(dual) Q      <- t(Q)
 
   # trapezoidal rule (for integral-approximation)
-
-  len.Interval    <- nr-1
-  n.discr         <- nr
+  
+  # Achtung hier wird angenommen, dass beide indizes i bzw. t bei 1 beginnen!== 
+  len.Interval    <- ifelse(dual, nc-1, nr-1)                                 #
+  n.discr         <- ifelse(dual, nc,   nr  )                                 #
+  #============================================================================
   h               <- (len.Interval)/(n.discr-1)
   w               <- c(h/2, rep(h, n.discr-2), h/2)
   cov.mat         <- diag(sqrt(w)) %*% tcrossprod(Q) %*% diag(sqrt(w))
@@ -56,9 +58,9 @@ fsvd.pca <- function(Q,
   # Compute spectral decomposion 
 
   Spdec           <- eigen(cov.mat, symmetric= TRUE)
-  Eval	        <- Spdec[[1]]
+  Eval	          <- Spdec[[1]]
 #if(any(Eval<0)) warning(expression("There are negative eigen values!"))
-  Evec    	<- Spdec[[2]]
+  Evec    	  <- Spdec[[2]]
 
   # compare rank and given.d
         
@@ -142,7 +144,7 @@ frestrict.pca <- function(fsvd.pca.obj,
                          restrict.mode = c("restrict.factors","restrict.loadings")){
   
   if(class(fsvd.pca.obj)!="fsvd.pca") stop(c("The fsvd.pca.obj is not a 'fsvd.pca' object"))
-  if(is.null(R.fun))                  stop(c("Loadings-parameter are missing."))
+  if(is.null(fsvd.pca.obj$R.fun))     stop(c("Loadings-parameter are missing."))
   
  # fsvd.pca object  
   
