@@ -182,7 +182,7 @@ fpca.fit <- function(dat,
                             allow.dual     = allow.dual,
                             neglect.neg.ev = neglect.neg.ev)
   # Impose Restrictions
-  result        <- frestrict.pca(fsvd.pca.obj)
+  result        <- restrict.pca(fsvd.pca.obj)
   
   structure(result, class = "fpca.fit")
 }

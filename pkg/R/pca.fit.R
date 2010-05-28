@@ -109,8 +109,9 @@ svd.pca <- function(Q, given.d=NULL, calcul.loadings = TRUE, allow.dual = TRUE
 
 restrict.pca <- function(svd.pca.obj
 		, restrict.mode= c("restrict.factors","restrict.loadings")){
-	if(class(svd.pca.obj)!="svd.pca") stop(c("The svd.pca.obj is not a 'svd.pca' object"))
-
+  if(class(svd.pca.obj)!="svd.pca") stop(c("The svd.pca.obj is not a 'svd.pca' object"))
+  if(is.null(svd.pca.obj$R))     stop(c("Loadings-parameter are missing."))
+        
  # svd.pca object  
 
 	cov.mat       <- svd.pca.obj$cov.mat
@@ -149,7 +150,7 @@ restrict.pca <- function(svd.pca.obj
 pca.fit <- function(dat, given.d=NULL 
 		, restrict.mode= c("restrict.factors","restrict.loadings")
 		, allow.dual = TRUE, neglect.neg.ev = TRUE){
-	is.regular.panel(dat, stop = TRUE)
+	is.regular.panel(dat, stopper = TRUE)
 	svd.pca.obj  <- svd.pca(dat, given.d = given.d, allow.dual= allow.dual
 							, neglect.neg.ev = neglect.neg.ev)
 	result <- restrict.pca(svd.pca.obj)
