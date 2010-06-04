@@ -59,9 +59,9 @@ bai.dim.opt <- function(Obj, d.max = NULL, sig2.hat = NULL)
 B.OptDim <- function(Obj, criteria = c("PC1","PC2","PC3","IC1","IC2","IC3"
 			, "IPC1","IPC2","IPC3") , d.max = NULL, sig2.hat = NULL){
 	# what is Obj?
-	if(class(Obj)=="svd.pca") obj <- Obj
+	if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca") obj <- Obj
 	else{
-		if(class(Obj)=="pca.fit"){
+		if(class(Obj)=="pca.fit"|class(Obj)=="fpca.fit"){
 			nr  <- Obj$data.dim[1]
 			nc  <- Obj$data.dim[2]
 			V.d <- Obj$Sd2*(nr*nc)
@@ -153,9 +153,9 @@ onatski.dim.opt <- function(svd.pca.obj, d.max = NULL)
 
 O.OptDim <- function(Obj, d.max = NULL){
 	# what is Obj?
-	if(class(Obj)=="svd.pca") obj <- Obj
+	if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca") obj <- Obj
 	else{
-		if(class(Obj)=="pca.fit"){
+		if(class(Obj)=="pca.fit"|class(Obj)=="fpca.fit"){
 			nr  <- Obj$data.dim[1]
 			nc  <- Obj$data.dim[2]
 			V.d <- Obj$Sd2*(nr*nc)
@@ -229,9 +229,9 @@ RH.dim.opt <- function(svd.pca.obj, d.max = NULL)
 
 RH.OptDim <- function(Obj, criteria = c("ER", "GR"), d.max = NULL){
 	# what is Obj?
-	if(class(Obj)=="svd.pca") obj <- Obj
+	if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca") obj <- Obj
 	else{
-		if(class(Obj)=="pca.fit"){
+		if(class(Obj)=="pca.fit"|class(Obj)=="fpca.fit"){
 			nr    <- Obj$data.dim[1]
 			nc    <- Obj$data.dim[2]
 			V.d   <- Obj$Sd2*(nr*nc)

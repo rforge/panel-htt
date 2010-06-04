@@ -12,9 +12,10 @@ fsvd.pca <- function(Q,
   else dual = FALSE
   if(dual) Q      <- t(Q)
 
-  # trapezoidal rule (for integral-approximation)
   
-  # Achtung hier wird angenommen, dass beide indizes i bzw. t bei 1 beginnen!== 
+  # trapezoidal rule (for integral-approximation)=============================#
+  # hier nicht unbedingt notwendig, da i.d.R len.Interval==n.discr            #
+  # Achtung hier wird angenommen, dass beide indizes i bzw. t bei 1 beginnen! #
   len.Interval    <- ifelse(dual, nc-1, nr-1)                                 #
   n.discr         <- ifelse(dual, nc,   nr  )                                 #  
   h               <- (len.Interval)/(n.discr-1)                               #
@@ -44,11 +45,11 @@ fsvd.pca <- function(Q,
   }
 
   # compute spectral variance decomposition
-
-  # Approximation of the L2-normalization-constraint:
-  #    ||e.fun_i||_L2 = 1 by
-  #  w*||e.fun_i||_E  = 1
-  
+  #####################################################
+  # Approximation of the L2-normalization-constraint: #
+  #    ||e.fun_i||_L2 = 1 by                          #
+  #  w*||e.fun_i||_E  = 1                             #
+  #####################################################
   L                         <- Evec[,1:max.rk , drop= FALSE]
   L.fun                     <- diag(w^-{0.5}) %*% L
 
