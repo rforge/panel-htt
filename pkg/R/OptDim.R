@@ -276,7 +276,7 @@ RH.OptDim <- function(Obj, criteria = c("ER", "GR"), d.max = NULL){
 
 
 #####################################################################################################################
-KSS.Opt.Dim <- function(pca.fit.obj, sig2.hat, alpha, spar = spar){
+KSS.dim.opt <- function(pca.fit.obj, sig2.hat, alpha, spar = spar){
   nr      <- pca.fit.obj$nr
   nc      <- pca.fit.obj$nc
   w       <- pca.fit.obj$V.d/(nr*nc)  
@@ -311,6 +311,43 @@ result <- matrix(c(d.opt.KSS, w[d.opt.KSS+1]), 1, 2)
 	  colnames(result) <- c("Optimal Dimension", "sd2")
 	  return(result)
 }
+
+KSS.OptDim <- function(Obj, sig2.hat, alpha, spar = spar){
+	# what is Obj?
+	if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca") obj <- Obj
+	else{
+		if(class(Obj)=="pca.fit"|class(Obj)=="fpca.fit"){
+			nr    <- Obj$data.dim[1]
+			nc    <- Obj$data.dim[2]
+			V.d   <- Obj$Sd2*(nr*nc)
+			E     <- Obj$eigen.values*(nr*nc)
+			d.seq <- seq.int(0, (length(V.d)-1))
+			obj <- list(V.d = V.d, nr = nr, nc = nc, E = E)
+			}	
+## 		else{
+## 			if(is.matrix(Obj)) obj <- fsvd.pca(Obj)
+## 			else{
+## 				if(!is.vector(Obj[[1]])|!is.numeric(Obj[[1]])
+## 				  |!is.numeric(Obj[[2]])|length(Obj[[2]])!=2)
+## 				  stop(c("'Obj' does not have the correct form."))
+## 				else{# the function can deal with a list containing a vector of RSS for each d in the first listcomponent and the dimension as 2 d-vector 'c(nr, nc)' in the second component 
+## 					nr  <- Obj[[2]][1]
+## 					nc  <- Obj[[2]][2]
+## 					V.d <- Obj[[1]][-length(Obj[[1]])]
+## 					E   <- -diff(Obj[[1]]-Obj[[1]][1])
+## 					d.seq = seq.int(0, (length(Obj[[1]])-1))
+## 					obj <- list(V.d = V.d, nr = nr, nc = nc
+## 						, E = E, d.seq = d.seq)
+## 					}
+## 				}
+## 			}
+		}
+
+	result <- KSS.dim.opt(obj, sig2.hat, alpha, spar = spar)
+	criteria <- match.arg(criteria, several.ok = TRUE)
+	return(result[result[,1] %in% criteria, ])
+	}
+
 #############################################################################################################
 
 
@@ -326,8 +363,8 @@ OptDim <- function(Obj, criteria.of = c("Bai", "Onatski","KSS", "RH")
 			},
 		Onatski = {O.OptDim(Obj = Obj, d.max  = d.max)
 			},
-		#KSS = { kss.dim.opt(Obj = Obj, sig2.hat = sig2.hat, alpha = alpha, spar = spar)
-		#	},
+		KSS = { KSS.OptDim(Obj = Obj, sig2.hat = sig2.hat, alpha = alpha, spar = spar)
+			},
 		RH = { RH.OptDim(Obj = Obj, d.max = d.max)
 			})
 		}
