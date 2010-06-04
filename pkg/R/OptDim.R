@@ -276,12 +276,12 @@ RH.OptDim <- function(Obj, criteria = c("ER", "GR"), d.max = NULL){
 
 
 #####################################################################################################################
-KSS.dim.opt <- function(pca.fit.obj, sig2.hat, alpha, spar = spar){
-  nr      <- pca.fit.obj$nr
-  nc      <- pca.fit.obj$nc
-  w       <- pca.fit.obj$V.d/(nr*nc)  
-  evec    <- pca.fit.obj$U
-  Eval    <- pca.fit.obj$V.d#[-1]
+KSS.dim.opt <- function(obj, sig2.hat, alpha, spar.low = spar.low){
+  nr      <- obj$nr
+  nc      <- obj$nc
+  w       <- obj$V.d/(nr*nc)  
+  evec    <- obj$L
+  Eval    <- obj$V.d
   max.rk  <- length(Eval)
 
 P             <- diag(1, nr) - tcrossprod(evec)
@@ -289,9 +289,9 @@ pca.fit.p.obj <- eigen(P)
 W             <- pca.fit.p.obj[[2]]
 P.E           <- pca.fit.p.obj[[1]]
 
-W.smth  <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = W,               spar = spar, method = 1)$ysmth
-I.smth1 <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = diag(rep(1,nr)), spar = spar, method = 1)$ysmth
-I.smth2 <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = I.smth1,         spar = spar, method = 1)$ysmth
+W.smth  <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = W,               spar = spar.low, method = 1)$ysmth
+I.smth1 <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = diag(rep(1,nr)), spar = spar.low, method = 1)$ysmth
+I.smth2 <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = I.smth1,         spar = spar.low, method = 1)$ysmth
 tr.dim.zero     <- sum(diag(I.smth2))
 tr.dim.zero.sqr <- sum(diag(I.smth2)^2)
 
@@ -300,9 +300,9 @@ diag.Wsmt <- diag(crossprod(W.smth))
 tr1 <- c(tr.dim.zero,     (sum(diag.Wsmt)   - cumsum(diag.Wsmt)))
 tr2 <- c(tr.dim.zero.sqr, (sum(diag.Wsmt^2) - cumsum(diag.Wsmt^2)))
 
-delta <- (Eval - (nc-1)*sig2.hat*tr1[1:max.rk])/(sig2.hat*sqrt(2*nc*tr2[1:max.rk]))
-thres <- qnorm(0.99999)
-crit <- delta - thres
+delta     <- (Eval - (nc-1) * sig2.hat * tr1[1:max.rk])/(sig2.hat * sqrt(2*nc*tr2[1:max.rk]))
+thres     <- qnorm(0.99999)
+crit      <- delta - thres
 d.opt.KSS <- length(crit[crit > 0])# minus 1, weil start bei dim = 0
                                    # plus 1, weil nur die dim, die das crit nicht erfüllen.
 
@@ -312,18 +312,20 @@ result <- matrix(c(d.opt.KSS, w[d.opt.KSS+1]), 1, 2)
 	  return(result)
 }
 
-KSS.OptDim <- function(Obj, sig2.hat, alpha, spar = spar){
+KSS.OptDim <- function(Obj, sig2.hat, alpha, spar.low = spar.low){
 	# what is Obj?
-	if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca") obj <- Obj
-	else{
-		if(class(Obj)=="pca.fit"|class(Obj)=="fpca.fit"){
-			nr    <- Obj$data.dim[1]
-			nc    <- Obj$data.dim[2]
-			V.d   <- Obj$Sd2*(nr*nc)
-			E     <- Obj$eigen.values*(nr*nc)
-			d.seq <- seq.int(0, (length(V.d)-1))
-			obj <- list(V.d = V.d, nr = nr, nc = nc, E = E)
-			}	
+  if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca") obj <- Obj
+  else{
+    if(class(Obj)=="pca.fit"|class(Obj)=="fpca.fit"){
+      nr    <- Obj$data.dim[1]
+      nc    <- Obj$data.dim[2]
+      V.d   <- Obj$Sd2*(nr*nc)
+      E     <- Obj$eigen.values*(nr*nc)
+      Evec  <- Obj$L
+      d.seq <- seq.int(0, (length(V.d)-1))
+      
+      obj   <- list(V.d = V.d, nr = nr, nc = nc, E = E)
+    }	
 ## 		else{
 ## 			if(is.matrix(Obj)) obj <- fsvd.pca(Obj)
 ## 			else{
@@ -341,12 +343,12 @@ KSS.OptDim <- function(Obj, sig2.hat, alpha, spar = spar){
 ## 					}
 ## 				}
 ## 			}
-		}
-
-	result <- KSS.dim.opt(obj, sig2.hat, alpha, spar = spar)
-	criteria <- match.arg(criteria, several.ok = TRUE)
-	return(result[result[,1] %in% criteria, ])
-	}
+  }
+  
+  result   <- KSS.dim.opt(obj, sig2.hat, alpha, spar.low)
+  criteria <- match.arg(criteria, several.ok = TRUE)
+  return(result[result[,1] %in% criteria, ])
+}
 
 #############################################################################################################
 
@@ -355,7 +357,7 @@ KSS.OptDim <- function(Obj, sig2.hat, alpha, spar = spar){
 
 OptDim <- function(Obj, criteria.of = c("Bai", "Onatski","KSS", "RH")
 				, d.max = NULL, sig2.hat=NULL, alpha= 0.05
-				, spar = 0.005){
+				, spar.low = 0.005){
 	criteria.of <- match.arg(criteria.of, several.ok = TRUE)
 	FUN.crit <- function(criteria.of, d.max, sig2.hat, alpha, spar) {
 		switch(criteria.of,
@@ -363,7 +365,7 @@ OptDim <- function(Obj, criteria.of = c("Bai", "Onatski","KSS", "RH")
 			},
 		Onatski = {O.OptDim(Obj = Obj, d.max  = d.max)
 			},
-		KSS = { KSS.OptDim(Obj = Obj, sig2.hat = sig2.hat, alpha = alpha, spar = spar)
+		KSS = { KSS.OptDim(Obj = Obj, sig2.hat = sig2.hat, alpha = alpha, spar.low = spar.low)
 			},
 		RH = { RH.OptDim(Obj = Obj, d.max = d.max)
 			})

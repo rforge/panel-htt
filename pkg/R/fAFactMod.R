@@ -1,9 +1,9 @@
 ######################################################################
 
-fAFactMod <- function(dat, dim.criterion = c("PC1", "PC2"
+fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2"
                              , "PC3", "IC1", "IC2", "IC3", "IPC1", "IPC2", "IPC3"
-                             , "ED", "ER", "GR", "KSS")
-                      , factor.dim , d.max, sig2.hat
+                             , "ED", "ER", "GR")
+                      , factor.dim , d.max, sig2.hat, alpha=0.01
                       , restrict.mode= c("restrict.factors","restrict.loadings")
                       , allow.dual = TRUE){
   
@@ -44,17 +44,17 @@ fAFactMod <- function(dat, dim.criterion = c("PC1", "PC2"
   # dimension selection
 	dim.criterion <- match.arg(dim.criterion)
 	est.dim       <- switch(dim.criterion,
-				PC1 = B.OptDim(fpca.fit.obj, criteria = c("PC1")
+				PC1  = B.OptDim(fpca.fit.obj, criteria = c("PC1")
 					, d.max = d.max, sig2.hat = sig2.hat),
-				PC2 = B.OptDim(fpca.fit.obj, criteria = c("PC2")
+				PC2  = B.OptDim(fpca.fit.obj, criteria = c("PC2")
 					, d.max = d.max, sig2.hat = sig2.hat),
-				PC3 = B.OptDim(fpca.fit.obj, criteria = c("PC3")
+				PC3  = B.OptDim(fpca.fit.obj, criteria = c("PC3")
 					, d.max = d.max, sig2.hat = sig2.hat),
-				IC1 = B.OptDim(fpca.fit.obj, criteria = c("IC1")
+				IC1  = B.OptDim(fpca.fit.obj, criteria = c("IC1")
 					, d.max = d.max, sig2.hat = sig2.hat),
-				IC2 = B.OptDim(fpca.fit.obj, criteria = c("IC2")
+				IC2  = B.OptDim(fpca.fit.obj, criteria = c("IC2")
 					, d.max = d.max, sig2.hat = sig2.hat),
-				IC3 = B.OptDim(fpca.fit.obj, criteria = c("IC3")
+				IC3  = B.OptDim(fpca.fit.obj, criteria = c("IC3")
 					, d.max = d.max, sig2.hat = sig2.hat),
 				IPC1 = B.OptDim(fpca.fit.obj, criteria = c("IPC1")
 					, d.max = d.max, sig2.hat = sig2.hat),
@@ -68,6 +68,8 @@ fAFactMod <- function(dat, dim.criterion = c("PC1", "PC2"
 					, d.max = d.max),
 				GR   = RH.OptDim(fpca.fit.obj, criteria = c("GR")
 					, d.max = d.max),
+                                KSS  = KSS.OptDim(fpca.fit.obj, sig2.hat = sig2.hat,
+                                          alpha=alpha, spar.low=spar.low)
                                 )
 	opt.d  <- est.dim[1,2]
 	used.d <- ifelse(is.null(factor.dim), opt.d, factor.dim)
