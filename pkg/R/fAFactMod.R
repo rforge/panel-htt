@@ -2,7 +2,7 @@
 
 fAFactMod <- function(dat, dim.criterion = c("PC1", "PC2"
                              , "PC3", "IC1", "IC2", "IC3", "IPC1", "IPC2", "IPC3"
-                             , "ED", "ER", "GR")
+                             , "ED", "ER", "GR", "KSS")
                       , factor.dim , d.max, sig2.hat
                       , restrict.mode= c("restrict.factors","restrict.loadings")
                       , allow.dual = TRUE){
@@ -27,7 +27,20 @@ fAFactMod <- function(dat, dim.criterion = c("PC1", "PC2"
                                  given.d       = factor.dim,
                                  restrict.mode = restrict.mode,
                                  allow.dual    = allow.dual)
-
+        
+  # estimation of sig2.hat for KSS:      
+        
+        if(dim.criterion=="KSS"){
+          sig2.hat <- svd.pca(dat)$V.d[1]/(nr*nc)
+        }
+        ## # Alternativ den varianz-schätzer von p.20
+##         if(dim.criterion=="KSS"){
+##           id.smth1  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = diag(1,nr),  spar = spar.low)$ysmth
+##           id.smth2  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = id.smth1,    spar = spar.low)$ysmth
+##           tr        <- (nr + sum(diag(id.smth2)) - 2*sum(diag(id.smth1)))
+##           sig2.hat  <- sum((dat-dat.smth)^2)/((nc-1)*tr)
+##         }
+        
   # dimension selection
 	dim.criterion <- match.arg(dim.criterion)
 	est.dim       <- switch(dim.criterion,
