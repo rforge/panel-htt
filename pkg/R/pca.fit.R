@@ -145,7 +145,7 @@ restrict.pca <- function(svd.pca.obj
 
 	list(factors= factors, loadings= loadings, fitted.values = fitted.values
 	, cov.matrix = cov.matrix, eigen.values= Eval ,Sd2 = Sd2, given.d= given.d
-	, data.dim = c(nr, nc), dual=dual)		
+	, data.dim = c(nr, nc), dual=dual, L=L)		
 	}
 
 

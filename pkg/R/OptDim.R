@@ -276,13 +276,15 @@ RH.OptDim <- function(Obj, criteria = c("ER", "GR"), d.max = NULL){
 
 
 #####################################################################################################################
-KSS.dim.opt <- function(obj, sig2.hat, alpha, spar.low = spar.low){
+KSS.dim.opt <- function(obj, sig2.hat=sig2.hat, alpha=alpha, spar.low = spar.low){
   nr      <- obj$nr
   nc      <- obj$nc
   w       <- obj$V.d/(nr*nc)  
-  evec    <- obj$L
+  evec    <- obj$Evec
   Eval    <- obj$V.d
   max.rk  <- length(Eval)
+
+  print("hier")
 
 P             <- diag(1, nr) - tcrossprod(evec)
 pca.fit.p.obj <- eigen(P)
@@ -301,7 +303,7 @@ tr1 <- c(tr.dim.zero,     (sum(diag.Wsmt)   - cumsum(diag.Wsmt)))
 tr2 <- c(tr.dim.zero.sqr, (sum(diag.Wsmt^2) - cumsum(diag.Wsmt^2)))
 
 delta     <- (Eval - (nc-1) * sig2.hat * tr1[1:max.rk])/(sig2.hat * sqrt(2*nc*tr2[1:max.rk]))
-thres     <- qnorm(0.99999)
+thres     <- qnorm(1-alpha)
 crit      <- delta - thres
 d.opt.KSS <- length(crit[crit > 0])# minus 1, weil start bei dim = 0
                                    # plus 1, weil nur die dim, die das crit nicht erfüllen.
@@ -312,7 +314,7 @@ result <- matrix(c(d.opt.KSS, w[d.opt.KSS+1]), 1, 2)
 	  return(result)
 }
 
-KSS.OptDim <- function(Obj, sig2.hat, alpha, spar.low = spar.low){
+KSS.OptDim <- function(Obj, sig2.hat, alpha, spar.low){
 	# what is Obj?
   if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca") obj <- Obj
   else{
@@ -324,7 +326,7 @@ KSS.OptDim <- function(Obj, sig2.hat, alpha, spar.low = spar.low){
       Evec  <- Obj$L
       d.seq <- seq.int(0, (length(V.d)-1))
       
-      obj   <- list(V.d = V.d, nr = nr, nc = nc, E = E)
+      obj   <- list(V.d = V.d, nr = nr, nc = nc, E = E, Evec = Evec)
     }	
 ## 		else{
 ## 			if(is.matrix(Obj)) obj <- fsvd.pca(Obj)
