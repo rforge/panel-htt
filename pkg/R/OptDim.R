@@ -284,8 +284,6 @@ KSS.dim.opt <- function(obj, sig2.hat=sig2.hat, alpha=alpha, spar.low = spar.low
   Eval    <- obj$V.d
   max.rk  <- length(Eval)
 
-  print("hier")
-
 P             <- diag(1, nr) - tcrossprod(evec)
 pca.fit.p.obj <- eigen(P)
 W             <- pca.fit.p.obj[[2]]
@@ -311,12 +309,21 @@ d.opt.KSS <- length(crit[crit > 0])# minus 1, weil start bei dim = 0
 result <- matrix(c(d.opt.KSS, w[d.opt.KSS+1]), 1, 2)
 	  rownames(result) <- c("KSS") 
 	  colnames(result) <- c("Optimal Dimension", "sd2")
+  print(result)
 	  return(result)
 }
 
 KSS.OptDim <- function(Obj, sig2.hat, alpha, spar.low){
 	# what is Obj?
-  if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca") obj <- Obj
+  if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca"){
+    nr    <- Obj$nr
+    nc    <- Obj$nr
+    V.d   <- Obj$V.d
+    E     <- Obj$E
+    Evec  <- Obj$L
+    
+    obj <- list(V.d = V.d, nr = nr, nc = nc, E = E, Evec = Evec)
+  }
   else{
     if(class(Obj)=="pca.fit"|class(Obj)=="fpca.fit"){
       nr    <- Obj$data.dim[1]
@@ -348,8 +355,7 @@ KSS.OptDim <- function(Obj, sig2.hat, alpha, spar.low){
   }
   
   result   <- KSS.dim.opt(obj, sig2.hat, alpha, spar.low)
-  criteria <- match.arg(criteria, several.ok = TRUE)
-  return(result[result[,1] %in% criteria, ])
+  return(result)
 }
 
 #############################################################################################################
