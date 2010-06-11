@@ -3,7 +3,7 @@
 fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
                                              "IC2", "IC3", "IPC1","IPC2", "IPC3",
                                              "ED",  "ER",  "GR"),
-                      factor.dim , d.max, sig2.hat, alpha=0.01, 
+                      factor.dim , d.max, sig2.hat, sig2.hat.mode=c("functional", "classical"), alpha=0.01, 
                       restrict.mode= c("restrict.factors","restrict.loadings"), 
                       allow.dual = TRUE){
   
@@ -28,19 +28,20 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
                            restrict.mode = restrict.mode,
                            allow.dual    = allow.dual)
         
-  # estimation of sig2.hat for KSS:      
-        
-  if(dim.criterion=="KSS"){
+  # estimation of sig2.hat:      
+
+  # Variance-Estimator traditional
+  if(dim.criterion=="KSS" & sig2.hat.mode="classical"){
     # Note: no smoothing of the residuals for var-estimation
     sig2.hat <- svd.pca(dat)$V.d[1]/(nr*nc)
   }
-        ## # Alternativ den varianz-schätzer von p.20
-##         if(dim.criterion=="KSS"){
-##           id.smth1  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = diag(1,nr),  spar = spar.low)$ysmth
-##           id.smth2  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = id.smth1,    spar = spar.low)$ysmth
-##           tr        <- (nr + sum(diag(id.smth2)) - 2*sum(diag(id.smth1)))
-##           sig2.hat  <- sum((dat-dat.smth)^2)/((nc-1)*tr)
-##         }
+  # Variance-Estimator Section 3.4 (KSS)
+  if(dim.criterion=="KSS" & sig2.hat.mode="functional"){
+    id.smth1  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = diag(1,nr),  spar = spar.low)$ysmth
+    id.smth2  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = id.smth1,    spar = spar.low)$ysmth
+    tr        <- (nr + sum(diag(id.smth2)) - 2*sum(diag(id.smth1)))
+    sig2.hat  <- sum((dat-dat.smth)^2)/((nc-1)*tr)
+  }
         
   # dimension selection
   dim.criterion <- match.arg(dim.criterion)
@@ -71,7 +72,6 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
                           KSS  = KSS.OptDim(fpca.fit.obj, sig2.hat = sig2.hat,
                             alpha=alpha,  spar.low = spar.low)
                           )
-  print(est.dim)
   opt.d  <- est.dim[1,2]
   used.d <- ifelse(is.null(factor.dim), opt.d, factor.dim)
 
@@ -83,13 +83,13 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
     dat.fit  <- tcrossprod(factors, loadings)
     sd2      <- fpca.fit.obj$Sd2[used.d+1]
     
-    R        <- list(fitted.values = dat.fit,
-                     factors       = factors, 
-                     loadings      = loadings,
-                     sd2           = sd2,
-                     given.fdim    = factor.dim,
-                     optimal.fdim  = opt.d,
-                     used.fdim     = used.d)
+    result        <- list(fitted.values = dat.fit,
+                          factors       = factors, 
+                          loadings      = loadings,
+                          sd2           = sd2,
+                          given.fdim    = factor.dim,
+                          optimal.fdim  = opt.d,
+                          used.fdim     = used.d)
   }
   else{
     factors <- matrix(0, nr, 1)
@@ -97,15 +97,15 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
     dat.fit <- tcrossprod(factors, scores)
     sd2     <- fpca.fit.obj$Sd2[used.d+1]
     
-    R       <- list(fitted.values = dat.fit,
-                    factors       = factors,
-                    loadings      = loadings,
-                    resid.sd2     = sd2,
-                    given.fdim    = factor.dim, 
-                    optimal.fdim  = opt.d,
-                    used.fdim     = used.d)
+    result       <- list(fitted.values = dat.fit,
+                         factors       = factors,
+                         loadings      = loadings,
+                         resid.sd2     = sd2,
+                         given.fdim    = factor.dim, 
+                         optimal.fdim  = opt.d,
+                         used.fdim     = used.d)
   }
-  R
+  return(result)
 }
   
 
