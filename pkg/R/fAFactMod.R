@@ -8,11 +8,14 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
                       sig2.hat,
                       sig2.hat.mode = c("functional", "classical"),  
                       restrict.mode = c("restrict.factors","restrict.loadings"), 
-                      allow.dual = TRUE)
+                      allow.dual    = TRUE)
 {
   
   nr   <- nrow(dat)
   nc   <- ncol(dat)
+
+  dim.criterion <- match.arg(dim.criterion)
+  sig2.hat.mode <- match.arg(sig2.hat.mode)
   
   # missing parameters
 
@@ -49,7 +52,6 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
   }
         
   # dimension selection
-  dim.criterion <- match.arg(dim.criterion)
   est.dim       <- switch(dim.criterion,
                           PC1  = B.OptDim(fpca.fit.obj, criteria = c("PC1")
                             , d.max = d.max, sig2.hat = sig2.hat),
