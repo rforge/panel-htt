@@ -3,9 +3,13 @@
 fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
                                              "IC2", "IC3", "IPC1","IPC2", "IPC3",
                                              "ED",  "ER",  "GR"),
-                      factor.dim , d.max, sig2.hat, sig2.hat.mode=c("functional", "classical"), alpha=0.01, 
+                      factor.dim , d.max,
+                      alpha=0.01,
+                      sig2.hat,
+                      sig2.hat.mode=c("functional", "classical"),  
                       restrict.mode= c("restrict.factors","restrict.loadings"), 
-                      allow.dual = TRUE){
+                      allow.dual = TRUE)
+{
   
   nr   <- nrow(dat)
   nc   <- ncol(dat)
@@ -107,6 +111,3 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
   }
   return(result)
 }
-  
-
-## AFactMod(dat, dim.criterion = c("IPC1"), d.max = 3)
