@@ -5,7 +5,7 @@ FUN.with.trans <- function(z, N, T, is.intercept, effect = c("pooled", "individu
                   switch(with.trans	
                          , pooled = {
                            if(is.intercept){Z  = z - mean.z}
-                           else{Z = z};
+                           else{            Z  = z};
                            liste <- list("T"   = "pooled", # Name of *T*ransformation
                                          "I"   = ifelse(is.intercept, TRUE, FALSE), 
                                          "ODM" = z,        # *O*rig. *D*ata *M*atrix
@@ -17,7 +17,7 @@ FUN.with.trans <- function(z, N, T, is.intercept, effect = c("pooled", "individu
                          }
                          , individual = {
                            if(is.intercept){Z  = z - matrix(colMeans(z), T, N, byrow = TRUE)- mean.z}
-                           else{Z = z - matrix(colMeans(z), T, N, byrow = TRUE)};
+                           else{            Z  = z - matrix(colMeans(z), T, N, byrow = TRUE)};
                            liste <- list("T"   = "individual", # Name of *T*ransformation
                                          "I"   = ifelse(is.intercept, TRUE, FALSE), 
                                          "ODM" = z,            # *O*rig. *D*ata *M*atrix
