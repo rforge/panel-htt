@@ -6,7 +6,7 @@ FUN.with.trans <- function(z, N, T, is.intercept, effect = c("pooled", "individu
                          , pooled = {
                            if(is.intercept){Z  = z - mean.z}
                            else{            Z  = z};
-                           liste <- list("T"   = "pooled", # Name of *T*ransformation
+                           liste <- list("Tr"  = "pooled", # Name of *Tr*ansformation
                                          "I"   = ifelse(is.intercept, TRUE, FALSE), 
                                          "ODM" = z,        # *O*rig. *D*ata *M*atrix
                                          "TDM" = Z,        # *T*ransformed *D*ata *M*atrix
@@ -18,7 +18,7 @@ FUN.with.trans <- function(z, N, T, is.intercept, effect = c("pooled", "individu
                          , individual = {
                            if(is.intercept){Z  = z - matrix(colMeans(z), T, N, byrow = TRUE)- mean.z}
                            else{            Z  = z - matrix(colMeans(z), T, N, byrow = TRUE)};
-                           liste <- list("T"   = "individual", # Name of *T*ransformation
+                           liste <- list("Tr"  = "individual", # Name of *Tr*ansformation
                                          "I"   = ifelse(is.intercept, TRUE, FALSE), 
                                          "ODM" = z,            # *O*rig. *D*ata *M*atrix
                                          "TDM" = Z,            # *T*ransformed *D*ata *M*atrix
@@ -30,7 +30,7 @@ FUN.with.trans <- function(z, N, T, is.intercept, effect = c("pooled", "individu
                          , time = {
                            if(is.intercept){Z  = z - rowMeans(z) - mean.z}
                            else{            Z  = z - rowMeans(z)};
-                           liste <- list("T"   = "time",       # Name of *T*ransformation
+                           liste <- list("Tr"  = "time",       # Name of *Tr*ansformation
                                          "I"   = ifelse(is.intercept, TRUE, FALSE), 
                                          "ODM" = z,            # *O*rig. *D*ata *M*atrix
                                          "TDM" = Z,            # *T*ransformed *D*ata *M*atrix
@@ -42,7 +42,7 @@ FUN.with.trans <- function(z, N, T, is.intercept, effect = c("pooled", "individu
                          , twoways = {
                            if(is.intercept){Z  = z - matrix(colMeans(z), T, N, byrow = TRUE) - rowMeans(z) + mean.z}
                            else{            Z  = z - matrix(colMeans(z), T, N, byrow = TRUE) - rowMeans(z)};
-                           liste <- list("T"   = "twoway",   # Name of *T*ransformation
+                           liste <- list("Tr"  = "twoway",   # Name of *Tr*ansformation
                                          "I"   = ifelse(is.intercept, TRUE, FALSE), 
                                          "ODM" = z,          # *O*rig. *D*ata *M*atrix
                                          "TDM" = Z,          # *T*ransformed *D*ata *M*atrix
