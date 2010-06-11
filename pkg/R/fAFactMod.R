@@ -31,6 +31,7 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
   # estimation of sig2.hat for KSS:      
         
   if(dim.criterion=="KSS"){
+    # Note: no smoothing of the residuals for var-estimation
     sig2.hat <- svd.pca(dat)$V.d[1]/(nr*nc)
   }
         ## # Alternativ den varianz-schätzer von p.20
@@ -62,8 +63,7 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
                             , d.max = d.max, sig2.hat = sig2.hat),
                           IPC3 = B.OptDim(fpca.fit.obj, criteria = c("IPC3")
                             , d.max = d.max, sig2.hat = sig2.hat),
-                          ED   = O.OptDim(fpca.fit.obj, d.max = d.max),
-				
+                          ED   = O.OptDim(fpca.fit.obj, d.max = d.max),				
                           ER   = RH.OptDim(fpca.fit.obj, criteria = c("ER")
                             , d.max = d.max),
                           GR   = RH.OptDim(fpca.fit.obj, criteria = c("GR")
@@ -71,6 +71,7 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
                           KSS  = KSS.OptDim(fpca.fit.obj, sig2.hat = sig2.hat,
                             alpha=alpha,  spar.low = spar.low)
                           )
+  print(est.dim)
   opt.d  <- est.dim[1,2]
   used.d <- ifelse(is.null(factor.dim), opt.d, factor.dim)
 

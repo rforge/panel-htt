@@ -306,12 +306,13 @@ crit      <- delta - thres
 d.opt.KSS <- length(crit[crit > 0])# minus 1, weil start bei dim = 0
                                    # plus 1, weil nur die dim, die das crit nicht erfüllen.
 
-result <- matrix(c(d.opt.KSS, w[d.opt.KSS+1]), 1, 2)
-	  rownames(result) <- c("KSS") 
-	  colnames(result) <- c("Optimal Dimension", "sd2")
+  result <- data.frame(I("KSS"), matrix(c(d.opt.KSS, w[d.opt.KSS+1]), 1, 2))
+  colnames(result) <- c("Criterion", "Optimal Dimension", "sd2")
   print(result)
-	  return(result)
+  return(result)
 }
+
+
 
 KSS.OptDim <- function(Obj, sig2.hat, alpha, spar.low){
 	# what is Obj?
