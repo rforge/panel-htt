@@ -22,8 +22,8 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
 
   # smoothing the residuals (small degree of undersmoothing)
 
-  spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=dat, method=3       )$spar * 0.8
-  dat.smth <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=dat, spar  =spar.low)$ysmth
+  spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=dat, method = 3       )$spar * 0.8
+  dat.smth <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=dat, spar   = spar.low)$ysmth
 
   # fpca.fit with smoothed data
 
