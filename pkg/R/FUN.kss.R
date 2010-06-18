@@ -1,4 +1,4 @@
-FUN.kss <- function(formula, effect = c("time", "pooled", "individual", "twoways"),
+FUN.kss <- function(formula, effect = c("time", "individual", "twoways", "none"),
                     alpha=0.05,
                     ...) # ...  = sign.vec= NULL
   {
@@ -27,76 +27,102 @@ FUN.kss <- function(formula, effect = c("time", "pooled", "individual", "twoways
     TR.X.mat <- matrix(TR.X, T, (N*P))						# (T x NP)
     
   # smooth.splines with undersmoothing
-  # undersmoothing: 0.8*GCV-value
+  # undersmoothing: 0.8 * GCV-value
 
-        spar.low       <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat, method = 3       )$spar * 0.8
-        TR.Y.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat, spar   = spar.low)$ysmth       #(T x N)
-
-        spar.low       <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat, method = 3       )$spar * 0.8
-        TR.X.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat, spar   = spar.low)$ysmth       #(T x NP)
-        
+    spar.low       <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat, method = 3       )$spar * 0.8
+    
+    TR.Y.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat, spar   = spar.low)$ysmth       #(T x N)    
+    TR.X.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat, spar   = spar.low)$ysmth       #(T x NP)
+    
   # calculate beta coefficents
 
-        TR.Y.smth        <- matrix(TR.Y.mat.smth, nrow= (N*T), ncol = 1)	       # (TN x 1)
-        TR.X.smth        <- matrix(TR.X.mat.smth, nrow= (N*T), ncol = P)	       # (TN x P)
+    TR.Y.smth        <- matrix(TR.Y.mat.smth, nrow= (N*T), ncol = 1)	       # (TN x 1)
+    TR.X.smth        <- matrix(TR.X.mat.smth, nrow= (N*T), ncol = P)	       # (TN x P)
 
-        t.TR.X.TR.X      <- crossprod(TR.X)       			               # (PxP)
-        t.TR.X.TR.X.smth <- crossprod(TR.X, TR.X.smth)		        	       # (PxP)
-
-        t.TR.X.TR.Y      <- crossprod(TR.X, TR.Y)     		                       # (Px1)
-        t.TR.X.TR.Y.smth <- crossprod(TR.X, TR.Y.smth)   		               # (Px1)
-
-        bloc1            <- t.TR.X.TR.X - t.TR.X.TR.X.smth     		               # (PxP)
-        bloc2            <- t.TR.X.TR.Y - t.TR.X.TR.Y.smth     	                       # (Px1)
-
-        com.slops.0 <- solve(bloc1)%*%bloc2					       # (Px1)
+    t.TR.X.TR.X      <- crossprod(TR.X)       			               # (PxP)
+    t.TR.X.TR.X.smth <- crossprod(TR.X, TR.X.smth)		               # (PxP)
+    
+    t.TR.X.TR.Y      <- crossprod(TR.X, TR.Y)     		               # (Px1)
+    t.TR.X.TR.Y.smth <- crossprod(TR.X, TR.Y.smth)   		               # (Px1)
+    
+    bloc1            <- t.TR.X.TR.X - t.TR.X.TR.X.smth     		               # (PxP)
+    bloc2            <- t.TR.X.TR.Y - t.TR.X.TR.Y.smth     	                       # (Px1)
+    
+    com.slops.0 <- solve(bloc1)%*%bloc2					       # (Px1)
        #com.slops.0 <- matrix(com.slops.0, nrow= P,ncol = 1)
 
   # calculate first step residuals
 
-	Residu.mat    <- matrix((TR.Y - TR.X %*% com.slops.0), T, N)
+    Residu.mat    <- matrix((TR.Y - TR.X %*% com.slops.0), T, N)
 
-        fAFactMod.obj <- fAFactMod(dat      = Residu.mat,
-                                   alpha    = alpha,
-                                   dim.crit = "KSS")
+    fAFactMod.obj <- fAFactMod(dat      = Residu.mat,
+                               alpha    = alpha,
+                               dim.crit = "KSS")
 
  # reestimate beta
-        factor.stract <- tcrossprod(fAFactMod.obj$factors, fAFactMod.obj$loadings)  
- 	NEW.TR.Y.mat  <- TR.Y.mat - factor.stract
- 	NEW.TR.Y      <- as.vector(NEW.TR.Y.mat)
- 	beta          <- qr.solve(TR.X, NEW.TR.Y)
 
- # functional intercept
-        
-      if(PF.obj[[1]]$I){
-        
-        x.all.OVm                   <- NULL
-        for(p in 2:(P+1)){x.all.OVm <- c(    x.all.OVm, PF.obj[[p]]$OVm)}
-        x.all.TRm                   <- NULL
-        for(p in 2:(P+1)){x.all.TRm <- cbind(x.all.TRm, PF.obj[[p]]$TRm)}
-        
-        
-        mu        <- PF.obj[[1]]$OVm - x.all.OVm %*% beta
-        
-        gamma     <- matrix((PF.obj[[1]]$TRm - PF.obj[[1]]$OVm),ncol=1) -
-                     (x.all.TRm - matrix(rep(x.all.OVm, each=T), nrow=T, ncol=P)) %*% beta
+    factor.stract <- tcrossprod(fAFactMod.obj$factors, fAFactMod.obj$loadings)  
+    NEW.TR.Y.mat  <- TR.Y.mat - factor.stract
+    NEW.TR.Y      <- as.vector(NEW.TR.Y.mat)
+    beta          <- qr.solve(TR.X, NEW.TR.Y)
+    
+ # functional intercept and additive effects      
 
-        theta.bar <- qr.solve(       fAFactMod.obj$factors, gamma)
-        beta.0    <- fAFactMod.obj$factors %*% theta.bar
-        beta.0    <- beta.0 + as.numeric(mu)
-      }else{
+    if(PF.obj[[1]]$I){# intercept==T
+      
+      x.all.OVm                   <- NULL
+      for(p in 2:(P+1)){x.all.OVm <- c(    x.all.OVm, PF.obj[[p]]$OVm)}
+      x.all.TRm                   <- NULL
+      for(p in 2:(P+1)){x.all.TRm <- cbind(x.all.TRm, PF.obj[[p]]$TRm)}
+      
+      mu                          <- PF.obj[[1]]$OVm - x.all.OVm %*% beta
+      
+      gamma                       <- matrix((PF.obj[[1]]$TRm - PF.obj[[1]]$OVm),ncol=1) -
+                                       (x.all.TRm - matrix(rep(x.all.OVm, each=T), nrow=T, ncol=P)) %*% beta
+      
+      theta.bar                   <- qr.solve(       fAFactMod.obj$factors, gamma)
+      beta.0                      <- fAFactMod.obj$factors %*% theta.bar
+      beta.0                      <- beta.0 + as.numeric(mu)
+
+      if(effect=="individual"|effect=="twoway"){
         
-        x.all.TRm                   <- NULL
-        for(p in 2:(P+1)){x.all.TRm <- cbind(x.all.TRm, PF.obj[[p]]$TRm)}
-
-        gamma     <- matrix(PF.obj[[1]]$TRm, ncol=1) - x.all.TRm %*% beta
-
-        theta.bar <- qr.solve(  fAFactMod.obj$factors, gamma)
-        beta.0    <- fAFactMod.obj$factors %*% theta.bar
-
       }
+    }else{# intercept==F
+
+      
+      x.all.TRm                   <- NULL
+      for(p in 2:(P+1)){x.all.TRm <- cbind(x.all.TRm, PF.obj[[p]]$TRm)}
+      
+      gamma     <- matrix(PF.obj[[1]]$TRm, ncol=1) - x.all.TRm %*% beta
+      
+      theta.bar <- qr.solve(  fAFactMod.obj$factors, gamma)
+      beta.0    <- fAFactMod.obj$factors %*% theta.bar
+      
+    }
         
         
+
+  
+
+    return(list("beta.0" = beta.0, "beta" = beta))
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ##             raw.f.interc.indv         <- PF.obj[[1]]$OVm + PF.obj[[1]]$TRm$individual - x.all.means %*% beta
 ##             qr.solve(fAFactMod.obj$factors, 
             
@@ -155,8 +181,3 @@ FUN.kss <- function(formula, effect = c("time", "pooled", "individual", "twoways
 
 
         
-  # additive effects      
-  
-
-        return(list("beta.0" = beta.0, "beta" = beta))
-      }
