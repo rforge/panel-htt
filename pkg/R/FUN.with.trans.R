@@ -1,13 +1,13 @@
 FUN.with.trans <- function(z, N, T, is.intercept,
-                           effect = c("pooled", "individual", "time", "twoways")) #, "none"
+                           effect = c("none", "individual", "time", "twoways")) 
   {
     with.trans <- match.arg(effect)
     mean.z <- mean(z);
     switch(with.trans	
-           , pooled = {
+           , none = {
              if(is.intercept){Z  = z - mean.z}
              else{            Z  = z};
-             liste <- list("Tr"  = "pooled", # Name of *Tr*ansformation
+             liste <- list("Tr"  = "none", # Name of *Tr*ansformation
                            "I"   = ifelse(is.intercept, TRUE, FALSE), 
                            "ODM" = z,        # *O*rig. *D*ata *M*atrix
                            "TDM" = Z,        # *T*ransformed *D*ata *M*atrix
