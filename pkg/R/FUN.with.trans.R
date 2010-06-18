@@ -2,7 +2,13 @@ FUN.with.trans <- function(z, N, T, is.intercept,
                            effect = c("none", "individual", "time", "twoways")) 
   {
     with.trans <- match.arg(effect)
-    mean.z <- mean(z);
+    if(!is.intercept & mean(z)!=0){
+      stop("You want to estimate a model without intercept,
+           but the arithmetic mean of one or more of your variables is not zero.")
+    }
+    
+    mean.z     <- ifelse(is.intercept, mean(z), 0);
+
     switch(with.trans	
            , none = {
              if(is.intercept){Z  = z - mean.z}
@@ -50,7 +56,7 @@ FUN.with.trans <- function(z, N, T, is.intercept,
                            "TDV" = c(Z),       # *T*ransformed *D*ata *V*ector
                            "OVm" = mean.z,     # *OV*erall *M*ean
                            "TRm" = list("individual" = colMeans(z),
-                          "time" = rowMeans(z)));# *TR*ansformation *m*eans
+                                        "time"       = rowMeans(z)));# *TR*ansformation *m*eans
              liste
            }
            )		 		

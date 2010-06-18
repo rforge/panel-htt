@@ -66,45 +66,13 @@ FUN.kss <- function(formula, effect = c("time", "individual", "twoways", "none")
     NEW.TR.Y      <- as.vector(NEW.TR.Y.mat)
     beta          <- qr.solve(TR.X, NEW.TR.Y)
     
- # functional intercept and additive effects      
 
-    if(PF.obj[[1]]$I){# intercept==T
-      
-      x.all.OVm                   <- NULL
-      for(p in 2:(P+1)){x.all.OVm <- c(    x.all.OVm, PF.obj[[p]]$OVm)}
-      x.all.TRm                   <- NULL
-      for(p in 2:(P+1)){x.all.TRm <- cbind(x.all.TRm, PF.obj[[p]]$TRm)}
-      
-      mu                          <- PF.obj[[1]]$OVm - x.all.OVm %*% beta
-      
-      gamma                       <- matrix((PF.obj[[1]]$TRm - PF.obj[[1]]$OVm),ncol=1) -
-                                       (x.all.TRm - matrix(rep(x.all.OVm, each=T), nrow=T, ncol=P)) %*% beta
-      
-      theta.bar                   <- qr.solve(       fAFactMod.obj$factors, gamma)
-      beta.0                      <- fAFactMod.obj$factors %*% theta.bar
-      beta.0                      <- beta.0 + as.numeric(mu)
-
-      if(effect=="individual"|effect=="twoway"){
-        
-      }
-    }else{# intercept==F
-
-      
-      x.all.TRm                   <- NULL
-      for(p in 2:(P+1)){x.all.TRm <- cbind(x.all.TRm, PF.obj[[p]]$TRm)}
-      
-      gamma     <- matrix(PF.obj[[1]]$TRm, ncol=1) - x.all.TRm %*% beta
-      
-      theta.bar <- qr.solve(  fAFactMod.obj$factors, gamma)
-      beta.0    <- fAFactMod.obj$factors %*% theta.bar
-      
-    }
-        
+    AE <- FUN.add.eff(PF.obj        = PF.obj,
+                      fAFactMod.obj = fAFactMod.obj,
+                      beta.hat      =beta)
         
 
-  
-
-    return(list("beta.0" = beta.0, "beta" = beta))
+    return(AE)
   }
 
 
@@ -114,7 +82,43 @@ FUN.kss <- function(formula, effect = c("time", "individual", "twoways", "none")
 
 
 
-
+##  # functional intercept and additive effects      
+##     if(effect=="time"){
+##     if(PF.obj[[1]]$I){# intercept==T
+      
+##       #================================================================      
+##       x.all.OVm                   <- NULL
+##       for(p in 2:(P+1)){x.all.OVm <- c(    x.all.OVm, PF.obj[[p]]$OVm)}
+##       x.all.TRm                   <- NULL
+##       for(p in 2:(P+1)){x.all.TRm <- cbind(x.all.TRm, PF.obj[[p]]$TRm)}
+##       #================================================================
+##       mu                          <- PF.obj[[1]]$OVm - x.all.OVm %*% beta
+##       if(effect=="time"|effect=="twoway"){
+##         tmp                         <- matrix((PF.obj[[1]]$TRm - PF.obj[[1]]$OVm),ncol=1) -
+##                                       (x.all.TRm - matrix(rep(x.all.OVm, each=T), nrow=T, ncol=P)) %*% beta
+##       }
+##       if(effect=="individual"|effect=="twoway"){
+##         tau                         <- matrix((PF.obj[[1]]$TRm - PF.obj[[1]]$OVm),ncol=1) -
+##                                       (x.all.TRm - matrix(rep(x.all.OVm, each=T), nrow=T, ncol=P)) %*% beta
+##       }      
+##       theta.bar                   <- qr.solve(fAFactMod.obj$factors, tmp)
+##       beta.0                      <- fAFactMod.obj$factors %*% theta.bar
+##       # recovering the beta_0-function as in Kneip et al.
+##       beta.0                      <- beta.0 + as.numeric(mu)
+      
+##     }else{# intercept==F
+##       #================================================================      
+##       x.all.TRm                   <- NULL
+##       for(p in 2:(P+1)){x.all.TRm <- cbind(x.all.TRm, PF.obj[[p]]$TRm)}
+##       #================================================================      
+      
+##       tmp     <- matrix(PF.obj[[1]]$TRm, ncol=1) - x.all.TRm %*% beta
+      
+##       theta.bar <- qr.solve(  fAFactMod.obj$factors, tmp)
+##       beta.0    <- fAFactMod.obj$factors %*% theta.bar
+      
+##     }
+##   }
 
 
 
