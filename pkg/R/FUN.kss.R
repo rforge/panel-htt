@@ -5,10 +5,6 @@ FUN.kss <- function(formula, effect = c("time", "individual", "twoways", "none")
     
   # check effect.mode
     effect <- match.arg(effect)
-    if(effect!="time"){
-      warning("For the KSS-Panel Model only time-Transformtion is valid.\n effect is set to time")
-      effect <- "time"
-    }
     
   # extract data from formula
     
@@ -45,11 +41,11 @@ FUN.kss <- function(formula, effect = c("time", "individual", "twoways", "none")
     t.TR.X.TR.Y      <- crossprod(TR.X, TR.Y)     		               # (Px1)
     t.TR.X.TR.Y.smth <- crossprod(TR.X, TR.Y.smth)   		               # (Px1)
     
-    bloc1            <- t.TR.X.TR.X - t.TR.X.TR.X.smth     		               # (PxP)
-    bloc2            <- t.TR.X.TR.Y - t.TR.X.TR.Y.smth     	                       # (Px1)
+    bloc1            <- t.TR.X.TR.X - t.TR.X.TR.X.smth     		       # (PxP)
+    bloc2            <- t.TR.X.TR.Y - t.TR.X.TR.Y.smth     	               # (Px1)
     
     com.slops.0 <- solve(bloc1)%*%bloc2					       # (Px1)
-       #com.slops.0 <- matrix(com.slops.0, nrow= P,ncol = 1)
+
 
   # calculate first step residuals
 
@@ -71,7 +67,6 @@ FUN.kss <- function(formula, effect = c("time", "individual", "twoways", "none")
                       fAFactMod.obj = fAFactMod.obj,
                       beta.hat      =beta)
         
-
     return(AE)
   }
 
