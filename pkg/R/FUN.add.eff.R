@@ -2,9 +2,12 @@ FUN.add.eff <- function(PF.obj, fAFactMod.obj, beta.hat)
   {
     P         <- length(PF.obj)-1
     y.in.list <- PF.obj[[1]]
+
+# twoways
     
-    #===================================================================================================
-    if(y.in.list$Tr=="twoway"){
+    if(y.in.list$Tr=="twoways"){
+      
+    #=========================================================================================================
       Ym2WI <- y.in.list$TRm$individual                               # *Y**m*ean *2**W*ay *I*ndividual
       Ym2WT <- y.in.list$TRm$time                                     # *Y**m*ean *2**W*ay *T*ime
       Ym2WO <- y.in.list$OVm                                          # *Y**m*ean *2**W*ay *O*verall           
@@ -25,13 +28,16 @@ FUN.add.eff <- function(PF.obj, fAFactMod.obj, beta.hat)
       if(y.in.list$I){
         AE        <- structure(list("mu"      = mu,
                                     "beta.0"  = beta.0,
-                                    "tau"     = tau), class = "TwoWwI")
+                                    "tau"     = tau),      class = "TwoWwI")
       }else{
         AE        <- structure(list("beta.0"  = beta.0,
-                                    "tau"     = tau), class = "TwoWwoI")
+                                    "tau"     = tau),      class = "TwoWwoI")
       }
-    # individual or time or none  
+      
+# individual or time or none
+      
     }else{
+      
     #============================================================================================================
       Ym        <- y.in.list$TRm                               # *Y**m*ean (if "time": Tx1, if "individual": Nx1)
       YO        <- y.in.list$OVm                               # *Y**O*verall-mean
@@ -40,30 +46,33 @@ FUN.add.eff <- function(PF.obj, fAFactMod.obj, beta.hat)
     #============================================================================================================
 
       mu        <- ifelse(y.in.list$I, YO - XO %*% beta.hat, 0)
-      
+
+      # individual
       if(y.in.list$Tr=="individual"){
         tau <- (Ym - YO) - (Xm - XO) %*% beta.hat
         if(y.in.list$I){
           AE        <- structure(list("mu"  = mu,
-                                      "tau" = tau),       class = "IwI")
+                                      "tau" = tau),        class = "IwI")
         }else{
-          AE        <- structure(list("tau" = tau),       class = "IwoI")
+          AE        <- structure(list("tau" = tau),        class = "IwoI")
         } 
       }
+      # time
       if(y.in.list$Tr=="time"){
         tmp       <- (Ym - YO) - (Xm - XO) %*% beta.hat
         theta.bar <-  qr.solve(fAFactMod.obj$factors, tmp)
         beta.0    <-  fAFactMod.obj$factors %*% theta.bar
         if(y.in.list$I){
           AE        <- structure(list("mu"     = mu,
-                                      "beta.0" = beta.0), class = "TwI")
+                                      "beta.0" = beta.0),  class = "TwI")
         }else{
-          AE        <- structure(list("beta.0" = beta.0), class = "TwoI")
+          AE        <- structure(list("beta.0" = beta.0),  class = "TwoI")
         }
       }
+      # none
       if(y.in.list$Tr=="none"){
         if(y.in.list$I){
-          AE        <- structure(list("mu"     = mu),     class = "NwI")
+          AE        <- structure(list("mu"     = mu),      class = "NwI")
         }
       }
     }

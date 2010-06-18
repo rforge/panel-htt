@@ -65,7 +65,7 @@ FUN.kss <- function(formula, effect = c("time", "individual", "twoways", "none")
 
     AE <- FUN.add.eff(PF.obj        = PF.obj,
                       fAFactMod.obj = fAFactMod.obj,
-                      beta.hat      =beta)
+                      beta.hat      = beta)
         
     return(AE)
   }
