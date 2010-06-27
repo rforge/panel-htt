@@ -1,15 +1,19 @@
 ######################################################################
 
-AFactMod <- function(dat, dim.criterion = c("PC1", "PC2"
-			, "PC3", "IC1", "IC2", "IC3", "IPC1", "IPC2", "IPC3"
-			, "ED", "ER", "GR")
-			, factor.dim , d.max, sig2.hat
+AFactMod <- function(dat, demean = TRUE
+			, add.effects = c("none", "individual", "time", "twoways")
+			, dim.criterion = c("PC1", "PC2", "PC3", "IC1", "IC2" 
+			, "IC3", "IPC1", "IPC2", "IPC3", "ED", "ER", "GR")
+			, factor.dim, d.max, sig2.hat
 			, restrict.mode= c("restrict.factors","restrict.loadings")
 			, allow.dual = TRUE){
-  
-        nr   <- nrow(dat)
+
+ 	is.regular.panel(dat, stopper = TRUE) 
+      nr   <- nrow(dat)
 	nc   <- ncol(dat)
-  
+  	with.trans <- match.arg(add.effects)
+	dat.trans <- FUN.with.trans(dat, N = nc, T = nr, is.intercept = demean, effect = with.trans)
+	dat <- dat.trans$TDM
   # missing parameters
 
 	if(missing(factor.dim)) factor.dim  <- NULL
@@ -77,4 +81,4 @@ AFactMod <- function(dat, dim.criterion = c("PC1", "PC2"
       }
   
 
-## AFactMod(dat, dim.criterion = c("IPC1"), d.max = 3)
+## AFactMod(Y,demean = FALSE, add.effects = "individual", dim.criterion = c("IPC1"), d.max = 3)
