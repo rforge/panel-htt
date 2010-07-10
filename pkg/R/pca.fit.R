@@ -138,6 +138,7 @@ restrict.pca <- function(obj
     fitted.values     <- obj$Q.fit
     orig.values.smth  <- obj$Q.orig.smth
     orig.values       <- obj$Q.orig
+    spar.low          <- obj$spar.low
     given.d	      <- obj$given.d
     L 	              <- obj$L[, 1:given.d , drop= FALSE]
     R 	              <- obj$R[, 1:given.d , drop= FALSE]
@@ -177,12 +178,13 @@ restrict.pca <- function(obj
                    L             =L)		
   }
   if(class(obj) == "fsvd.pca"){
-    ## zusätzlich: "orig.values.smth"
+    ## zusätzlich: "orig.values.smth" und "spar.low"
     result <- list(factors          = factors,
                    loadings         = loadings,
                    fitted.values    = fitted.values,
-                   orig.values.smth = orig.values.smth
-                   orig.values      = orig.values
+                   orig.values.smth = orig.values.smth,
+                   orig.values      = orig.values,
+                   spar.low         = spar.low,
                    cov.matrix       = cov.matrix,
                    eigen.values     = Eval,
                    Sd2              = Sd2,

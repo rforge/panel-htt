@@ -1,6 +1,7 @@
 ########### spectral variance decomposition and pca fitting if asked ###########################
 
 fsvd.pca <- function(Q,
+                     spar.low        = NULL,# no smoothing, if: spar.low=0  
                      given.d         = NULL,
                      calcul.loadings = TRUE,
                      allow.dual      = TRUE,
@@ -14,7 +15,9 @@ fsvd.pca <- function(Q,
 
   ## smoothing Q (small degree of undersmoothing)==============================================#
   Q.non.smth <- Q                                                                              #
-  spar.low   <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, method = 3       )$spar  * 0.8 #
+  if(is.null(spar.low)){                                                                       #
+    spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, method = 3       )$spar  * 0.8 #
+  }                                                                                            #
   Q          <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar   = spar.low)$ysmth       #
   ##===========================================================================================#
 
@@ -97,8 +100,9 @@ fsvd.pca <- function(Q,
 
   structure(list(L              = L.fun,
                  R              = R.fun,
-                 Q.orig         = Q.non.smth
-                 Q.orig.smth    = Q
+                 Q.orig         = Q.non.smth,
+                 Q.orig.smth    = Q,
+                 spar.low       = spar.low,
                  Q.fit          = Q.fit,
                  E              = E,
                  sqr.E          = sqr.E,
