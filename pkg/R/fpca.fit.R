@@ -91,6 +91,7 @@ fsvd.pca <- function(Q,
 
   structure(list(L       = L.fun,
                  R       = R.fun,
+                 Q       = Q
                  Q.fit   = Q.fit,
                  E       = E,
                  sqr.E   = sqr.E,
