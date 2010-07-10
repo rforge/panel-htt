@@ -7,6 +7,6 @@ Author: Oualid Bada, Dominik Liebl
 Maintainer: <liebl@wiso.uni-koeln.de>
 Depends: R(>= 1.8.0)
 Imports: pspline
-Description: The Package implements a new class of panel data models. This class allow for unobserved heterogeneity in time trends. These can be interpreted in the classical way as realizations from a real random variable or as realizations from a functional random variable. The package comes with diverse recently developed tests on dimensionality as well as with a routine for (functional) principal component analysis. 
+Description: The Package implements a new class of panel data models. This class allows for unobserved heterogeneity in time trends. These can be interpreted in the classical way as realizations from a real random variable or as realizations from a functional random variable. The package comes with diverse recently developed tests on dimensionality as well as with a routine for (functional) principal component analysis. 
 License: GPL-2
 LazyLoad: yes
