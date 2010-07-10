@@ -95,20 +95,20 @@ fsvd.pca <- function(Q,
   cum.e <- cumsum(E)
   V.d   <- c(sum.e, sum.e-cum.e[-length(cum.e)])
 
-  structure(list(L          = L.fun,
-                 R          = R.fun,
-                 Q.non.smth = Q.non.smth
-                 Q.smth     = Q
-                 Q.fit      = Q.fit,
-                 E          = E,
-                 sqr.E      = sqr.E,
-                 given.d    = given.d,
-                 d.seq      = d.seq,
-                 V.d        = V.d,
-                 nr         = nr,
-                 nc         = nc ,
-                 cov.mat    = cov.mat,
-                 dual       = dual),
+  structure(list(L              = L.fun,
+                 R              = R.fun,
+                 Q.orig         = Q.non.smth
+                 Q.orig.smth    = Q
+                 Q.fit          = Q.fit,
+                 E              = E,
+                 sqr.E          = sqr.E,
+                 given.d        = given.d,
+                 d.seq          = d.seq,
+                 V.d            = V.d,
+                 nr             = nr,
+                 nc             = nc ,
+                 cov.mat        = cov.mat,
+                 dual           = dual),
             class   = "fsvd.pca")
 }
 
@@ -121,13 +121,26 @@ fsvd.pca <- function(Q,
 # is.regular.panel()       #
 # fsvc.pca()               #
 # frestrict.pca()          #
-# Takes:                   #
-# dat                      (smoothed raw-data for fPCA)
-# given.d = NULL           (user given dimension)
-# restrict.mode            ("restrict.factors" or "restrict.loadings")                             
+# Takes:===========================================================================================#
+# dat                      (smoothed raw-data for fPCA)                                            #
+# given.d = NULL           (user given dimension)                                                  #
+# restrict.mode            ("restrict.factors" or "restrict.loadings")                             #
 # allow.dual = TRUE        (possibility to switch of the dual-matrix calculations)                 #
 # neglect.neg.ev = TRUE    (if TRUE:  max.rk = number of pos. eigenvalues                          #
 #                           if FALSE: max.rk = number of pos. and evtl. numerical neg. eigenvalues)#
+# Gives:===========================================================================================#
+# factors
+# loadings         
+# fitted.values    
+# orig.values.smth
+# orig.values      
+# cov.matrix      
+# eigen.values    
+# Sd2              
+# given.d        
+# data.dim   
+# dual       
+# L          
 ####################################################################################################
 
 fpca.fit <- function(dat,

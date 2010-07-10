@@ -107,29 +107,49 @@ svd.pca <- function(Q, given.d=NULL, calcul.loadings = TRUE, allow.dual = TRUE
 # restrict mode "restrict.factors": F'F/T = I
 # restrict mode "restrict.loadings" : Lamd'Lamd/N = I 
 
-restrict.pca <- function(svd.pca.obj
+restrict.pca <- function(obj
 		, restrict.mode= c("restrict.factors","restrict.loadings")){
-  if(class(svd.pca.obj)!="svd.pca"&&class(svd.pca.obj)!="fsvd.pca"){
-    stop(c("The svd.pca.obj is not a 'svd.pca' or a 'svd.pca' object"))
+  if(class(obj)!="svd.pca"&&class(obj)!="fsvd.pca"){
+    if(class(obj) != "svd.pca"){stop(c("Argument is not a 'svd.pca' or a 'svd.pca' object."  ))}
+    if(class(obj) !="fsvd.pca"){stop(c("Argument is not a 'fsvd.pca' or a 'fsvd.pca' object."))}
   }
-  if(is.null(svd.pca.obj$R))  stop(c("Loadings-parameter are missing."))
+  if(is.null(obj$R))  stop(c("Loadings-parameter are missing."))
         
- # svd.pca object  
-
-	cov.mat       <- svd.pca.obj$cov.mat
-	fitted.values <- svd.pca.obj$Q.fit
-        orig.dat      <- svd.pca.obj$Q
-	given.d	      <- svd.pca.obj$given.d
-	L 	        <- svd.pca.obj$L[, 1:given.d , drop= FALSE]
-	R 	        <- svd.pca.obj$R[, 1:given.d , drop= FALSE]
-	sqr.E         <- svd.pca.obj$sqr.E
-	E	        <- svd.pca.obj$E
-	dual          <- svd.pca.obj$dual
-	nr            <- nrow(fitted.values)
-	nc            <- ncol(fitted.values)
-	cov.matrix    <- cov.mat/(nr*nc)
-	Sd2           <- svd.pca.obj$V.d/(nr*nc)
-	Eval	        <- E/(nr*nc)
+  ## svd.pca object  
+  if(class(obj) == "svd.pca"){
+    cov.mat       <- obj$cov.mat
+    fitted.values <- obj$Q.fit
+    orig.values   <- obj$Q
+    given.d	  <- obj$given.d
+    L 	          <- obj$L[, 1:given.d , drop= FALSE]
+    R 	          <- obj$R[, 1:given.d , drop= FALSE]
+    sqr.E         <- obj$sqr.E
+    E	          <- obj$E
+    dual          <- obj$dual
+    nr            <- nrow(fitted.values)
+    nc            <- ncol(fitted.values)
+    cov.matrix    <- cov.mat/(nr*nc)
+    Sd2           <- obj$V.d/(nr*nc)
+    Eval	  <- E/(nr*nc)
+  }
+  ## fsvd.pca object  
+  if(class(obj) == "fsvd.pca"){
+    cov.mat           <- obj$cov.mat
+    fitted.values     <- obj$Q.fit
+    orig.values.smth  <- obj$Q.orig.smth
+    orig.values       <- obj$Q.orig
+    given.d	      <- obj$given.d
+    L 	              <- obj$L[, 1:given.d , drop= FALSE]
+    R 	              <- obj$R[, 1:given.d , drop= FALSE]
+    sqr.E             <- obj$sqr.E
+    E	              <- obj$E
+    dual              <- obj$dual
+    nr                <- nrow(fitted.values)
+    nc                <- ncol(fitted.values)
+    cov.matrix        <- cov.mat/(nr*nc)
+    Sd2               <- obj$V.d/(nr*nc)
+    Eval	      <- E/(nr*nc)
+}
 
  # restric factors and loadings
 	re.mo <-match.arg(restrict.mode)
@@ -143,13 +163,36 @@ restrict.pca <- function(svd.pca.obj
 				loadings  <- R*sqrt(nc)
 			}
 		)
-
-	list(factors= factors, loadings= loadings, fitted.values = fitted.values
-             , orig.dat=orig.dat, cov.matrix = cov.matrix, eigen.values= Eval
-             , Sd2 = Sd2, given.d= given.d
-             , data.dim = c(nr, nc), dual=dual, L=L)		
-	}
-
+  if(class(obj) == "svd.pca"){
+    result <- list(factors       = factors,
+                   loadings      = loadings,
+                   fitted.values = fitted.values,
+                   orig.values   = orig.values,
+                   cov.matrix    = cov.matrix,
+                   eigen.values  = Eval,
+                   Sd2           = Sd2,
+                   given.d       = given.d,
+                   data.dim      = c(nr, nc),
+                   dual          =dual,
+                   L             =L)		
+  }
+  if(class(obj) == "fsvd.pca"){
+    ## zusätzlich: "orig.values.smth"
+    result <- list(factors          = factors,
+                   loadings         = loadings,
+                   fitted.values    = fitted.values,
+                   orig.values.smth = orig.values.smth
+                   orig.values      = orig.values
+                   cov.matrix       = cov.matrix,
+                   eigen.values     = Eval,
+                   Sd2              = Sd2,
+                   given.d          = given.d,
+                   data.dim         = c(nr, nc),
+                   dual             = dual,
+                   L                = L)		
+  }
+  return(result)
+}
 
 pca.fit <- function(dat, given.d=NULL 
 		, restrict.mode= c("restrict.factors","restrict.loadings")
