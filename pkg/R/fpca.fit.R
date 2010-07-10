@@ -17,7 +17,7 @@ fsvd.pca <- function(Q,
   }                                                                                            #
   Q          <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar   = spar.low)$ysmth       #
   ##===========================================================================================#
-
+  print(sum((Q-Q.non.smth)^2))
   if(nr>nc && calcul.loadings && allow.dual) dual = TRUE
   else dual = FALSE
   if(dual){
