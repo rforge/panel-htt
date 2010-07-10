@@ -114,5 +114,5 @@ WithTrans <- function(z, intercept= TRUE, heto.effect = c("none", "individual", 
 
 ############################ test
 
-Y <- matrix(rnorm(100), 10 , 10)
-WithTrans(Y, intercept= T, heto.effect = "individual")
+## Y <- matrix(rnorm(100), 10 , 10)
+## WithTrans(Y, intercept= T, heto.effect = "individual")

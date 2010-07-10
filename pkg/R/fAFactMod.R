@@ -6,7 +6,6 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
                       factor.dim , d.max,
                       alpha=0.01,
                       sig2.hat,
-                      sig2.hat.mode = c("functional", "classical"),  
                       restrict.mode = c("restrict.factors","restrict.loadings"), 
                       allow.dual    = TRUE)
 {
@@ -25,7 +24,7 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
 
   # smoothing the residuals (small degree of undersmoothing)
 
-  spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=dat, method = 3       )$spar * 0.8
+  spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=dat, method = 3       )$spar  * 0.8
   dat.smth <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=dat, spar   = spar.low)$ysmth
 
   # fpca.fit with smoothed data
@@ -38,18 +37,13 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
   # estimation of sig2.hat:      
 
   # Variance-Estimator Section 3.4 (KSS)
-  if(dim.criterion=="KSS" & sig2.hat.mode=="functional"){
+  if(dim.criterion=="KSS"){
     id.smth1  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = diag(1,nr),  spar = spar.low)$ysmth
     id.smth2  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = id.smth1,    spar = spar.low)$ysmth
     tr        <- (nr + sum(diag(id.smth2)) - 2*sum(diag(id.smth1)))
     sig2.hat  <- sum((dat-dat.smth)^2)/((nc-1)*tr)
   }
-  
-  # Variance-Estimator traditional
-  if(dim.criterion=="KSS" & sig2.hat.mode=="classical"){
-    # Note: no smoothing of the residuals for var-estimation
-    sig2.hat <- svd.pca(dat)$V.d[1]/(nr*nc)
-  }
+ 
         
   # dimension selection
   est.dim       <- switch(dim.criterion,
