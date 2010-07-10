@@ -9,9 +9,6 @@ fsvd.pca <- function(Q,
   
   nr   <- nrow(Q)
   nc   <- ncol(Q)
-  if(nr>nc && calcul.loadings && allow.dual) dual = TRUE
-  else dual = FALSE
-  if(dual) Q      <- t(Q)
 
   ## smoothing Q (small degree of undersmoothing)==============================================#
   Q.non.smth <- Q                                                                              #
@@ -21,6 +18,10 @@ fsvd.pca <- function(Q,
   Q          <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar   = spar.low)$ysmth       #
   ##===========================================================================================#
 
+  if(nr>nc && calcul.loadings && allow.dual) dual = TRUE
+  else dual = FALSE
+  if(dual) Q      <- t(Q)
+  
   
   ## trapezoidal rule (for integral-approximation)=============================#
   ## hier nicht unbedingt notwendig, da i.d.R len.Interval==n.discr            #
@@ -148,6 +149,7 @@ fsvd.pca <- function(Q,
 ####################################################################################################
 
 fpca.fit <- function(dat,
+                     spar.low       = NULL,# no smoothing, iff: spar.low=0  
                      given.d        = NULL,
                      restrict.mode  = c("restrict.factors","restrict.loadings"),
                      allow.dual     = TRUE,
