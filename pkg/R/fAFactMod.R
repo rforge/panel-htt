@@ -3,8 +3,10 @@
 fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
                                              "IC2", "IC3", "IPC1","IPC2", "IPC3",
                                              "ED",  "ER",  "GR"),
-                      factor.dim , d.max,
-                      alpha=0.01,
+                      factor.dim ,
+                      d.max,
+                      alpha         = 0.01,
+                      spar.low,
                       sig2.hat,
                       restrict.mode = c("restrict.factors","restrict.loadings"), 
                       allow.dual    = TRUE)
@@ -15,19 +17,20 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
 
   dim.criterion <- match.arg(dim.criterion)
   
-  # missing parameters
+  ## missing parameters
 
   if(missing(factor.dim)) factor.dim  <- NULL
   if(missing(d.max))      d.max       <- NULL
   if(missing(sig2.hat))   sig2.hat    <- NULL
+  if(missing(spar.low))   spar.low    <- NULL
 
-
-  # fpca.fit (in fpca.fit: "dat" (under)smoothed)
+  ## fpca.fit (within fpca.fit(): "dat" is (under)smoothed)
 
   fpca.fit.obj <- fpca.fit(dat           = dat,
-                           given.d       = factor.dim,
+                           spar.low      = spar.low,    # if NULL: 0.8*spar.opt (GCV)
+                           given.d       = factor.dim,  # if NULL: max.rk <- ifelse(neglect.neg.ev,nbr.pos.ev, length(Eval))
                            restrict.mode = restrict.mode,
-                           allow.dual    = allow.dual)
+                           allow.dual    = allow.dual) 
  
         
   # dimension selection
@@ -61,7 +64,7 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
   opt.d  <- est.dim[1,2]
   used.d <- ifelse(is.null(factor.dim), opt.d, factor.dim)
 
-  # factors and loadings parameters
+  ## factors and loadings parameters
 
   if(used.d!=0){
     factors  <- fpca.fit.obj$factors[,  1:used.d, drop= FALSE]
