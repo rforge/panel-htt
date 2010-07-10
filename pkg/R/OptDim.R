@@ -276,23 +276,26 @@ RH.OptDim <- function(Obj, criteria = c("ER", "GR"), d.max = NULL){
 
 
 #####################################################################################################################
-KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=alpha){
-  nr      <- obj$nr
-  nc      <- obj$nc
-  w       <- obj$V.d/(nr*nc)  
-  evec    <- obj$Evec
-  Eval    <- obj$V.d
-  max.rk  <- length(Eval)
+KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01){
+  nr       <- obj$nr
+  nc       <- obj$nc
+  spar.low <- obj$spar.low
+  dat      <- obj$orig.values
+  dat.smth <- obj$orig.values.smth
+  w        <- obj$V.d/(nr*nc)  
+  evec     <- obj$Evec
+  Eval     <- obj$V.d
+  max.rk   <- length(Eval)
 
-  ## estimation of sig2.hat:      
+  ## estimation of sig2.hat: Variance-Estimator see Section 3.4 (KSS) =====================================      
   if(is.null(sig2.hat)){
-    ## Variance-Estimator see Section 3.4 (KSS) =============================================================
     id.smth1  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = diag(1,nr),  spar = spar.low)$ysmth
     id.smth2  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = id.smth1,    spar = spar.low)$ysmth
     tr        <- (nr + sum(diag(id.smth2)) - 2*sum(diag(id.smth1)))
     sig2.hat  <- sum((dat-dat.smth)^2)/((nc-1)*tr)
-    ##=======================================================================================================
+    
   }
+  ##=======================================================================================================
 P             <- diag(1, nr) - tcrossprod(evec)
 pca.fit.p.obj <- eigen(P)
 W             <- pca.fit.p.obj[[2]]
@@ -315,15 +318,14 @@ crit      <- delta - thres
 d.opt.KSS <- length(crit[crit > 0])# minus 1, weil start bei dim = 0
                                    # plus 1, weil nur die dim, die das crit nicht erfüllen.
 
-  result <- data.frame(I("KSS"), matrix(c(d.opt.KSS, w[d.opt.KSS+1]), 1, 2))
-  colnames(result) <- c("Criterion", "Optimal Dimension", "sd2")
-  print(result)
+  result <- data.frame(I("KSS"), matrix(c(d.opt.KSS, w[d.opt.KSS+1], alpha), 1, 3))
+  colnames(result) <- c("Criterion", "Optimal Dimension", "sd2", "alpha")
   return(result)
 }
 
 
 
-KSS.OptDim <- function(Obj, sig2.hat=NULL, alpha = 0.01){
+KSS.OptDim <- function(Obj, sig2.hat = NULL, alpha = 0.01, spar.low = NULL){
 	# what is Obj?
   if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca"){
     nr    <- Obj$nr
@@ -345,8 +347,8 @@ KSS.OptDim <- function(Obj, sig2.hat=NULL, alpha = 0.01){
       
       obj   <- list(V.d = V.d, nr = nr, nc = nc, E = E, Evec = Evec)
     }	
-## 		else{
-## 			if(is.matrix(Obj)) obj <- fsvd.pca(Obj)
+		else{
+			if(is.matrix(Obj)) obj <- fsvd.pca(Obj, spar.low = spar.low)
 ## 			else{
 ## 				if(!is.vector(Obj[[1]])|!is.numeric(Obj[[1]])
 ## 				  |!is.numeric(Obj[[2]])|length(Obj[[2]])!=2)
@@ -361,10 +363,10 @@ KSS.OptDim <- function(Obj, sig2.hat=NULL, alpha = 0.01){
 ## 						, E = E, d.seq = d.seq)
 ## 					}
 ## 				}
-## 			}
+			}
   }
   
-  result   <- KSS.dim.opt(obj, sig2.hat, alpha, spar.low)
+  result   <- KSS.dim.opt(obj, sig2.hat = sig2hat, alpha = alpha, spar.low = spar.low)
   return(result)
 }
 
