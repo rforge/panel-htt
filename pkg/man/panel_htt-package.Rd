@@ -8,7 +8,7 @@ Panel Data Models for HTT
 }
 \description{
   The Package implements a new class of panel data models.
-  This class allow for unobserved heterogeneity in time trends.
+  This class allows for unobserved heterogeneity in time trends.
   These can be interpreted in the classical way as realizations
   from a real random variable or as realizations from a functional
   random variable. The package comes with diverse recently
