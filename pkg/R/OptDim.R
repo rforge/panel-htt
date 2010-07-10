@@ -276,13 +276,22 @@ RH.OptDim <- function(Obj, criteria = c("ER", "GR"), d.max = NULL){
 
 
 #####################################################################################################################
-KSS.dim.opt <- function(obj, sig2.hat=sig2.hat, alpha=alpha, spar.low = spar.low){
+KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=alpha){
   nr      <- obj$nr
   nc      <- obj$nc
   w       <- obj$V.d/(nr*nc)  
   evec    <- obj$Evec
   Eval    <- obj$V.d
   max.rk  <- length(Eval)
+
+  ## estimation of sig2.hat:      
+
+  ## Variance-Estimator Section 3.4 (KSS) ================================================================
+    id.smth1  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = diag(1,nr),  spar = spar.low)$ysmth
+    id.smth2  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = id.smth1,    spar = spar.low)$ysmth
+    tr        <- (nr + sum(diag(id.smth2)) - 2*sum(diag(id.smth1)))
+    sig2.hat  <- sum((dat-dat.smth)^2)/((nc-1)*tr)
+  ##=======================================================================================================
 
 P             <- diag(1, nr) - tcrossprod(evec)
 pca.fit.p.obj <- eigen(P)
@@ -314,7 +323,7 @@ d.opt.KSS <- length(crit[crit > 0])# minus 1, weil start bei dim = 0
 
 
 
-KSS.OptDim <- function(Obj, sig2.hat, alpha, spar.low){
+KSS.OptDim <- function(Obj, sig2.hat=NULL, alpha = 0.01){
 	# what is Obj?
   if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca"){
     nr    <- Obj$nr

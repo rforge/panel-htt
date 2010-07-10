@@ -34,15 +34,7 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
                            restrict.mode = restrict.mode,
                            allow.dual    = allow.dual)
         
-  # estimation of sig2.hat:      
 
-  # Variance-Estimator Section 3.4 (KSS)
-  if(dim.criterion=="KSS"){
-    id.smth1  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = diag(1,nr),  spar = spar.low)$ysmth
-    id.smth2  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = id.smth1,    spar = spar.low)$ysmth
-    tr        <- (nr + sum(diag(id.smth2)) - 2*sum(diag(id.smth1)))
-    sig2.hat  <- sum((dat-dat.smth)^2)/((nc-1)*tr)
-  }
  
         
   # dimension selection
@@ -73,7 +65,6 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
                           KSS  = KSS.OptDim(fpca.fit.obj, sig2.hat = sig2.hat,
                             alpha=alpha,  spar.low = spar.low)
                           )
-  print(est.dim)
   opt.d  <- est.dim[1,2]
   used.d <- ifelse(is.null(factor.dim), opt.d, factor.dim)
 
