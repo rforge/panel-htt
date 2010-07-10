@@ -285,14 +285,14 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=alpha){
   max.rk  <- length(Eval)
 
   ## estimation of sig2.hat:      
-
-  ## Variance-Estimator Section 3.4 (KSS) ================================================================
+  if(is.null(sig2.hat)){
+    ## Variance-Estimator see Section 3.4 (KSS) =============================================================
     id.smth1  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = diag(1,nr),  spar = spar.low)$ysmth
     id.smth2  <- smooth.Pspline(x = seq.int(0,1, length.out= nr) , y = id.smth1,    spar = spar.low)$ysmth
     tr        <- (nr + sum(diag(id.smth2)) - 2*sum(diag(id.smth1)))
     sig2.hat  <- sum((dat-dat.smth)^2)/((nc-1)*tr)
-  ##=======================================================================================================
-
+    ##=======================================================================================================
+  }
 P             <- diag(1, nr) - tcrossprod(evec)
 pca.fit.p.obj <- eigen(P)
 W             <- pca.fit.p.obj[[2]]

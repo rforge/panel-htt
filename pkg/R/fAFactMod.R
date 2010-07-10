@@ -22,14 +22,10 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
   if(missing(d.max))      d.max       <- NULL
   if(missing(sig2.hat))   sig2.hat    <- NULL
 
-  # smoothing the residuals (small degree of undersmoothing)
 
-  spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=dat, method = 3       )$spar  * 0.8
-  dat.smth <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=dat, spar   = spar.low)$ysmth
+  # fpca.fit 
 
-  # fpca.fit with smoothed data
-
-  fpca.fit.obj <- fpca.fit(dat           = dat.smth,
+  fpca.fit.obj <- fpca.fit(dat           = dat,
                            given.d       = factor.dim,
                            restrict.mode = restrict.mode,
                            allow.dual    = allow.dual)

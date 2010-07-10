@@ -12,16 +12,22 @@ fsvd.pca <- function(Q,
   else dual = FALSE
   if(dual) Q      <- t(Q)
 
+  ## smoothing Q (small degree of undersmoothing)==============================================#
+  Q.non.smth <- Q                                                                              #
+  spar.low   <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, method = 3       )$spar  * 0.8 #
+  Q          <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar   = spar.low)$ysmth       #
+  ##===========================================================================================#
+
   
-  # trapezoidal rule (for integral-approximation)=============================#
-  # hier nicht unbedingt notwendig, da i.d.R len.Interval==n.discr            #
-  # Achtung hier wird angenommen, dass beide indizes i bzw. t bei 1 beginnen! #
-  len.Interval    <- ifelse(dual, nc-1, nr-1)                                 #
-  n.discr         <- ifelse(dual, nc,   nr  )                                 #  
-  h               <- (len.Interval)/(n.discr-1)                               #
-  w               <- c(h/2, rep(h, n.discr-2), h/2)                           #
-  cov.mat         <- diag(sqrt(w)) %*% tcrossprod(Q) %*% diag(sqrt(w))        #
-  #============================================================================
+  ## trapezoidal rule (for integral-approximation)=============================#
+  ## hier nicht unbedingt notwendig, da i.d.R len.Interval==n.discr            #
+  ## Achtung hier wird angenommen, dass beide indizes i bzw. t bei 1 beginnen! #
+  len.Interval    <- ifelse(dual, nc-1, nr-1)                                  #
+  n.discr         <- ifelse(dual, nc,   nr  )                                  #  
+  h               <- (len.Interval)/(n.discr-1)                                #
+  w               <- c(h/2, rep(h, n.discr-2), h/2)                            #
+  cov.mat         <- diag(sqrt(w)) %*% tcrossprod(Q) %*% diag(sqrt(w))         #
+  ##===========================================================================#
 
   
   # Compute spectral decomposion 
@@ -89,19 +95,20 @@ fsvd.pca <- function(Q,
   cum.e <- cumsum(E)
   V.d   <- c(sum.e, sum.e-cum.e[-length(cum.e)])
 
-  structure(list(L       = L.fun,
-                 R       = R.fun,
-                 Q       = Q
-                 Q.fit   = Q.fit,
-                 E       = E,
-                 sqr.E   = sqr.E,
-                 given.d = given.d,
-                 d.seq   = d.seq,
-                 V.d     = V.d,
-                 nr      = nr,
-                 nc      = nc ,
-                 cov.mat = cov.mat,
-                 dual    = dual),
+  structure(list(L          = L.fun,
+                 R          = R.fun,
+                 Q.non.smth = Q.non.smth
+                 Q.smth     = Q
+                 Q.fit      = Q.fit,
+                 E          = E,
+                 sqr.E      = sqr.E,
+                 given.d    = given.d,
+                 d.seq      = d.seq,
+                 V.d        = V.d,
+                 nr         = nr,
+                 nc         = nc ,
+                 cov.mat    = cov.mat,
+                 dual       = dual),
             class   = "fsvd.pca")
 }
 
