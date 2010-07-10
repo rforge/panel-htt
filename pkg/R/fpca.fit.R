@@ -1,7 +1,7 @@
 ########### spectral variance decomposition and pca fitting if asked ###########################
 
 fsvd.pca <- function(Q,
-                     spar.low        = NULL,# no smoothing, if: spar.low=0  
+                     spar.low        = NULL,# no smoothing, iff: spar.low=0  
                      given.d         = NULL,
                      calcul.loadings = TRUE,
                      allow.dual      = TRUE,

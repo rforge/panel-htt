@@ -14,7 +14,6 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
   nc   <- ncol(dat)
 
   dim.criterion <- match.arg(dim.criterion)
-  sig2.hat.mode <- match.arg(sig2.hat.mode)
   
   # missing parameters
 
