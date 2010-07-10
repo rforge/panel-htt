@@ -118,6 +118,7 @@ restrict.pca <- function(svd.pca.obj
 
 	cov.mat       <- svd.pca.obj$cov.mat
 	fitted.values <- svd.pca.obj$Q.fit
+        orig.dat      <- svd.pca.obj$Q
 	given.d	      <- svd.pca.obj$given.d
 	L 	        <- svd.pca.obj$L[, 1:given.d , drop= FALSE]
 	R 	        <- svd.pca.obj$R[, 1:given.d , drop= FALSE]
@@ -144,8 +145,9 @@ restrict.pca <- function(svd.pca.obj
 		)
 
 	list(factors= factors, loadings= loadings, fitted.values = fitted.values
-	, cov.matrix = cov.matrix, eigen.values= Eval ,Sd2 = Sd2, given.d= given.d
-	, data.dim = c(nr, nc), dual=dual, L=L)		
+             , orig.dat=orig.dat, cov.matrix = cov.matrix, eigen.values= Eval
+             , Sd2 = Sd2, given.d= given.d
+             , data.dim = c(nr, nc), dual=dual, L=L)		
 	}
 
 
