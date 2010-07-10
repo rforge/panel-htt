@@ -388,20 +388,6 @@ KSS.OptDim <- function(Obj, sig2.hat = NULL, alpha = 0.01, spar.low = NULL){
     } 
   }else{
     if(is.matrix(Obj)) obj <- fsvd.pca(Obj, spar.low = spar.low)
-## 			else{
-## 				if(!is.vector(Obj[[1]])|!is.numeric(Obj[[1]])
-## 				  |!is.numeric(Obj[[2]])|length(Obj[[2]])!=2)
-## 				  stop(c("'Obj' does not have the correct form."))
-## 				else{# the function can deal with a list containing a vector of RSS for each d in the first listcomponent and the dimension as 2 d-vector 'c(nr, nc)' in the second component 
-## 					nr  <- Obj[[2]][1]
-## 					nc  <- Obj[[2]][2]
-## 					V.d <- Obj[[1]][-length(Obj[[1]])]
-## 					E   <- -diff(Obj[[1]]-Obj[[1]][1])
-## 					d.seq = seq.int(0, (length(Obj[[1]])-1))
-## 					obj <- list(V.d = V.d, nr = nr, nc = nc
-## 						, E = E, d.seq = d.seq)
-## 					}
-## 				}
   }
   result   <- KSS.dim.opt(obj, sig2.hat = sig2.hat, alpha = alpha)
   return(result)
