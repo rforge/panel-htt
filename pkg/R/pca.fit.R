@@ -97,7 +97,7 @@ svd.pca <- function(Q, given.d=NULL, calcul.loadings = TRUE, allow.dual = TRUE
 	cum.e <- cumsum(E)
 	V.d   <- c(sum.e, sum.e-cum.e[-length(cum.e)])
 
-	structure(list(L=L, R=R, Q.fit=Q.fit, E=E, sqr.E=sqr.E, given.d=given.d
+	structure(list(L=L, R=R, Q.fit=Q.fit, Q=Q, E=E, sqr.E=sqr.E, given.d=given.d
 		, d.seq=d.seq, V.d=V.d, nr=nr, nc=nc ,cov.mat=cov.mat, dual=dual)
 		, class = "svd.pca")
 	}
