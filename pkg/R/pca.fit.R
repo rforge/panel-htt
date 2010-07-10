@@ -174,8 +174,8 @@ restrict.pca <- function(obj
                    Sd2           = Sd2,
                    given.d       = given.d,
                    data.dim      = c(nr, nc),
-                   dual          =dual,
-                   L             =L)		
+                   dual          = dual,
+                   L             = L)		
   }
   if(class(obj) == "fsvd.pca"){
     ## zusätzlich: "orig.values.smth" und "spar.low"
@@ -196,6 +196,9 @@ restrict.pca <- function(obj
   return(result)
 }
 
+
+#################################################################################################
+## main function
 pca.fit <- function(dat, given.d=NULL 
 		, restrict.mode= c("restrict.factors","restrict.loadings")
 		, allow.dual = TRUE, neglect.neg.ev = TRUE){
@@ -205,6 +208,6 @@ pca.fit <- function(dat, given.d=NULL
 	result <- restrict.pca(svd.pca.obj)
 	structure(result, class = "pca.fit")
 	}
-
+#################################################################################################
 
 
