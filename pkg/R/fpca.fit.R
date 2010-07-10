@@ -20,7 +20,11 @@ fsvd.pca <- function(Q,
 
   if(nr>nc && calcul.loadings && allow.dual) dual = TRUE
   else dual = FALSE
-  if(dual) Q      <- t(Q)
+  if(dual){
+    Q          <- t(Q)
+    # damit die daten bei der rückgabe die gleichen dimensionen haben
+    Q.non.smth <- t(Q.non.smth)
+         }
   
   
   ## trapezoidal rule (for integral-approximation)=============================#
@@ -34,14 +38,14 @@ fsvd.pca <- function(Q,
   ##===========================================================================#
 
   
-  # Compute spectral decomposion 
+  ## Compute spectral decomposion 
 
   Spdec           <- eigen(cov.mat, symmetric= TRUE)
   Eval	          <- Spdec[[1]]
-#if(any(Eval<0)) warning(expression("There are negative eigen values!"))
+  ## if(any(Eval<0)) warning(expression("There are negative eigen values!"))
   Evec    	  <- Spdec[[2]]
 
-  # compare rank and given.d
+  ## compare rank and given.d
         
   neglect.neg.ev  <- neglect.neg.ev |(dual&&neglect.neg.ev)
   nbr.pos.ev      <- length(Eval[Eval > 0])
@@ -54,12 +58,12 @@ fsvd.pca <- function(Q,
     given.d <- min(given.d, max.rk)
   }
 
-  # compute spectral variance decomposition
-  #####################################################
-  # Approximation of the L2-normalization-constraint: #
-  #    ||e.fun_i||_L2 = 1 by                          #
-  #  w*||e.fun_i||_E  = 1                             #
-  #####################################################
+  ## compute spectral variance decomposition
+  ######################################################
+  ## Approximation of the L2-normalization-constraint: #
+  ##    ||e.fun_i||_L2 = 1 by                          #
+  ##  w*||e.fun_i||_E  = 1                             #
+  ######################################################
   L                         <- Evec[,1:max.rk , drop= FALSE]
   L.fun                     <- diag(w^-{0.5}) %*% L
 
@@ -85,10 +89,14 @@ fsvd.pca <- function(Q,
   # convert dimension if dual covariance matrix is used
 
   if(dual){
-    u     <- L.fun
-    L.fun <- R.fun
-    R.fun <- u
-    Q.fit <- t(Q.fit)
+    u          <- L.fun
+    L.fun      <- R.fun
+    R.fun      <- u
+    Q.fit      <- t(Q.fit)
+    # damit die daten bei der rückgabe die gleichen dimensionen haben:
+    Q          <- t(Q)
+    Q.non.smth <- t(Q.non.smth)
+    
   }
     
   # about dimension

@@ -88,6 +88,8 @@ svd.pca <- function(Q, given.d=NULL, calcul.loadings = TRUE, allow.dual = TRUE
 		L <- R
 		R <- u
 		Q.fit <- t(Q.fit)
+                # damit die daten bei der rückgabe die gleichen dimensionen haben:
+                Q     <- t(Q)
 		}
 
   # about dimension
