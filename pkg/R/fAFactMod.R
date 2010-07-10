@@ -23,14 +23,12 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
   if(missing(sig2.hat))   sig2.hat    <- NULL
 
 
-  # fpca.fit 
+  # fpca.fit (in fpca.fit: "dat" (under)smoothed)
 
   fpca.fit.obj <- fpca.fit(dat           = dat,
                            given.d       = factor.dim,
                            restrict.mode = restrict.mode,
                            allow.dual    = allow.dual)
-        
-
  
         
   # dimension selection
@@ -59,7 +57,7 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
                           GR   = RH.OptDim(fpca.fit.obj, criteria = c("GR")
                             , d.max = d.max),
                           KSS  = KSS.OptDim(fpca.fit.obj, sig2.hat = sig2.hat,
-                            alpha=alpha,  spar.low = spar.low)
+                            alpha=alpha)
                           )
   opt.d  <- est.dim[1,2]
   used.d <- ifelse(is.null(factor.dim), opt.d, factor.dim)
