@@ -13,8 +13,10 @@ FUN.Pformula <- function(formula, effect)
     if(is.intercept){
       x.all.matrix       <- regressors.mat[,-1]
     }else{x.all.matrix   <- regressors.mat}
+
+    if(!is.intercept & effect=="twoways"){stop("Effects >> twoways << need an Intercept!")}
     
-  # dimention parameters
+  # dimension parameters
 
     N  <- ncol(y.matrix)
     T  <- nrow(y.matrix)
