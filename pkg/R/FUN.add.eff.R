@@ -11,14 +11,17 @@ FUN.add.eff <- function(PF.obj, fAFactMod.obj, beta.hat)
     XTiVC <- sapply(2:(P+1), function(i)PF.obj[[i]]$TRm$TiVC)  ## *X*
     XOVc  <- sapply(2:(P+1), function(i)PF.obj[[i]]$TRm$OVc)   ## *X*      
     ##=========================================================================================================
-      
-    mu        <- ifelse(y.in.list$I, YOVc - XOVc %*% beta.hat, 0) ## mu:        overall mean effect
-    tau       <- (YInC  - YOVc) - (XInC  - XOVc) %*% beta.hat     ## tau:       individual effects
-    tmp       <- (YTiVC - YOVc) - (XTiVC - XOVc) %*% beta.hat     ## see section 3.1, paper KSS-2009:
-    print("hier")
-    theta.bar <-  qr.solve(fAFactMod.obj$factors, tmp)            ## theta.bar: scores regarding to TiVC
-    beta.0    <-  fAFactMod.obj$factors %*% theta.bar             ## beta.0:    functional time effects
 
+    
+    mu           <- ifelse(y.in.list$I, YOVc - XOVc %*% beta.hat, 0) ## mu:        overall mean effect
+    if(y.in.list$Tr=="individual"|y.in.list$Tr=="twoway"){
+      tau        <- c((YInC  - YOVc) - (XInC  - XOVc) %*% beta.hat)  ## tau:       individual effects
+    }else{tau    <- 0}    
+    if(y.in.list$Tr=="time"|y.in.list$Tr=="twoway"){
+      tmp        <- (YTiVC - YOVc) - (XTiVC - XOVc) %*% beta.hat     ## see section 3.1, paper KSS-2009:
+      theta.bar  <-  qr.solve(fAFactMod.obj$factors, tmp)            ## theta.bar: scores regarding to TiVC
+      beta.0     <-  fAFactMod.obj$factors %*% theta.bar             ## beta.0:    functional time effects
+    }else{beta.0 <- 0}
     result    <- list(mu = mu, tau = tau, beta.0 = beta.0)
     return(result)
   }
