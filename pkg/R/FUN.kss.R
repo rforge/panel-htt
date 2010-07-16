@@ -1,7 +1,19 @@
-FUN.kss <- function(formula, effect = c("time", "individual", "twoways", "none"),
-                    alpha=0.05,
-                    ...) # ...  = sign.vec= NULL
+FUN.kss <- function(formula,
+                            effect = c("time", "individual", "twoway", "none"),
+                            alpha  = 0.05,
+                            ...)# ...  = sign.vec= NULL 
   {
+    ##===================================================================================
+    if(!class(formula)=="formula"){
+      stop("\n Argument >>formula<< needs a formula-object like y~x1+...")
+    }
+    if(!any(effect==c("time", "individual", "twoway", "none"))){
+      stop("\n Argument >>effect<< must be one of: \n time, individual, twoway, none")
+    }
+    if(!is.numeric(alpha)){
+      stop("\n Argument >>alpha<< has to be numeric.")
+    }
+    ##====================================================================================
     
     ## check effect.mode
     effect <- match.arg(effect)
@@ -21,6 +33,9 @@ FUN.kss <- function(formula, effect = c("time", "individual", "twoways", "none")
     
     TR.Y.mat <- matrix(TR.Y, T,     N)					        # (T x N)
     TR.X.mat <- matrix(TR.X, T, (N*P))						# (T x NP)
+
+    
+
     
     ## smooth.splines with undersmoothing
     ## undersmoothing: 0.8 * GCV-value
@@ -62,11 +77,18 @@ FUN.kss <- function(formula, effect = c("time", "individual", "twoways", "none")
     beta          <- qr.solve(TR.X, NEW.TR.Y)
     ##==========================================================================
 
-    AE <- FUN.add.eff(PF.obj        = PF.obj,
-                      fAFactMod.obj = fAFactMod.obj,
-                      beta.hat      = beta)
-        
-    return(AE)
+    est <- FUN.add.eff(PF.obj        = PF.obj,
+                       fAFactMod.obj = fAFactMod.obj,
+                       beta.hat      = beta)
+    
+
+    ##=============================================================================================
+    est$fitted.values <- rep(est$mu, T*N) + rep(est$beta.0, N) + rep(est$tau, each=T) + TR.X %*% est$beta
+    est$residuals     <- TR.Y - fitted.values
+    est$call          <- match.call()
+    class(est)        <- "phtt.kss" 
+    ##=============================================================================================
+    return(est)
   }
 
 
