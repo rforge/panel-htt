@@ -24,14 +24,14 @@ FUN.with.trans <- function(z, N, T, is.intercept,
 	           		Z  	<- z
 		 	}
              	liste <- list(
-				   "Tr"  = "none", # Name of *Tr*ansformation
+			   "Tr"  = "none", # Name of *Tr*ansformation
                            "I"   = ifelse(is.intercept, TRUE, FALSE), 
                            "ODM" = z,        # *O*rig. *D*ata *M*atrix
                            "TDM" = Z,        # *T*ransformed *D*ata *M*atrix
                            "TDV" = c(Z),     # *T*ransformed *D*ata *V*ector
-                           "TRm" = list(	   # *TR*ansformation *m*eans. 
+                           "TRm" = list(     # *TR*ansformation *m*eans. 
 						"OVc"  = const,	# *OV*erall *c*onstant
-						"InC"  = 0,		# *In*dividual *C*onstants
+						"InC"  = 0,	# *In*dividual *C*onstants
 						"TiVC" = 0)	# *Ti*m V*arying *C*onstants
 				   )    
                   return(liste)
@@ -47,7 +47,7 @@ FUN.with.trans <- function(z, N, T, is.intercept,
 	           		Z  	<- z - matrix(InC, T, N, byrow = TRUE)
 		 	}
              	liste <- list(
-				   "Tr"  = "individual", # Name of *Tr*ansformation
+			   "Tr"  = "individual", # Name of *Tr*ansformation
                            "I"   = ifelse(is.intercept, TRUE, FALSE), 
                            "ODM" = z,            # *O*rig. *D*ata *M*atrix
                            "TDM" = Z,            # *T*ransformed *D*ata *M*atrix
@@ -102,7 +102,8 @@ FUN.with.trans <- function(z, N, T, is.intercept,
            }
     )		 		
   }
-############################ cover
+
+## cover =================================================================================================
 WithTrans <- function(z, intercept= TRUE, heto.effect = c("none", "individual", "time", "twoways"))
   {
 	is.regular.panel(z, stopper = TRUE)
@@ -111,6 +112,8 @@ WithTrans <- function(z, intercept= TRUE, heto.effect = c("none", "individual", 
 	with.trans <- match.arg(heto.effect)
 	FUN.with.trans(z, N = nc, T = nr, is.intercept = intercept, effect = with.trans)
   }
+##========================================================================================================
+
 
 ############################ test
 
