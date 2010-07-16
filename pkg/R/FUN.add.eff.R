@@ -5,11 +5,11 @@ FUN.add.eff <- function(PF.obj, fAFactMod.obj, beta.hat)
       
     ##=========================================================================================================
     YInC  <- y.in.list$TRm$InC                                 ## *Y**In*dividual *C*onstants
-    YTiVC <- y.in.list$TRm$TiVC                                ## *Y*
-    YOVc  <- y.in.list$TRm$OVc                                 ## *Y*          
-    XInC  <- sapply(2:(P+1), function(i)PF.obj[[i]]$TRm$InC)   ## *X*
-    XTiVC <- sapply(2:(P+1), function(i)PF.obj[[i]]$TRm$TiVC)  ## *X*
-    XOVc  <- sapply(2:(P+1), function(i)PF.obj[[i]]$TRm$OVc)   ## *X*      
+    YTiVC <- y.in.list$TRm$TiVC                                ## *Y**Ti*me V*arying *C*onstants
+    YOVc  <- y.in.list$TRm$OVc                                 ## *Y**OV*erall *c*onstant          
+    XInC  <- sapply(2:(P+1), function(i)PF.obj[[i]]$TRm$InC)   ## *X**In*dividual *C*onstants
+    XTiVC <- sapply(2:(P+1), function(i)PF.obj[[i]]$TRm$TiVC)  ## *X**Ti*me V*arying *C*onstants
+    XOVc  <- sapply(2:(P+1), function(i)PF.obj[[i]]$TRm$OVc)   ## *X**OV*erall *c*onstant      
     ##=========================================================================================================
 
     
