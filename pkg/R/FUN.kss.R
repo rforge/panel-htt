@@ -3,10 +3,10 @@ FUN.kss <- function(formula, effect = c("time", "individual", "twoways", "none")
                     ...) # ...  = sign.vec= NULL
   {
     
-  # check effect.mode
+    ## check effect.mode
     effect <- match.arg(effect)
     
-  # extract data from formula
+    ## extract data from formula
     
     PF.obj <- FUN.Pformula(formula = formula, effect = effect)
     
@@ -22,15 +22,15 @@ FUN.kss <- function(formula, effect = c("time", "individual", "twoways", "none")
     TR.Y.mat <- matrix(TR.Y, T,     N)					        # (T x N)
     TR.X.mat <- matrix(TR.X, T, (N*P))						# (T x NP)
     
-  # smooth.splines with undersmoothing
-  # undersmoothing: 0.8 * GCV-value
+    ## smooth.splines with undersmoothing
+    ## undersmoothing: 0.8 * GCV-value
 
     spar.low       <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat, method = 3       )$spar * 0.8
     
     TR.Y.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat, spar   = spar.low)$ysmth       #(T x N)    
     TR.X.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat, spar   = spar.low)$ysmth       #(T x NP)
     
-  # calculate beta coefficents
+    ## calculate beta coefficents
 
     TR.Y.smth        <- matrix(TR.Y.mat.smth, nrow= (N*T), ncol = 1)	       # (TN x 1)
     TR.X.smth        <- matrix(TR.X.mat.smth, nrow= (N*T), ncol = P)	       # (TN x P)
@@ -47,21 +47,20 @@ FUN.kss <- function(formula, effect = c("time", "individual", "twoways", "none")
     com.slops.0 <- solve(bloc1)%*%bloc2					       # (Px1)
 
 
-  # calculate first step residuals
-
+    ## calculate first step residuals and estimate dimension of factor-structure
     Residu.mat    <- matrix((TR.Y - TR.X %*% com.slops.0), T, N)
 
     fAFactMod.obj <- fAFactMod(dat      = Residu.mat,
                                alpha    = alpha,
                                dim.crit = "KSS")
+    ##==========================================================================
 
- # reestimate beta
-
+    ## re-estimate beta=========================================================
     factor.stract <- tcrossprod(fAFactMod.obj$factors, fAFactMod.obj$loadings)  
     NEW.TR.Y.mat  <- TR.Y.mat - factor.stract
     NEW.TR.Y      <- as.vector(NEW.TR.Y.mat)
     beta          <- qr.solve(TR.X, NEW.TR.Y)
-    
+    ##==========================================================================
 
     AE <- FUN.add.eff(PF.obj        = PF.obj,
                       fAFactMod.obj = fAFactMod.obj,
