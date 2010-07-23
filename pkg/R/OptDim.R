@@ -326,6 +326,19 @@ tr2 <- c(tr.dim.zero.sqr, (sum(diag.Wsmt^2) - cumsum(diag.Wsmt^2)))
 
 delta     <- (Eval - (nc-1) * sig2.hat * tr1[1:max.rk])/(sig2.hat * sqrt(2*nc*tr2[1:max.rk]))
 thres     <- qnorm(1-alpha)
+#thres1    <- sqrt(2*log(min(nr, nc))) ###### default alpha  = NULL / falls alpha != 0 dann, werden beide beide berechnet
+#thres2     <- qnorm(1-alpha)
+#crit1      <- delta - thres1
+#crit2      <- delta - thres2
+#d.opt.KSS1 <- length(crit1[crit1 > 0])# minus 1, weil start bei dim = 0
+                                   # plus 1, weil nur die dim, die das crit nicht erfüllen.
+#d.opt.KSS2 <- length(crit2[crit2 > 0])
+#  result <- matrix(c(d.opt.KSS2, d.opt.KSS1), 1, 2)
+#  result  <- rbind(result1, result2)
+#  colnames(result) <- c("KSS.Crit1", "KSS.Crit2")
+#  print(result)
+
+
 crit      <- delta - thres
 d.opt.KSS <- length(crit[crit > 0])# minus 1, weil start bei dim = 0
                                    # plus 1, weil nur die dim, die das crit nicht erfüllen.
