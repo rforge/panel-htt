@@ -80,11 +80,10 @@ FUN.kss <- function(formula,
     est <- FUN.add.eff(PF.obj        = PF.obj,
                        fAFactMod.obj = fAFactMod.obj,
                        beta.hat      = beta)
-    
 
     ##=============================================================================================
-    est$fitted.values <- rep(est$mu, T*N) + rep(est$beta.0, N) + rep(est$tau, each=T) + TR.X %*% est$beta
-    est$residuals     <- TR.Y - fitted.values
+    est$fitted.values <- matrix(rep(est$mu, T*N) + rep(est$beta.0, N) + rep(est$tau, each=T) + TR.X %*% beta, T, N)
+    est$residuals     <- matrix(TR.Y, T, N) - est$fitted.values
     est$call          <- match.call()
     class(est)        <- "phtt.kss" 
     ##=============================================================================================
