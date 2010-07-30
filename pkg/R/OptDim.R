@@ -326,12 +326,12 @@ tr2 <- c(tr.dim.zero.sqr, (sum(diag.Wsmt^2) - cumsum(diag.Wsmt^2)))
 
 delta      <- (Eval - (nc-1) * sig2.hat * tr1[1:max.rk])/(sig2.hat * sqrt(2*nc*tr2[1:max.rk]))
 thres1     <- qnorm(1-alpha)
-thres2     <- sqrt(2*log(min(nr, nc))) ###### default alpha  = NULL / falls alpha != 0 dann, werden beide beide berechnet
+thres2     <- sqrt(2*log(min(nr, nc))) ## default alpha  = NULL / falls alpha != 0 dann, werden beide beide berechnet
 level2     <- 1 - pnorm(thres2)
 crit1      <- delta - thres1
 crit2      <- delta - thres2
-d.opt.KSS1 <- length(crit1[crit1 > 0])# minus 1, weil start bei dim = 0
-                                   # plus 1, weil nur die dim, die das crit nicht erfüllen.
+d.opt.KSS1 <- length(crit1[crit1 > 0]) ## minus 1, weil start bei dim = 0
+                                       ## plus  1, weil nur die dim, die das crit. nicht erfüllen.
 d.opt.KSS2 <- length(crit2[crit2 > 0])
 result1    <- c(d.opt.KSS1, w[d.opt.KSS1+1], sig2.hat, alpha)
 result2    <- c(d.opt.KSS2, w[d.opt.KSS2+1], sig2.hat, level2)
@@ -510,5 +510,7 @@ EstDim <- function(	Obj,
 	est.dim
 	}
 
-EstDim(dat, dim.criterion = "KSS.C2", spar= 3)
+
+## #### Test
+## EstDim(dat, dim.criterion = "KSS.C2", spar= 3)
 
