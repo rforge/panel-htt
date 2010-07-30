@@ -324,33 +324,34 @@ diag.Wsmt <- diag(crossprod(W.smth))
 tr1 <- c(tr.dim.zero,     (sum(diag.Wsmt)   - cumsum(diag.Wsmt)))
 tr2 <- c(tr.dim.zero.sqr, (sum(diag.Wsmt^2) - cumsum(diag.Wsmt^2)))
 
-delta     <- (Eval - (nc-1) * sig2.hat * tr1[1:max.rk])/(sig2.hat * sqrt(2*nc*tr2[1:max.rk]))
-thres     <- qnorm(1-alpha)
-#thres1    <- sqrt(2*log(min(nr, nc))) ###### default alpha  = NULL / falls alpha != 0 dann, werden beide beide berechnet
-#thres2     <- qnorm(1-alpha)
-#crit1      <- delta - thres1
-#crit2      <- delta - thres2
-#d.opt.KSS1 <- length(crit1[crit1 > 0])# minus 1, weil start bei dim = 0
+delta      <- (Eval - (nc-1) * sig2.hat * tr1[1:max.rk])/(sig2.hat * sqrt(2*nc*tr2[1:max.rk]))
+thres1     <- qnorm(1-alpha)
+thres2     <- sqrt(2*log(min(nr, nc))) ###### default alpha  = NULL / falls alpha != 0 dann, werden beide beide berechnet
+level2     <- 1 - pnorm(thres2)
+crit1      <- delta - thres1
+crit2      <- delta - thres2
+d.opt.KSS1 <- length(crit1[crit1 > 0])# minus 1, weil start bei dim = 0
                                    # plus 1, weil nur die dim, die das crit nicht erfüllen.
-#d.opt.KSS2 <- length(crit2[crit2 > 0])
-#  result <- matrix(c(d.opt.KSS2, d.opt.KSS1), 1, 2)
-#  result  <- rbind(result1, result2)
-#  colnames(result) <- c("KSS.Crit1", "KSS.Crit2")
-#  print(result)
+d.opt.KSS2 <- length(crit2[crit2 > 0])
+result1    <- c(d.opt.KSS1, w[d.opt.KSS1+1], sig2.hat, alpha)
+result2    <- c(d.opt.KSS2, w[d.opt.KSS2+1], sig2.hat, level2)
+result     <- rbind(result1, result2)
+Result     <- data.frame(I(c("KSS.C1", "KSS.C2")), result)
+colnames(Result) <- c("Criterion", "Optimal Dimension", "sd2.rest", "sd2.hat", "level")
+rownames(Result) <- NULL
 
+#crit      <- delta - thres
+#d.opt.KSS <- length(crit[crit > 0])# minus 1, weil start bei dim = 0
+#                                   # plus 1, weil nur die dim, die das crit nicht erfüllen.
 
-crit      <- delta - thres
-d.opt.KSS <- length(crit[crit > 0])# minus 1, weil start bei dim = 0
-                                   # plus 1, weil nur die dim, die das crit nicht erfüllen.
-
-  if(f.sd2==TRUE){
-    result <- data.frame(I("KSS"), matrix(c(d.opt.KSS, sig2.hat      , alpha), 1, 3))
-    colnames(result) <- c("Criterion", "Optimal Dimension", "sd2 (functional)", "alpha")
-  }else{
-    result <- data.frame(I("KSS"), matrix(c(d.opt.KSS, w[d.opt.KSS+1], alpha), 1, 3))
-    colnames(result) <- c("Criterion", "Optimal Dimension", "sd2 (classical)", "alpha")
-  }
-  return(result)
+#  if(f.sd2==TRUE){
+#    result <- data.frame(I("KSS"), matrix(c(d.opt.KSS, sig2.hat      , alpha), 1, 3))
+#    colnames(result) <- c("Criterion", "Optimal Dimension", "sd2(functional)", "alpha")
+#  }else{
+#    result <- data.frame(I("KSS"), matrix(c(d.opt.KSS, w[d.opt.KSS+1], alpha), 1, 3))
+#    colnames(result) <- c("Criterion", "Optimal Dimension", "sd2 (classical)", "alpha")
+#  }
+return(Result)
 }
 
 ## KSS:OptDim() =====================================================================================
@@ -411,26 +412,38 @@ KSS.OptDim <- function(Obj, sig2.hat = NULL, alpha = 0.01, spar.low = NULL){
 
 ############## compare  ######################################################################################
 
-OptDim <- function(Obj, criteria.of = c("Bai", "Onatski","KSS", "RH")
-				, d.max = NULL, sig2.hat=NULL, alpha= 0.05
-				, spar.low = NULL){
+OptDim.default <- function(Obj, criteria.of = c("Bai","KSS", "Onatski", "RH")
+				, d.max = NULL, sig2.hat=NULL, level= 0.05
+				, spar = NULL){
 	criteria.of <- match.arg(criteria.of, several.ok = TRUE)
-	FUN.crit <- function(criteria.of, d.max, sig2.hat, alpha, spar) {
+	FUN.crit <- function(criteria.of, d.max, sig2.hat, level, spar) {
 		switch(criteria.of,
 		Bai = { B.OptDim(Obj = Obj, d.max = d.max, sig2.hat=NULL)
 			},
-		Onatski = {O.OptDim(Obj = Obj, d.max  = d.max)
+		KSS = { KSS.OptDim(Obj = Obj, sig2.hat = sig2.hat, alpha = level, spar = spar)
 			},
-		KSS = { KSS.OptDim(Obj = Obj, sig2.hat = sig2.hat, alpha = alpha, spar.low = spar.low)
+		Onatski = {O.OptDim(Obj = Obj, d.max  = d.max)
 			},
 		RH = { RH.OptDim(Obj = Obj, d.max = d.max)
 			})
 		}
 
 	structure(sapply(criteria.of, FUN.crit, d.max = d.max, sig2.hat=NULL
-		, alpha= 0.05, spar = 0.005, simplify = FALSE)
+		, level= level, spar = spar, simplify = FALSE)
 		, class = "OptDim")
 
+	}
+
+OptDim <- function(x,...) UseMethod("OptDim")
+
+summary.OptDim <- function(x, ...)
+	{
+	CritNames <- c(x$Bai[,1], x$KSS[, 1], x$Onatski[,1], x$RH[, 1])
+	Critdim   <- c(x$Bai[,2], x$KSS[, 2], x$Onatski[,2], x$RH[, 2])
+	CritDim   <- matrix(Critdim, 1, length(Critdim))
+	colnames(CritDim) <- CritNames
+	rownames(CritDim) <- " "
+	return(CritDim)
 	}
 
 ## #### Test
@@ -442,5 +455,60 @@ OptDim <- function(Obj, criteria.of = c("Bai", "Onatski","KSS", "RH")
 
 ## pcaObj <- svd.pca(dat)
 ## Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
-## OptDim(Obj)
+## OptDim(dat)
+#################################################
+
+EstDim <- function(	Obj, 
+				dim.criterion = c("PC1", "PC2", "PC3",
+							"IC1", "IC2", "IC3",
+						      "IPC1","IPC2", "IPC3",
+							"KSS.C1", "KSS.C2",
+                                          "ED",  "ER",  "GR"),
+				d.max,
+				sig2.hat,
+				level = 0.01,
+				spar
+			)
+	{
+  ## missing parameters
+
+  	 if(missing(d.max))      d.max       <- NULL
+ 	 if(missing(sig2.hat))   sig2.hat    <- NULL
+  	 if(missing(spar))   	 spar    <- NULL
+
+  ## estimation 
+	 dim.criterion <- match.arg(dim.criterion)
+ 	 est.dim       <- switch(dim.criterion,
+                          PC1  = B.OptDim(Obj, criteria = c("PC1")
+                            , d.max = d.max, sig2.hat = sig2.hat),
+                          PC2  = B.OptDim(Obj, criteria = c("PC2")
+                            , d.max = d.max, sig2.hat = sig2.hat),
+                          PC3  = B.OptDim(Obj, criteria = c("PC3")
+                            , d.max = d.max, sig2.hat = sig2.hat),
+                          IC1  = B.OptDim(Obj, criteria = c("IC1")
+                            , d.max = d.max, sig2.hat = sig2.hat),
+                          IC2  = B.OptDim(Obj, criteria = c("IC2")
+                            , d.max = d.max, sig2.hat = sig2.hat),
+                          IC3  = B.OptDim(Obj, criteria = c("IC3")
+                            , d.max = d.max, sig2.hat = sig2.hat),
+                          IPC1 = B.OptDim(Obj, criteria = c("IPC1")
+                            , d.max = d.max, sig2.hat = sig2.hat),
+                          IPC2 = B.OptDim(Obj, criteria = c("IPC2")
+                            , d.max = d.max, sig2.hat = sig2.hat),
+                          IPC3 = B.OptDim(Obj, criteria = c("IPC3")
+                            , d.max = d.max, sig2.hat = sig2.hat),
+                          ED   = O.OptDim(Obj, d.max = d.max),				
+                          ER   = RH.OptDim(Obj, criteria = c("ER")
+                            , d.max = d.max),
+                          GR   = RH.OptDim(Obj, criteria = c("GR")
+                            , d.max = d.max),
+                          KSS.C1  = KSS.OptDim(Obj, sig2.hat = sig2.hat,
+                            alpha=level, spar.low= spar)[1,],
+                          KSS.C2  = KSS.OptDim(Obj, sig2.hat = sig2.hat,
+                            alpha=level, spar.low= spar)[2,],
+                          )
+	est.dim
+	}
+
+EstDim(dat, dim.criterion = "KSS.C2", spar= 3)
 
