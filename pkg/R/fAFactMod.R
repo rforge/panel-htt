@@ -1,29 +1,29 @@
 ######################################################################
-
-fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
-                                             "IC2", "IC3", "IPC1","IPC2", "IPC3",
-                                             "ED",  "ER",  "GR"),
-                      factor.dim ,
-                      d.max,
+## rm(list=ls())
+fAFactMod <- function(dat, demean   = TRUE,
+                      add.effects   = c("none", "individual", "time", "twoways"),
+                      dim.criterion = c("KSS.C1", "KSS.C2",
+                        "PC1", "PC2", "PC3", "IC1", "IC2", "IC3", "IPC1", "IPC2", "IPC3", "ED", "ER", "GR"),
+                      factor.dim, d.max, sig2.hat, spar.low,
                       alpha         = 0.01,
-                      spar.low,
-                      sig2.hat,
-                      restrict.mode = c("restrict.factors","restrict.loadings"), 
-                      allow.dual    = TRUE)
+                      restrict.mode = c("restrict.factors","restrict.loadings"), allow.dual = TRUE)  
 {
-  
-  nr   <- nrow(dat)
-  nc   <- ncol(dat)
+  ## checks and preparations
+  is.regular.panel(dat, stopper = TRUE) 
+  nr         <- nrow(dat)
+  nc         <- ncol(dat)
 
-  dim.criterion <- match.arg(dim.criterion)
-  
+  ## data-transformation
+  with.trans <- match.arg(add.effects)
+  dat.trans  <- FUN.with.trans(dat, N = nc, T = nr, is.intercept = demean, effect = with.trans)
+  dat        <- dat.trans$TDM
+
   ## missing parameters
-
   if(missing(factor.dim)) factor.dim  <- NULL
   if(missing(d.max))      d.max       <- NULL
   if(missing(sig2.hat))   sig2.hat    <- NULL
   if(missing(spar.low))   spar.low    <- NULL
-
+  
   ## fpca.fit (within fpca.fit(): "dat" is (under)smoothed)
 
   fpca.fit.obj <- fpca.fit(dat           = dat,
@@ -31,54 +31,33 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
                            given.d       = factor.dim,  # if NULL: max.rk <- ifelse(neglect.neg.ev,nbr.pos.ev, length(Eval))
                            restrict.mode = restrict.mode,
                            allow.dual    = allow.dual) 
- 
-        
-  # dimension selection
-  est.dim       <- switch(dim.criterion,
-                          PC1  = B.OptDim(fpca.fit.obj, criteria = c("PC1")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          PC2  = B.OptDim(fpca.fit.obj, criteria = c("PC2")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          PC3  = B.OptDim(fpca.fit.obj, criteria = c("PC3")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          IC1  = B.OptDim(fpca.fit.obj, criteria = c("IC1")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          IC2  = B.OptDim(fpca.fit.obj, criteria = c("IC2")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          IC3  = B.OptDim(fpca.fit.obj, criteria = c("IC3")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          IPC1 = B.OptDim(fpca.fit.obj, criteria = c("IPC1")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          IPC2 = B.OptDim(fpca.fit.obj, criteria = c("IPC2")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          IPC3 = B.OptDim(fpca.fit.obj, criteria = c("IPC3")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          ED   = O.OptDim(fpca.fit.obj, d.max = d.max),				
-                          ER   = RH.OptDim(fpca.fit.obj, criteria = c("ER")
-                            , d.max = d.max),
-                          GR   = RH.OptDim(fpca.fit.obj, criteria = c("GR")
-                            , d.max = d.max),
-                          KSS  = KSS.OptDim(fpca.fit.obj, sig2.hat = sig2.hat,
-                            alpha=alpha)
-                          )
-  opt.d  <- est.dim[1,2]
-  used.d <- ifelse(is.null(factor.dim), opt.d, factor.dim)
+
+  
+  ## dimension selection
+  dim.criterion <- match.arg(dim.criterion)
+  est.dim       <- EstDim(Obj           = dat,
+                          dim.criterion = "KSS.C2",
+                          d.max         = d.max,
+                          sig2.hat      = sig2.hat,
+                          level         = alpha, spar= 3)
+  
+  opt.d         <- est.dim[1,2]
+  used.d        <- ifelse(is.null(factor.dim), opt.d, factor.dim)
 
   ## factors and loadings parameters
-
   if(used.d!=0){
     factors  <- fpca.fit.obj$factors[,  1:used.d, drop= FALSE]
     loadings <- fpca.fit.obj$loadings[, 1:used.d, drop= FALSE]
     dat.fit  <- tcrossprod(factors, loadings)
     sd2      <- fpca.fit.obj$Sd2[used.d+1]
     
-    result        <- list(fitted.values = dat.fit,
-                          factors       = factors, 
-                          loadings      = loadings,
-                          sd2           = sd2,
-                          given.fdim    = factor.dim,
-                          optimal.fdim  = opt.d,
-                          used.fdim     = used.d)
+    result   <- list(fitted.values = dat.fit,
+                     factors       = factors, 
+                     loadings      = loadings,
+                     sd2           = sd2,
+                     given.fdim    = factor.dim,
+                     optimal.fdim  = opt.d,
+                     used.fdim     = used.d)
   }
   else{
     factors <- matrix(0, nr, 1)
@@ -86,13 +65,27 @@ fAFactMod <- function(dat, dim.criterion = c("KSS", "PC1", "PC2", "PC3",  "IC1",
     dat.fit <- tcrossprod(factors, scores)
     sd2     <- fpca.fit.obj$Sd2[used.d+1]
     
-    result       <- list(fitted.values = dat.fit,
-                         factors       = factors,
-                         loadings      = loadings,
-                         resid.sd2     = sd2,
-                         given.fdim    = factor.dim, 
-                         optimal.fdim  = opt.d,
-                         used.fdim     = used.d)
+    result  <- list(fitted.values = dat.fit,
+                    factors       = factors,
+                    loadings      = loadings,
+                    resid.sd2     = sd2,
+                    given.fdim    = factor.dim, 
+                    optimal.fdim  = opt.d,
+                    used.fdim     = used.d)
   }
   return(result)
 }
+
+## ## TEST: =========================================================================================================
+## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/OptDim.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/pca.fit.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/fpca.fit.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/FUN.with.trans.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/Package_Version_31_3_2010/Generate_FPCAData.R")
+## # create data for FPCA
+## library(pspline)
+## dat        <- sim.3dim.fpca.equi(T = 100, N = 50, dim=4, sig.error = 0.07*(1/N^{0.25}), class = "matrix")
+## OptDim.obj <- OptDim(dat, criteria.of="KSS")
+## OptDim.obj
+## fAF.obj    <- fAFactMod(dat, dim.criterion="KSS.C1")
+## names(fAF.obj)
