@@ -187,17 +187,16 @@ plot.summary.FUN.kss <- function(x,...){
           xlab="Time",ylab="", type="l",...)
   par(mfrow=c(1,1))
 }
-
 ## ## ================================================================================================
 ## ## TEST: ==========================================================================================
-## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/OptDim.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/pca.fit.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/fAFactMod.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/FUN.Pformula.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/FUN.add.eff.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/fpca.fit.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/FUN.with.trans.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/Package_Version_31_3_2010/Generate_FPCAData.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/OptDim.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/pca.fit.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fAFactMod.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/FUN.Pformula.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/FUN.add.eff.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fpca.fit.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/FUN.with.trans.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/Package_Version_31_3_2010/Generate_FPCAData.R")
 ## # create data for FPCA
 ## library(pspline)
 ## dat      <- sim.3dim.fpca.equi(T = 100, N = 50, dim=4, sig.error = 0.07*(1/N^{0.25}), class = "matrix")

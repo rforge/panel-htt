@@ -297,6 +297,7 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, d.max = NULL){
   P             <- diag(1, nr) - tcrossprod(evec)
   pca.fit.p.obj <- eigen(P)
   W             <- pca.fit.p.obj[[2]]
+  ## is left out, since P.E[1:T]==rep(1,T)
   P.E           <- pca.fit.p.obj[[1]]
 
   W.smth  <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = W,               spar = spar.low, method = 1)$ysmth
@@ -444,17 +445,6 @@ summary.OptDim <- function(x, ...)
 	return(CritDim)
 	}
 
-## #### Test
-## Obj <- dat
-## OptDim(Obj)
-
-## Obj <- svd.pca(dat)
-## OptDim(Obj, d.max = 10)
-
-## pcaObj <- svd.pca(dat)
-## Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
-## OptDim(dat)
-#################################################
 
 EstDim <- function(	Obj, 
 				dim.criterion = c("PC1", "PC2", "PC3",
@@ -509,3 +499,19 @@ EstDim <- function(	Obj,
 	}
 
 
+## #### Test
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/Package_Version_31_3_2010/Generate_FPCAData.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fpca.fit.R")
+## ## create data for FPCA
+## library(pspline)
+## dat      <- sim.3dim.fpca.equi(T = 100, N = 50, dim=4, sig.error = 0.07*(1/N^{0.25}), class = "matrix")
+## Obj <- dat
+## OptDim(Obj, criteria.of = "KSS")
+
+## Obj <- svd.pca(dat)
+## OptDim(Obj, d.max = 10)
+
+## pcaObj <- svd.pca(dat)
+## Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
+## OptDim(dat)
+#################################################
