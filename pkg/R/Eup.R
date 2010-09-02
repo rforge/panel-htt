@@ -64,7 +64,7 @@ FUN.Eup <- function(dat.matrix, dat.dim, double.iteration = double.iteration, di
 		w.0 <- y - tcrossprod(x, t(beta.0))
 
   	#(0)PCA.0: write w.0 in a matrix form 
-		W.0 <- matrix(w.0, T, N)
+		W.0 <- matrix(w.0, nr, nc)
 
  	#(0)PCA.0: PCA.0 computation, OptDim.0 and y.fitted
 		PCA.0    <- svd.pca(W.0, given.d=factor.dim)
@@ -308,7 +308,7 @@ Eup.inference <- function(dat.matrix, dat.dim, used.dim, beta.Eup
 
 ## write the x matrices in a list: each regressor is written in a list component
 	X.mat.list <- NULL
-	for(p in 1:P) X.mat.list[[p]] <- matrix(x[,p], T, N)
+	for(p in 1:P) X.mat.list[[p]] <- matrix(x[,p], nr, nc)
 
   # Z_i = M * X_i - sum{M * X_k*a_ik}/n
 	Z.list	<- sapply (X.mat.list, function(X) M.F %*% X %*% M.A , simplify = FALSE)
@@ -317,7 +317,7 @@ Eup.inference <- function(dat.matrix, dat.dim, used.dim, beta.Eup
 	Z		<- sapply (Z.list, function(Z) c(Z), simplify = TRUE)
 	ZZ     <- crossprod(Z)/(nr*nc)
 	inv.ZZ <- solve(ZZ)
-	sig2.hat <- sum(diag( crossprod(res)))/(N*T - (N+T)*d - p + 1)
+	sig2.hat <- sum(diag( crossprod(res)))/(nr*nc - (nr+nc)*d - p + 1)
 
 	asy.var <- (inv.ZZ * sig2.hat)/(nr*nc)
 	mpp <- sqrt(diag(asy.var))
