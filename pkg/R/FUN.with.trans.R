@@ -15,6 +15,9 @@ FUN.with.trans <- function(z, N, T, is.intercept,
     with.trans <- match.arg(effect)
     switch(with.trans	
            , none = {
+             ## falls der user im argument "formula" ein intercept verwendet,
+             ## dann wird hier die *OV*erall constant geschätz.
+             ## Wegen argument "none" jedoch nicht abgezogen
              	if(is.intercept){
 				const <- mean(z)
 				Z  	<- z - const

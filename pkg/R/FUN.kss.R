@@ -120,6 +120,139 @@ FUN.kss.default <- function(formula,
     return(est)
   }
 
+## Model-Test (Kneip Sickles Song 2009 Section 3.4) ===============================================
+KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, d.max = NULL){
+  # kann direkt mit fsvd.pca-objekten arbeiten
+  nr       <- obj$nr
+  nc       <- obj$nc
+  spar.low <- obj$spar.low
+  dat      <- obj$Q.orig
+  dat.smth <- obj$Q.orig.smth
+  w        <- obj$V.d/(nr*nc)  
+  evec     <- obj$L
+  Eval     <- obj$V.d
+  max.rk   <- length(Eval)
+
+### calculate traces
+
+  I.smth1 <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = diag(rep(1,nr)), spar = spar.low, method = 1)$ysmth
+  I.smth2 <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = I.smth1,         spar = spar.low, method = 1)$ysmth
+  tr.dim.zero     <- sum(diag(I.smth2))
+  tr.dim.zero.sqr <- sum(diag(I.smth2)^2)
+
+  P             <- diag(1, nr) - tcrossprod(evec)
+  pca.fit.p.obj <- eigen(P)
+  W             <- pca.fit.p.obj[[2]]
+  ## is left out, since P.E[1:T]==rep(1,T)
+  P.E           <- pca.fit.p.obj[[1]]
+
+  W.smth  <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = W,               spar = spar.low, method = 1)$ysmth
+  I.smth1 <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = diag(rep(1,nr)), spar = spar.low, method = 1)$ysmth
+  I.smth2 <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = I.smth1,         spar = spar.low, method = 1)$ysmth
+  tr.dim.zero     <- sum(diag(I.smth2))
+  tr.dim.zero.sqr <- sum(diag(I.smth2)^2)
+
+  diag.Wsmt <- diag(crossprod(W.smth))
+
+  tr1 <- c(tr.dim.zero,     (sum(diag.Wsmt)   - cumsum(diag.Wsmt)))
+  tr2 <- c(tr.dim.zero.sqr, (sum(diag.Wsmt^2) - cumsum(diag.Wsmt^2)))
+
+
+### determine / calculate sig2.hat
+
+  if(is.null(sig2.hat)){
+	# estimation of sig2.hat: Classical, if one wants to use the KSS-Criterion for non-smoothed dat
+	if(is.null(dat.smth)| !is.null(d.max)){
+  		if(is.null(d.max)) d.max <- round(sqrt(min(nr, nc)))
+		sig2.hat <- w[d.max+1]*(nc*nr)/(nr*nc - (nr + nc)*d.max - 1)
+	}
+	# estimation of sig2.hat: Variance-Estimator see Section 3.4 (KSS 2009) 
+	else{
+		tr		<- (nr + sum(diag(I.smth2)) - 2*sum(diag(I.smth1)))
+		sig2.hat	<- sum((dat-dat.smth)^2)/((nc-1)*tr)
+#	rice np.variance estimator
+#		sig2.hat	<- sum(diff(dat)^2)/(2*(nr - 1)*nc)	
+	}
+
+  }
+#  print(sig2.hat)
+
+### calculat the criteria fo all dimensions
+  delta      <- (Eval - (nc-1) * sig2.hat * tr1[1:max.rk])/(sig2.hat * sqrt(2*nc*tr2[1:max.rk]))
+  thres1     <- qnorm(1-alpha)
+  thres2     <- sqrt(2*log(min(nr, nc))) ###### default alpha  = NULL / falls alpha != 0 dann, werden beide beide berechnet
+  level2     <- 1 - pnorm(thres2)
+  crit1      <- delta - thres1
+  crit2      <- delta - thres2
+  d.opt.KSS1 <- length(crit1[crit1 > 0])# minus 1, weil start bei dim = 0
+                                   # plus 1, weil nur die dim, die das crit nicht erfüllen.
+  d.opt.KSS2 <- length(crit2[crit2 > 0])
+  result1    <- c(d.opt.KSS1, w[d.opt.KSS1+1], sig2.hat, alpha)
+  result2    <- c(d.opt.KSS2, w[d.opt.KSS2+1], sig2.hat, level2)
+  result     <- rbind(result1, result2)
+  Result     <- data.frame(I(c("KSS.C1", "KSS.C2")), result)
+  colnames(Result) <- c("Criterion", "Optimal Dimension", "sd2.rest", "sd2.hat", "level")
+  rownames(Result) <- NULL
+
+return(Result)
+}
+
+## KSS:OptDim() =====================================================================================
+## Called by: fAFactMod()
+## Calls    : KSS.dim.opt()
+##==========================
+
+KSS.OptDim <- function(Obj, criteria = c("KSS.C1", "KSS.C2"),sig2.hat = NULL, alpha = 0.01
+			, spar.low = NULL, d.max = NULL){
+  ## what is Obj?
+  if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca"){
+    if(class(Obj)=="fsvd.pca") obj <- Obj
+    else{
+      ## Liste um spar.low und Q.orig.smth erweitern:
+      nr          <- Obj$nr
+      nc          <- Obj$nc
+      spar.low    <- 0          
+      Q.orig      <- Obj$Q.orig
+      Q.orig.smth <- NULL
+      L           <- Obj$L
+      V.d         <- Obj$V.d  
+      obj <- list(nr = nr, nc = nc, spar.low = spar.low, Q.orig = Q.orig,
+                  Q.orig.smth = Q.orig.smth, L = L, V.d = V.d)
+    }    
+  }
+  if(class(Obj)=="pca.fit"|class(Obj)=="fpca.fit"){
+    if(class(Obj)=="fpca.fit"){
+      ## umbenennungen zu (f)svd.pca-Elementen
+      nr          <- Obj$data.dim[1]
+      nc          <- Obj$data.dim[2]
+      spar.low    <- Obj$spar.low
+      Q.orig      <- Obj$orig.values
+      Q.orig.smth <- Obj$orig.values.smth
+      L           <- Obj$L
+      V.d         <- Obj$Sd2*(nr*nc)      
+      obj <- list(nr = nr, nc = nc, spar.low = spar.low, Q.orig = Q.orig,
+                  Q.orig.smth = Q.orig.smth, L = L, V.d = V.d)
+    }else{
+      nr          <- Obj$data.dim[1]
+      nc          <- Obj$data.dim[2]
+      spar.low    <- 0
+      Q.orig      <- Obj$orig.values
+      Q.orig.smth <- NULL
+      L           <- Obj$L
+      V.d         <- Obj$Sd2*(nr*nc)     
+      obj <- list(nr = nr, nc = nc, spar.low = spar.low, Q.orig = Q.orig,
+                  Q.orig.smth = Q.orig.smth, L = L, V.d = V.d)
+    } 
+  }else{
+    if(is.matrix(Obj)) obj <- fsvd.pca(Obj, spar.low = spar.low)
+  }
+  result   <- KSS.dim.opt(obj, sig2.hat = sig2.hat, alpha = alpha, d.max = d.max)
+  criteria <- match.arg(criteria, several.ok = TRUE)
+  return(result[result[,1] %in% criteria, ]) 
+  return(result)
+}
+##===========================================================================================================
+
 
 ## Methods ========================================================================================
 
