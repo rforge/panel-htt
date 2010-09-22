@@ -1,3 +1,18 @@
+#########################################################################################
+## FUN.add.eff
+## Aim: Calculates Additive effects and Intercept(function)
+##
+## Takes:
+## 1)PF.obj        (return-object of FUN.Pformula(): Original data and Transformed Data)
+## 2)fAFactMod.obj (return-object of fAFactMod())
+## 3)beta.hat      ((re-)estimated beta coeficients)
+##
+## Gives a list with:
+## mu     (Overallmean)
+## tau    (individal effects)
+## beta.0 (intercept-function)
+##########################################################################################
+
 FUN.add.eff <- function(PF.obj, fAFactMod.obj, beta.hat)
   {
     P         <- length(PF.obj)-1
