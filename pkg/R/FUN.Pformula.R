@@ -3,10 +3,13 @@ FUN.Pformula <- function(formula, effect)
     data.fra <- model.frame(formula)
     dat.term <- attr(data.fra, "terms")	
 
-  # construct data from formula
-    y.matrix <- model.response(data.fra, "numeric")  # dim(response)=TxN and dim(y.matrix)=TxN:
+    ## Construct data from formula
+    ## dim(response)=TxN == dim(y.matrix)=TxN:
+    y.matrix <- model.response(data.fra, "numeric")  
 
-  # check the presence of a 'intercept' in the formula
+    ## 1)Extract Regressors
+    ## 2)Check the presence of a 'intercept' in the formula
+    ## 3)And built the x.all.matrix (TxN*P)
 
     regressors.mat <- model.matrix(dat.term, data.fra)
     is.intercept   <- ifelse(colnames(regressors.mat)[1] == "(Intercept)", TRUE, FALSE)
@@ -16,16 +19,20 @@ FUN.Pformula <- function(formula, effect)
 
     if(!is.intercept & effect=="twoways"){stop("Effects >> twoways << need an Intercept!")}
     
-  # dimension parameters
+    ## Dimension parameters
 
     N  <- ncol(y.matrix)
     T  <- nrow(y.matrix)
     NT <- N*T
     P  <- as.integer(ncol(x.all.matrix)/N)
 
-  # write the intercept and the 'P' regressors in a list, where each component contains one of p+1 T x N matrices
+    ## Write the response, Y, and the 'p' regressors, X, in a list,
+    ## where each component contains one of p+1 TxN-Matrices
 
     data.all.mat  <- cbind(y.matrix, x.all.matrix)
+    
+    ## New of Object: From Matrix data.all.mat a List model.in.list 
+
     model.in.list <- lapply(1:(P+1), function(z, i) z[,seq((i-1)*N+1,i*N)], z = data.all.mat)
     data.in.list  <- sapply(model.in.list,
                             function(z) FUN.with.trans(z,
