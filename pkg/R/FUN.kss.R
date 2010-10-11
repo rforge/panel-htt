@@ -22,7 +22,7 @@ FUN.kss.default <- function(formula,
     dim.crit <- match.arg(dim.crit)
     
     ## extract data from formula
-    names  <- names(model.frame(Y~X1+X2))
+    names  <- names(model.frame(formula))
     PF.obj <- FUN.Pformula(formula = formula, effect = effect)
     
     N <- ncol(PF.obj[[1]]$ODM)

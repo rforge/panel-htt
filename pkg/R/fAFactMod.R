@@ -36,7 +36,7 @@ fAFactMod <- function(dat, demean   = TRUE,
   ## dimension selection
   dim.criterion <- match.arg(dim.criterion)
   est.dim       <- EstDim(Obj           = dat,
-                          dim.criterion = "KSS.C2",
+                          dim.criterion = dim.criterion,
                           d.max         = d.max,
                           sig2.hat      = sig2.hat,
                           level         = alpha, spar= 3)

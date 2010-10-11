@@ -9,6 +9,10 @@
 #    Restriktionen für die Identifikation.
 #    Also für 'Twoways' das argument 'is.intercept will be ingonred'
 
+# To Do: Evtl sollte man Einige listen-Componenten mit einer "drop=FALSE" variante ausstatten,
+# da z.B. ODM bei P=1 ein vector ist und keine matrix! 
+
+
 FUN.with.trans <- function(z, N, T, is.intercept,
                            effect = c("none", "individual", "time", "twoways")) 
   {

@@ -1,10 +1,29 @@
+#=============================================================================
+# FUN.Pformula calls FUN.with.trans
+#
+# Takes: fomula = a formula-object
+#        effect = character-object ("none", "time", "individual", "twoways")
+# Gives: A List with 2 components
+#        (first for depend. variable second for indep. variables):
+#        Each Component is a List with 6 Components:
+#        1. Tr  (one of "none", "time", "individual", "twoways")
+#        2. I   (TRUE, if intercept, FALSE, if not)                        
+#        3. ODM (Original Data-Matrix)
+#        4. TDM (Transformed Data-Matrix)
+#        5. TDV (TDM as a vector)
+#        6. TRm is a list with 3 Components:
+#           1. OVc  (Overall constant)
+#           2. InC  (Individual constants)
+#           3. TiVC (Time variaing constants)
+#==============================================================================
+
 FUN.Pformula <- function(formula, effect)
   {
     data.fra <- model.frame(formula)
     dat.term <- attr(data.fra, "terms")	
 
     ## Construct data from formula
-    ## dim(response)=TxN == dim(y.matrix)=TxN:
+    ## dim(response) == TxN == dim(y.matrix) == TxN:
     y.matrix <- model.response(data.fra, "numeric")  
 
     ## 1)Extract Regressors
