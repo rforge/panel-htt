@@ -331,23 +331,28 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, d.max = NULL){
   }
 #  print(sig2.hat)
 
-### calculat the criteria fo all dimensions
-  delta      <- (Eval - (nc-1) * sig2.hat * tr1[1:max.rk])/(sig2.hat * sqrt(2*nc*tr2[1:max.rk]))
-  thres1     <- qnorm(1-alpha)
-  thres2     <- sqrt(2*log(min(nr, nc))) ###### default alpha  = NULL / falls alpha != 0 dann, werden beide beide berechnet
-  level2     <- 1 - pnorm(thres2)
-  crit1      <- delta - thres1
-  crit2      <- delta - thres2
-  d.opt.KSS1 <- length(crit1[crit1 > 0])# minus 1, weil start bei dim = 0
-                                   # plus 1, weil nur die dim, die das crit nicht erfüllen.
-  d.opt.KSS2 <- length(crit2[crit2 > 0])
-  result1    <- c(d.opt.KSS1, w[d.opt.KSS1+1], sig2.hat, alpha)
-  result2    <- c(d.opt.KSS2, w[d.opt.KSS2+1], sig2.hat, level2)
-  result     <- rbind(result1, result2)
-  Result     <- data.frame(I(c("KSS.C1", "KSS.C2")), result)
-  colnames(Result) <- c("Criterion", "Optimal Dimension", "sd2.rest", "sd2.hat", "level")
-  rownames(Result) <- NULL
+## calculate the criteria of all dimensions:  
+  delta       <- (Eval - (nc-1) * sig2.hat * tr1[1:max.rk])/(sig2.hat * sqrt(2*nc*tr2[1:max.rk]))
+  thres1      <- qnorm(1-alpha)
+  thres2      <- sqrt(2*log(min(nr, nc)))# default alpha = NULL / falls alpha != 0 dann, werden beide beide berechnet
+  level2      <- 1 - pnorm(thres2)
+  crit1       <- delta - thres1
+  crit2       <- delta - thres2
+  d.opt.KSS1  <- length(crit1[crit1 > 0])# minus 1, weil start bei dim = 0
+                                        # plus  1, weil nur die dim, die das crit nicht erfüllen.
+  d.opt.KSS2  <- length(crit2[crit2 > 0])
+  result1     <- c(d.opt.KSS1, w[d.opt.KSS1+1], sig2.hat, alpha )
+  result2     <- c(d.opt.KSS2, w[d.opt.KSS2+1], sig2.hat, level2)# level2: p.value of thres2 (thres2: alternativ crit.value)
 
+  result      <- rbind(result1, result2)
+  Result      <- vector("list", 2)
+  Result[[1]] <- data.frame(I(c("KSS.C1", "KSS.C2")), result)
+  colnames(Result[[1]]) <- c("Criterion", "Optimal Dimension", "sd2.rest", "sd2.hat", "level")
+  rownames(Result[[1]]) <- c("KSS.1", "KSS.2")
+##   Result[[2]] <- c(round(delta[d.opt.KSS1],2), round(1-pnorm(delta[d.opt.KSS1]), 2), round(thres1, 2), round(alpha, 2))
+##   names(Result[[2]]) <- c("Test.Stat", "p.value", "crit.value", "sig.level")
+  Result[[2]] <- list(Test.Stat  = round(delta[d.opt.KSS1],2), p.value = round(1-pnorm(delta[d.opt.KSS1]), 2),
+                      crit.value = round(thres1, 2), sig.level = round(alpha, 2))
 return(Result)
 }
 
@@ -402,8 +407,10 @@ KSS.OptDim <- function(Obj, criteria = c("KSS.C1", "KSS.C2"),sig2.hat = NULL, al
   }
   result   <- KSS.dim.opt(obj, sig2.hat = sig2.hat, alpha = alpha, d.max = d.max)
   criteria <- match.arg(criteria, several.ok = TRUE)
-  return(result[result[,1] %in% criteria, ]) 
-  return(result)
+  Result   <- vector("list", 2)
+  Result[[1]]   <- result[[1]][result[[1]][,1] %in% criteria, ]
+  Result[[2]]   <- result[[2]]
+  return(Result)
 }
 ##===========================================================================================================
 
@@ -419,7 +426,7 @@ OptDim.default <- function(Obj, criteria.of = c("Bai","KSS", "Onatski", "RH")
 		switch(criteria.of,
 		Bai = { B.OptDim(Obj = Obj, d.max = d.max, sig2.hat=NULL)
 			},
-		KSS = { KSS.OptDim(Obj = Obj, sig2.hat = sig2.hat, alpha = level, spar = spar)
+		KSS = { KSS.OptDim(Obj = Obj, sig2.hat = sig2.hat, alpha = level, spar = spar)[[1]]
 			},
 		Onatski = {O.OptDim(Obj = Obj, d.max  = d.max)
 			},
@@ -499,19 +506,19 @@ EstDim <- function(	Obj,
 	}
 
 
-## #### Test
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/Package_Version_31_3_2010/Generate_FPCAData.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fpca.fit.R")
-## ## create data for FPCA
-## library(pspline)
-## dat      <- sim.3dim.fpca.equi(T = 100, N = 50, dim=4, sig.error = 0.07*(1/N^{0.25}), class = "matrix")
-## Obj <- dat
-## OptDim(Obj, criteria.of = "KSS")
+#### Test
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/Package_Version_31_3_2010/Generate_FPCAData.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fpca.fit.R")
+## create data for FPCA
+library(pspline)
+dat      <- sim.3dim.fpca.equi(T = 100, N = 50, dim=4, sig.error = 0.07*(1/N^{0.25}), class = "matrix")
+Obj <- dat
+OptDim(Obj, criteria.of = "KSS")
 
-## Obj <- svd.pca(dat)
-## OptDim(Obj, d.max = 10)
+Obj <- svd.pca(dat)
+OptDim(Obj, d.max = 10)
 
-## pcaObj <- svd.pca(dat)
-## Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
-## OptDim(dat)
+pcaObj <- svd.pca(dat)
+Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
+OptDim(dat)
 #################################################
