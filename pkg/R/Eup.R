@@ -174,10 +174,10 @@ FUN.Eup <- function(dat.matrix, dat.dim, double.iteration = double.iteration, di
 #	     to reduce the number of computation (desadvantege: convergence to a local a local optimum).
 #	     this argument will be neglected if factor.dim is specified.
 # Output:
-#	  1. $PCA   		   = svd.pca object calculated at the optimal dimension (or given factor.dim)
-#	  2. $beta  		   = optimal dimension according to the dimensionalty criterion
-#	  3. $opt.d = the slope estimator of the observed regressors (beta.eup)
-#	  4. $nbr.iterations = number of iteration
+#	  1. $PCA   		= svd.pca object calculated at the optimal dimension (or given factor.dim)
+#	  2. $beta  		= the slope estimator of the observed regressors (beta.eup)
+#	  3. $opt.d			= optimal dimension according to the dimensionalty criterion
+#	  4. $nbr.iterations 	= number of iteration
 #####################################################################################################
 
 Eup.default <- function(formula, additive.effects = c("none", "individual", "time", "twoways")
@@ -199,8 +199,8 @@ Eup.default <- function(formula, additive.effects = c("none", "individual", "tim
 	nr 		<- nrow(PF.obj[[1]]$ODM)
 	P  		<- length(PF.obj)-1
   # prepare for FUN.default (output in a matrix)
-	dat.dim 		<- c(nr, nc)
-	dat.matrix	<- sapply(1:(P+1), function(i) PF.obj[[i]]$TDM) 
+	dat.dim 	  <- c(nr, nc)
+	dat.matrix	  <- sapply(1:(P+1), function(i) PF.obj[[i]]$TDM) 
 	dim.criterion <- match.arg(dim.criterion)
 	
   # Estimation results
@@ -210,7 +210,7 @@ Eup.default <- function(formula, additive.effects = c("none", "individual", "tim
 					, double.iteration= double.iteration
 					, start.beta	= start.beta
 					, dim.criterion 	= dim.criterion
-					, factor.dim		= factor.dim
+					, factor.dim	= factor.dim
 					, d.max		= d.max
 					, sig2.hat		= sig2.hat
 					, level		= level
@@ -221,8 +221,7 @@ Eup.default <- function(formula, additive.effects = c("none", "individual", "tim
 	beta.Eup		<- tr.model.est$beta
 
     # factor dimension 
-	proposed.dim <- ifelse(is.null(factor.dim), "not indicated"
-				, factor.dim)
+	proposed.dim <- ifelse(is.null(factor.dim), "not indicated", factor.dim)			
 	if(is.null(factor.dim)){
 		optimal.dim <- tr.model.est$opt.d
 		}
@@ -247,30 +246,31 @@ Eup.default <- function(formula, additive.effects = c("none", "individual", "tim
 
 
     # factor structure and resuduals 
-	fs.a.resid		<- restrict.pca(tr.model.est$PCA
-					, restrict.mode=restrict.mode)
-	idiosync		<- fs.a.resid$orig.values
-	factors		<- fs.a.resid$factors
-	loadings		<- fs.a.resid$loadings
-	unobs.fact.struct	<- fs.a.resid$fitted.values
-	residuals		<- idiosync - unobs.fact.struct
+	restrict.fs.a.resid	<- restrict.pca(tr.model.est$PCA, restrict.mode=restrict.mode)					
+	fs.and.resid		<- restrict.fs.a.resid$orig.values
+	factors			<- restrict.fs.a.resid$factors
+	loadings			<- restrict.fs.a.resid$loadings
+	unobs.fact.struct		<- restrict.fs.a.resid$fitted.values
+	residuals			<- fs.and.resid - unobs.fact.struct
 
 ## Inference about beta
 
-	slope.inf 		<-Eup.inference(dat.matrix, dat.dim
-				, used.dim, beta.Eup, factors, loadings, residuals)
+	slope.inf 		<-Eup.inference(dat.matrix, dat.dim, used.dim, beta.Eup, factors, loadings, residuals)
+
+## Results
+				
 	list(slope.inf, used.dim, proposed.dim, optimal.dim, Nbr.iteration)
   }
 
 ################################## Eup slope inference ####################
 ## Input:
-# 		dat.matrix
-# 		dat.dim
-# 		used.d
-#	 	beta.Eurp	
-# 		factors
-# 		loadings
-#		residuals
+# 		dat.matrix	= the data in matrix form where the first colomn contain NT vector of Y second one the NT vector of the first regressor X
+# 		dat.dim	= the dimension of the data N and T
+# 		used.d	= used dimension d in the interative procedure
+#	 	beta.Eup	= the estimated slope estimator for given d
+# 		factors	= common factors after scaling according the used restriction
+# 		loadings	= individual loading parameters after scaling (according restriction)
+#		residuals	= the residual terms
 ## Output:
 #		Eup slope Estimate
 #		std
