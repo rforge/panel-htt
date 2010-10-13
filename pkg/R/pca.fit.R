@@ -111,9 +111,9 @@ svd.pca <- function(Q, given.d=NULL, calcul.loadings = TRUE, allow.dual = TRUE
 
 restrict.pca <- function(obj
 		, restrict.mode= c("restrict.factors","restrict.loadings")){
-  if(class(obj)!="svd.pca"&&class(obj)!="fsvd.pca"){
-    if(class(obj) != "svd.pca"){stop(c("Argument is not a 'svd.pca' or a 'svd.pca' object."  ))}
-    if(class(obj) !="fsvd.pca"){stop(c("Argument is not a 'fsvd.pca' or a 'fsvd.pca' object."))}
+	if(class(obj) !="svd.pca"&&class(obj)!="fsvd.pca"){
+	if(class(obj) != "svd.pca"){stop(c("Argument is not a 'svd.pca' or a 'svd.pca' object."  ))}
+	if(class(obj) !="fsvd.pca"){stop(c("Argument is not a 'fsvd.pca' or a 'fsvd.pca' object."))}
   }
   if(is.null(obj$R))  stop(c("Loadings-parameter are missing."))
         
@@ -122,17 +122,17 @@ restrict.pca <- function(obj
     cov.mat       <- obj$cov.mat
     fitted.values <- obj$Q.fit
     orig.values   <- obj$Q
-    given.d	  <- obj$given.d
-    L 	          <- obj$L[, 1:given.d , drop= FALSE]
-    R 	          <- obj$R[, 1:given.d , drop= FALSE]
+    given.d	      <- obj$given.d
+    L 	      <- obj$L[, 1:given.d , drop= FALSE]
+    R 	      <- obj$R[, 1:given.d , drop= FALSE]
     sqr.E         <- obj$sqr.E
-    E	          <- obj$E
+    E	            <- obj$E
     dual          <- obj$dual
     nr            <- nrow(fitted.values)
     nc            <- ncol(fitted.values)
     cov.matrix    <- cov.mat/(nr*nc)
     Sd2           <- obj$V.d/(nr*nc)
-    Eval	  <- E/(nr*nc)
+    Eval	      <- E/(nr*nc)
   }
   ## fsvd.pca object  
   if(class(obj) == "fsvd.pca"){
@@ -141,17 +141,17 @@ restrict.pca <- function(obj
     orig.values.smth  <- obj$Q.orig.smth
     orig.values       <- obj$Q.orig
     spar.low          <- obj$spar.low
-    given.d	      <- obj$given.d
-    L 	              <- obj$L[, 1:given.d , drop= FALSE]
-    R 	              <- obj$R[, 1:given.d , drop= FALSE]
+    given.d		    <- obj$given.d
+    L 	          <- obj$L[, 1:given.d , drop= FALSE]
+    R 	          <- obj$R[, 1:given.d , drop= FALSE]
     sqr.E             <- obj$sqr.E
-    E	              <- obj$E
+    E	                <- obj$E
     dual              <- obj$dual
     nr                <- nrow(fitted.values)
     nc                <- ncol(fitted.values)
     cov.matrix        <- cov.mat/(nr*nc)
     Sd2               <- obj$V.d/(nr*nc)
-    Eval	      <- E/(nr*nc)
+    Eval	          <- E/(nr*nc)
 }
 
  # restric factors and loadings
