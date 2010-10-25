@@ -126,8 +126,8 @@ svd.pca <- function(Q
 	else{
 		R <- NULL
 		if(((given.d==max.rk)&&!neglect.neg.ev)) Q.fit <- Q
-		else Q.fit  <- tcrossprod(L[, 1:given.d , drop= FALSE]
-				, L[, 1:given.d , drop= FALSE])%*%Q
+		else Q.fit  <- tcrossprod(L[, 0:given.d , drop= FALSE]
+				, L[, 0:given.d , drop= FALSE])%*%Q
 		}
 
   # convert dimension if dual covariance matrix is  used
@@ -188,7 +188,7 @@ restrict.pca <- function(obj
   # check the object class and it conformitiy
 
 	if(class(obj) !="svd.pca"&&class(obj)!="fsvd.pca"){stop(c("Argument 
-		is nor an 'svd.pca' nor an 'fsvd.pca' object."))}
+		has to be either a 'svd.pca' or a 'fsvd.pca' object."))}
 	if(is.null(obj$R)){  stop(c("Loading-parameters are missing."))}
 
   # restrict variance and eigenvalues
@@ -219,7 +219,7 @@ restrict.pca <- function(obj
 			}
 		)
 
-# give the result in a list
+  ## prepare return-list
 
 	result <- list(cov.matrix    = cov.matrix,
 			eigen.values  = Eval,
@@ -233,7 +233,7 @@ restrict.pca <- function(obj
 			fitted.values = fitted.values)
 
 
-  # extend list according to the object class
+  ## extend list according to the object class (svd.pca or fsvd.pca)
 
 	if(class(obj) == "fsvd.pca"){
 		result$orig.values = obj$Q.orig
@@ -244,7 +244,7 @@ restrict.pca <- function(obj
 		result$orig.values = obj$Q
 	}
 
-  # give the complit result in a list
+  ## return list
 
 	result
 }
