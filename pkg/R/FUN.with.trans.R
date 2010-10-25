@@ -16,20 +16,11 @@
 FUN.with.trans <- function(z, N, T, is.intercept,
                            effect = c("none", "individual", "time", "twoways")) 
   {
-    with.trans <- match.arg(effect)
-    switch(with.trans	
+	with.trans <- match.arg(effect)
+	const <- ifelse(is.intercept, mean(z), 0)
+	switch(with.trans	
            , none = {
-             ## falls der user im argument "formula" ein intercept verwendet,
-             ## dann wird hier die *OV*erall constant geschätz.
-             ## Wegen argument "none" jedoch nicht abgezogen
-             	if(is.intercept){
-				const <- mean(z)
-				Z  	<- z - const
-			}
-             	else{
-				const <- 0
-	           		Z  	<- z
-		 	}
+			Z  	<- z
              	liste <- list(
 			   "Tr"  = "none", # Name of *Tr*ansformation
                            "I"   = ifelse(is.intercept, TRUE, FALSE), 
@@ -38,21 +29,14 @@ FUN.with.trans <- function(z, N, T, is.intercept,
                            "TDV" = c(Z),     # *T*ransformed *D*ata *V*ector
                            "TRm" = list(     # *TR*ansformation *m*eans. 
 						"OVc"  = const,	# *OV*erall *c*onstant
-						"InC"  = 0,	# *In*dividual *C*onstants
-						"TiVC" = 0)	# *Ti*m V*arying *C*onstants
+						"InC"  = rep.int(0, N),	# *In*dividual *C*onstants
+						"TiVC" = rep.int(0, T))	# *Ti*m V*arying *C*onstants
 				   )    
                   return(liste)
            }
            , individual = {
 			InC	<- colMeans(z)
-             	if(is.intercept){
-				const <- mean(z)
-				Z  	<- z - matrix(InC, T, N, byrow = TRUE)- const
-			}
-             	else{
-				const <- 0
-	           		Z  	<- z - matrix(InC, T, N, byrow = TRUE)
-		 	}
+			Z  	<- z - matrix(InC, T, N, byrow = TRUE) + const
              	liste <- list(
 			   "Tr"  = "individual", # Name of *Tr*ansformation
                            "I"   = ifelse(is.intercept, TRUE, FALSE), 
@@ -62,20 +46,13 @@ FUN.with.trans <- function(z, N, T, is.intercept,
                            "TRm" = list(	  	 # *TR*ansformation *m*eans. 
 						"OVc"  = const,	# *OV*erall *c*onstant
 						"InC"  = InC,	# *In*dividual *C*onstants
-						"TiVC" = 0)	# *Ti*m V*arying *C*onstants
+						"TiVC" = rep.int(0, T))	# *Ti*m V*arying *C*onstants
 				   )  
                   return(liste)								
            }
            , time = {
 			TiVC <- rowMeans(z)
-             	if(is.intercept){
-				const <- mean(z)
-				Z  	<- z - TiVC - const
-			}
-             	else{
-				const <- 0
-	           		Z  	<- z - TiVC
-		 	}
+	           	Z  	<- z - TiVC + const
              	liste <- list(
 				   "Tr"  = "time",       # Name of *Tr*ansformation
                            "I"   = ifelse(is.intercept, TRUE, FALSE), 
@@ -84,13 +61,12 @@ FUN.with.trans <- function(z, N, T, is.intercept,
                            "TDV" = c(Z),         # *T*ransformed *D*ata *V*ector
                            "TRm" = list(	  	 # *TR*ansformation *m*eans. 
 						"OVc"  = const,	# *OV*erall *c*onstant
-						"InC"  = 0, 	# *In*dividual *C*onstants
+						"InC"  = rep.int(0, N), 	# *In*dividual *C*onstants
 						"TiVC" = TiVC)	# *Ti*m V*arying *C*onstants
 				   )  
                   return(liste)								
            }
            , twoways = {
-			const <- mean(z)
 			InC	<- colMeans(z)
 			TiVC  <- rowMeans(z)
              	Z  	<- z - matrix(InC, T, N, byrow = TRUE) - TiVC + const

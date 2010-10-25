@@ -17,7 +17,8 @@
 #           3. TiVC (Time variaing constants)
 #==============================================================================
 
-FUN.Pformula <- function(formula, effect)
+FUN.Pformula <- function(formula, effect= c("none", "individual"
+								, "time", "twoways"))
   {
     data.fra <- model.frame(formula)
     dat.term <- attr(data.fra, "terms")	
@@ -25,6 +26,8 @@ FUN.Pformula <- function(formula, effect)
     ## Construct data from formula
     ## dim(response) == TxN == dim(y.matrix) == TxN:
     y.matrix <- model.response(data.fra, "numeric")  
+    N  <- ncol(y.matrix)
+    T  <- nrow(y.matrix)
 
     ## 1)Extract Regressors
     ## 2)Check the presence of a 'intercept' in the formula
@@ -33,15 +36,13 @@ FUN.Pformula <- function(formula, effect)
     regressors.mat <- model.matrix(dat.term, data.fra)
     is.intercept   <- ifelse(colnames(regressors.mat)[1] == "(Intercept)", TRUE, FALSE)
     if(is.intercept){
-      x.all.matrix       <- regressors.mat[,-1]
+      x.all.matrix       <- cbind(matrix(1, T, N), regressors.mat[,-1])
     }else{x.all.matrix   <- regressors.mat}
 
-    if(!is.intercept & effect=="twoways"){stop("Effects >> twoways << need an Intercept!")}
+#    if(!is.intercept & effect=="twoways"){stop("Effects >> twoways << need an Intercept!")}
     
     ## Dimension parameters
 
-    N  <- ncol(y.matrix)
-    T  <- nrow(y.matrix)
     NT <- N*T
     P  <- as.integer(ncol(x.all.matrix)/N)
 
