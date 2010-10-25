@@ -110,7 +110,7 @@ svd.pca <- function(Q
 
   # compute spectral variance decomposition
 
-	L      <- Evec[,1:max.rk , drop= FALSE]
+	L      <- Evec[, 0:max.rk , drop= FALSE]
 	if(!neglect.neg.ev) sqr.E <- c(sqrt(Eval[Eval > 0])
 						,rep(0, (max.rk - nbr.pos.ev)))
 	else sqr.E	 <- sqrt(Eval[1:max.rk ])

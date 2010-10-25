@@ -36,13 +36,13 @@ fsvd.pca <- function(Q,
     # damit die daten bei der rückgabe die gleichen dimensionen haben
     Q.non.smth <- t(Q.non.smth)
          }
-    
+  
   ## trapezoidal rule (for integral-approximation)=============================#
   ## hier sehr einfach, da: len.Interval==n.discr-1                            #
   ## Achtung hier wird angenommen, dass beide indizes i bzw. t bei 1 beginnen! #
   ## daher nc-1 bzw. nr-1 in für len.Interval                                  #
   len.Interval    <- ifelse(dual, nc-1, nr-1)                                  #
-  n.discr         <- ifelse(dual, nc,   nr  )                                  #  
+  n.discr         <- ifelse(dual, nc,   nr  )        # if dual: n.discr==N     #  
   h               <- (len.Interval)/(n.discr-1)      # hier: h==1              #
   w               <- c(h/2, rep(h, n.discr-2), h/2)  # hier: w=1/2,1,...,1,1/2 #
   cov.mat         <- diag(sqrt(w)) %*% tcrossprod(Q) %*% diag(sqrt(w))         #
@@ -75,7 +75,7 @@ fsvd.pca <- function(Q,
   ######################################################
 
   ## Left side decomposion
-  L                         <- Evec[,1:max.rk , drop= FALSE]
+  L                         <- Evec[,0:max.rk , drop= FALSE]   # dual==FALSE: (T x max.rk), dual==TRUE: (N x max.rk)
   ## *fun*ctional approximation
   L.fun                     <- diag(1/(sqrt(w))) %*% L
 
@@ -159,7 +159,8 @@ fsvd.pca <- function(Q,
 # Main function: fpac.fit  #
 # Descrition:
 # The function calculates functional spectral decomposition of a matrix in >>dat<<
-# and, according to the argument >>given.d<<, does pca-fitting. If  
+# and, according to the argument >>given.d<<, does pca-fitting. Generally it is assumend
+# that the column of the TxN-matrix >>dat<< are demaend by the "mean-column".
 # Calls:                   #
 # is.regular.panel()       #
 # fsvc.pca()               #
