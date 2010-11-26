@@ -90,11 +90,8 @@ FUN.Eup <- function(dat.matrix, dat.dim
 					   , level = level, spar = spar)
 			opt.dim.0  <- OptDim.0[,2]
 			factor.dim <- opt.dim.0
-			y.fitted.0 <- PCA.0$L[, 1:opt.dim.0
-					, drop = FALSE]%*%diag(
-					PCA.0$sqr.E[1:opt.dim.0]
-					, opt.dim.0)%*%t(PCA.0$R[
-					, 1:opt.dim.0, drop = FALSE])	
+			y.fitted.0 <- tcrossprod(PCA.0$L[, 0:opt.dim.0
+					, drop = FALSE])%*%W.0
 		}
 
 		else y.fitted.0 = PCA.0$Q.fit
@@ -248,7 +245,7 @@ Eup.inference <- function(FUN.Eup.Obj){
 	Z		<- sapply (Z.list, function(Z) c(Z), simplify = TRUE)
 	ZZ     <- crossprod(Z)/(nr*nc)
 	inv.ZZ <- solve(ZZ)
-	sig2.hat <- sum(diag( crossprod(res)))/(nr*nc - (nr+nc)*d - p + 1)
+	sig2.hat <- sum(diag( crossprod(res)))/(nr*nc - (nr+nc)*d - p)
 	var.result <- list(residuals = res, sig2.hat=sig2.hat , ZZ = ZZ, inv.ZZ = inv.ZZ)
 
 	asy.var <- (inv.ZZ * sig2.hat)/(nr*nc)
