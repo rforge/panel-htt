@@ -36,7 +36,7 @@ FUN.Pformula <- function(formula, effect= c("none", "individual"
     regressors.mat <- model.matrix(dat.term, data.fra)
     is.intercept   <- ifelse(colnames(regressors.mat)[1] == "(Intercept)", TRUE, FALSE)
     if(is.intercept){
-      x.all.matrix       <- cbind(matrix(1, T, N), regressors.mat[,-1])
+      x.all.matrix       <- regressors.mat[,-1]
     }else{x.all.matrix   <- regressors.mat}
 
 #    if(!is.intercept & effect=="twoways"){stop("Effects >> twoways << need an Intercept!")}
