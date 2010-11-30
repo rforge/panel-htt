@@ -20,7 +20,7 @@ FUN.with.trans <- function(z, N, T, is.intercept,
 	const <- ifelse(is.intercept, mean(z), 0)
 	switch(with.trans	
            , none = {
-			Z  	<- z
+			Z  	<- z - const
              	liste <- list(
 			   "Tr"  = "none", # Name of *Tr*ansformation
                            "I"   = ifelse(is.intercept, TRUE, FALSE), 
@@ -36,7 +36,7 @@ FUN.with.trans <- function(z, N, T, is.intercept,
            }
            , individual = {
 			InC	<- colMeans(z)
-			Z  	<- z - matrix(InC, T, N, byrow = TRUE) + const
+			Z  	<- z - matrix(InC, T, N, byrow = TRUE) 
              	liste <- list(
 			   "Tr"  = "individual", # Name of *Tr*ansformation
                            "I"   = ifelse(is.intercept, TRUE, FALSE), 
@@ -52,7 +52,7 @@ FUN.with.trans <- function(z, N, T, is.intercept,
            }
            , time = {
 			TiVC <- rowMeans(z)
-	           	Z  	<- z - TiVC + const
+	           	Z  	<- z - TiVC 
              	liste <- list(
 				   "Tr"  = "time",       # Name of *Tr*ansformation
                            "I"   = ifelse(is.intercept, TRUE, FALSE), 
@@ -69,7 +69,7 @@ FUN.with.trans <- function(z, N, T, is.intercept,
            , twoways = {
 			InC	<- colMeans(z)
 			TiVC  <- rowMeans(z)
-             	Z  	<- z - matrix(InC, T, N, byrow = TRUE) - TiVC + const
+             	Z  	<- z - matrix(InC, T, N, byrow = TRUE) - TiVC + mean(z)
              	liste <- list(
 				   "Tr"  = "twoway",   # Name of *Tr*ansformation
                            "I"   = ifelse(is.intercept, TRUE, FALSE), 
