@@ -1,3 +1,4 @@
+##rm(list=ls())
 ##################################### Bai ##################################
 bai.dim.opt <- function(Obj, d.max = NULL, sig2.hat = NULL)
 	{
@@ -286,9 +287,9 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, d.max = NULL){
   evec     <- obj$L
   Eval     <- obj$V.d
   max.rk   <- length(Eval)
-
+  
 ### calculate traces
-
+  
   I.smth1 <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = diag(rep(1,nr)), spar = spar.low, method = 1)$ysmth
   I.smth2 <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = I.smth1,         spar = spar.low, method = 1)$ysmth
   tr.dim.zero     <- sum(diag(I.smth2))
@@ -324,14 +325,14 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, d.max = NULL){
 	else{
 		tr		<- (nr + sum(diag(I.smth2)) - 2*sum(diag(I.smth1)))
 		sig2.hat	<- sum((dat-dat.smth)^2)/((nc-1)*tr)
+                
 #	rice np.variance estimator
 #		sig2.hat	<- sum(diff(dat)^2)/(2*(nr - 1)*nc)	
 	}
 
   }
-#  print(sig2.hat)
 
-## calculate the criteria of all dimensions:  
+## calculate the criteria of all dimensions:
   delta       <- (Eval - (nc-1) * sig2.hat * tr1[1:max.rk])/(sig2.hat * sqrt(2*nc*tr2[1:max.rk]))
   thres1      <- qnorm(1-alpha)
   thres2      <- sqrt(2*log(min(nr, nc)))# default alpha = NULL / falls alpha != 0 dann, werden beide beide berechnet
@@ -339,7 +340,7 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, d.max = NULL){
   crit1       <- delta - thres1
   crit2       <- delta - thres2
   d.opt.KSS1  <- length(crit1[crit1 > 0])# minus 1, weil start bei dim = 0
-                                        # plus  1, weil nur die dim, die das crit nicht erfüllen.
+                                         # plus  1, weil nur die dim, die das crit nicht erfüllen.
   d.opt.KSS2  <- length(crit2[crit2 > 0])
   result1     <- c(d.opt.KSS1, w[d.opt.KSS1+1], sig2.hat, alpha )
   result2     <- c(d.opt.KSS2, w[d.opt.KSS2+1], sig2.hat, level2)# level2: p.value of thres2 (thres2: alternativ crit.value)
@@ -356,13 +357,17 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, d.max = NULL){
 return(Result)
 }
 
-## KSS:OptDim() =====================================================================================
+## KSS.OptDim() =====================================================================================
 ## Called by: fAFactMod()
 ## Calls    : KSS.dim.opt()
 ##==========================
 
-KSS.OptDim <- function(Obj, criteria = c("KSS.C1", "KSS.C2"),sig2.hat = NULL, alpha = 0.01
-			, spar.low = NULL, d.max = NULL){
+KSS.OptDim <- function(Obj,
+                       criteria    = c("KSS.C1", "KSS.C2"),
+                       sig2.hat    = NULL,
+                       alpha       = 0.01, 
+                       spar.low    = NULL,
+                       d.max       = NULL){
   ## what is Obj?
   if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca"){
     if(class(Obj)=="fsvd.pca") obj <- Obj
@@ -403,11 +408,14 @@ KSS.OptDim <- function(Obj, criteria = c("KSS.C1", "KSS.C2"),sig2.hat = NULL, al
                   Q.orig.smth = Q.orig.smth, L = L, V.d = V.d)
     } 
   }else{
-    if(is.matrix(Obj)) obj <- fsvd.pca(Obj, spar.low = spar.low)
+    if(is.matrix(Obj)){      
+      ## fPCA
+      fsvd.obj  <- fsvd.pca.ramsay(Q = Obj)
+    }
   }
-  result   <- KSS.dim.opt(obj, sig2.hat = sig2.hat, alpha = alpha, d.max = d.max)
-  criteria <- match.arg(criteria, several.ok = TRUE)
-  Result   <- vector("list", 2)
+  result        <- KSS.dim.opt(fsvd.obj, sig2.hat = sig2.hat, alpha = alpha, d.max = d.max)
+  criteria      <- match.arg(criteria, several.ok = TRUE)
+  Result        <- vector("list", 2)
   Result[[1]]   <- result[[1]][result[[1]][,1] %in% criteria, ]
   Result[[2]]   <- result[[2]]
   return(Result)
@@ -418,7 +426,7 @@ KSS.OptDim <- function(Obj, criteria = c("KSS.C1", "KSS.C2"),sig2.hat = NULL, al
 
 ############## compare  ######################################################################################
 
-OptDim.default <- function(Obj, criteria.of = c("Bai","KSS", "Onatski", "RH")
+OptDim.default <- function(Obj, criteria.of = c("Bai", "KSS", "Onatski", "RH")
 				, d.max = NULL, sig2.hat=NULL, level= 0.05
 				, spar = NULL){
 	criteria.of <- match.arg(criteria.of, several.ok = TRUE)
@@ -498,9 +506,9 @@ EstDim <- function(	Obj,
                           GR   = RH.OptDim(Obj, criteria = c("GR")
                             , d.max = d.max),
                           KSS.C1  = KSS.OptDim(Obj, criteria = c("KSS.C1")
-				    , sig2.hat = sig2.hat, alpha=level, spar.low= spar),
+				    , sig2.hat = sig2.hat, alpha=level, spar.low= spar)[[1]],
                           KSS.C2  = KSS.OptDim(Obj, criteria = c("KSS.C2")
-				    , sig2.hat = sig2.hat, alpha=level, spar.low= spar)
+				    , sig2.hat = sig2.hat, alpha=level, spar.low= spar)[[1]]
                           )
 	est.dim
 	}
@@ -509,13 +517,15 @@ EstDim <- function(	Obj,
 ## #### Test
 ## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/Package_Version_31_3_2010/Generate_FPCAData.R")
 ## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fpca.fit.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/pca.fit.R")
 ## ## create data for FPCA
 ## library(pspline)
-## dat      <- sim.3dim.fpca.equi(T = 100, N = 50, dim=4, sig.error = 0.07*(1/N^{0.25}), class = "matrix")
-## Obj <- dat
-## OptDim(Obj, criteria.of = "KSS")
+## rm(dat)
+## FS.dat      <- sim.3dim.fpca.equi(T = 300, N = 50, dim=4, sig.error = 0.07*(1/N^{0.25}), class = "matrix")
 
-## Obj <- svd.pca(dat)
+## OptDim(FS.dat, criteria.of = "KSS")
+
+## Obj <- svd.pca(FS.dat)
 ## OptDim(Obj, d.max = 10)
 
 ## pcaObj <- svd.pca(dat)

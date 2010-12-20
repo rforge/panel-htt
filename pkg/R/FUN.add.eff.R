@@ -17,9 +17,11 @@
 ## beta.0 (intercept-function)
 ##########################################################################################
 
+
+
 FUN.add.eff <- function(PF.obj, fAFactMod.obj=NULL, g.fun=NULL, beta.hat)
   {
-    if(is.null(fAFactMod.obj) & is.null(g.fun)){
+    if(!is.null(fAFactMod.obj) & !is.null(g.fun)){
       stop("Only one of the arguments >>fAFactMod.obj<< or >>g.fun<< is allowed.")
     }
     P         <- length(PF.obj)-1

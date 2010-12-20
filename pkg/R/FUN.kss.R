@@ -1,4 +1,4 @@
-## rm(list=ls())
+rm(list=ls())
 FUN.kss.default <- function(formula,
                             effect   = c("none", "individual", "time", "twoways"),
                             dim.crit = c("KSS.C1", "KSS.C2"),
@@ -189,37 +189,81 @@ plot.summary.FUN.kss <- function(x,...){
           xlab="Time",ylab="", type="l",...)
   par(mfrow=c(1,1))
 }
-## ## ================================================================================================
-## ## TEST: ==========================================================================================
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/OptDim.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/pca.fit.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fAFactMod.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/FUN.Pformula.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/FUN.add.eff.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fpca.fit.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/FUN.with.trans.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/Package_Version_31_3_2010/Generate_FPCAData.R")
-## # create data for FPCA
-## library(pspline)
-## dat      <- sim.3dim.fpca.equi(T = 100, N = 50, dim=4, sig.error = 0.07*(1/N^{0.25}), class = "matrix")
-## X1       <- matrix(rnorm(T*N), N,T)
-## X2       <- matrix(rnorm(T*N), N,T)
-## add.ind  <- matrix(rep(rnorm(N),T),N,T)
-## Y        <- 5*X1-5*X2+dat
+## ================================================================================================
+## TEST: ==========================================================================================
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/OptDim.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/pca.fit.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fAFactMod.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/FUN.Pformula.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/FUN.add.eff.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fpca.fit.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/FUN.with.trans.R")
+source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
+# create data for FPCA
+library(pspline)
+T   = 100
+N   =  50
+dim = 4
 
-## none.obj <- FUN.kss(formula=Y~X1+X2, effect = "none",       dim.crit = "KSS.C1")
-## indi.obj <- FUN.kss(formula=Y~X1+X2, effect = "individual", dim.crit = "KSS.C1")
-## time.obj <- FUN.kss(formula=Y~X1+X2, effect = "time",       dim.crit = "KSS.C1")
-## tway.obj <- FUN.kss(formula=Y~X1+X2, effect = "twoways",    dim.crit = "KSS.C1")
+## FS-Structure
+FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.7)
+FS.obs   <- FS.obj[[1]]
 
-## none.obj
-## indi.obj
-## time.obj
-## tway.obj
+## Regressor 2
+X1 <- matrix(NA, T, N)
+for(i in 1:N){
+  X1[,i]       <- seq(1,rnorm(1)*10,length.out=T)+rnorm(T)
+}
+## Regressor 2
+X2 <- matrix(NA, T, N)
+for(i in 1:N){
+  X2[,i]       <- seq(5,rnorm(1)*1,length.out=T)+rnorm(T,sd=0.75)
+}
 
-## summary(none.obj)
-## summary(indi.obj)
-## summary(time.obj)
-## summary(tway.obj)
+## Intercept-Scalar
+I.scl  <-  matrix(rep(rnorm(1), N*T),T,N)
 
-## plot(summary(time.obj))
+
+## Additive-Effects
+ # individual
+add.ind      <- matrix(rep(rnorm(N),each=T),T,N)
+ # time
+add.tim.fun  <-  FS.obj[[3]] %*% as.matrix(colMeans(FS.obj[[4]]))*c(1e20,1e20,1e20,1e20)
+add.tim.fun  <-  matrix(rep(add.tim.fun,N),T,N)
+
+## Panel-Model:
+Y        <- add.tim.fun + add.ind + 5 * X1 - 5 * X2 + FS.obs
+
+## dieses model ist genau das gleich wie im KSS-Paper:
+## Transformation nur mit TiVC (i.e.kein overall mean der einzelnen variablen abgezogen):
+time.obj <- FUN.kss(formula=Y~-1+X1+X2, effect = "time",       dim.crit = "KSS.C1"); str(time.obj)
+
+## dieses model verzerrt die beta-schätzer stark:
+tway.obj <- FUN.kss(formula=Y~-1+X1+X2, effect = "twoways",    dim.crit = "KSS.C1"); str(tway.obj)
+
+## aber man könnte die konstanten individuellen effecte über die scores zurückholen.
+## gleiches gilt für scalar-intercept.
+
+none.obj <- FUN.kss(formula=Y~-1+X1+X2, effect = "none",       dim.crit = "KSS.C1"); str(none.obj)
+none.obj <- FUN.kss(formula=Y~   X1+X2, effect = "none",       dim.crit = "KSS.C1"); str(none.obj)
+
+time.obj <- FUN.kss(formula=Y~-1+X1+X2, effect = "time",       dim.crit = "KSS.C1"); str(time.obj)
+plot(time.obj$beta.0)
+time.obj <- FUN.kss(formula=Y~   X1+X2, effect = "time",       dim.crit = "KSS.C1"); str(time.obj)
+
+
+indi.obj <- FUN.kss(formula=Y~   X1+X2, effect = "individual", dim.crit = "KSS.C1"); str(indi.obj)
+
+
+
+none.obj
+indi.obj
+time.obj
+tway.obj
+
+summary(none.obj)
+summary(indi.obj)
+summary(time.obj)
+summary(tway.obj)
+
+plot(summary(time.obj))

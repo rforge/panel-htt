@@ -1,4 +1,8 @@
-########### spectral variance decomposition and pca fitting if asked ###########################
+##rm(list=ls())
+#########################################################################################
+## Ramsay-approach 
+#########################################################################################
+
 
 fsvd.pca.ramsay <- function(Q,
                             allow.dual      = TRUE,
@@ -103,8 +107,10 @@ fsvd.pca.ramsay <- function(Q,
   ## no computation of the loadings-parameter (scores)  
   }else{
     R.fun                   <- NULL
+    ## no pca-fitting
     if(((given.d==max.rk)&&!neglect.neg.ev)){
       Q.fit <- Q
+    ## pca-fitting
     }else{
       Q.fit                 <- tcrossprod(L.fun[, 0:given.d , drop= FALSE],
                                           L.fun[, 0:given.d , drop= FALSE]) %*% Q
@@ -117,8 +123,7 @@ fsvd.pca.ramsay <- function(Q,
     L.fun      <- R.fun
     R.fun      <- u
     Q.fit      <- t(Q.fit)
-    Q          <- t(Q)          # (under)smoothed Q
-    Q.non.smth <- t(Q.non.smth) # non-smoothed Q    
+    Q          <- t(Q)          # (under)smoothed Q   
   }
     
   ## prepare return-values       
@@ -148,9 +153,9 @@ fsvd.pca.ramsay <- function(Q,
             class   = "fsvd.pca")
 }
 
-#######################################################################################
-## DUAL-approach (Benko, Härdle, Kneip 2008: "Common functional principal components")#
-#######################################################################################
+#########################################################################################
+## DUAL-approach (Benko, Härdle, Kneip 2008: "Common functional principal components") ##
+#########################################################################################
 fsvd.pca.kneip <- function(Q,
                            given.d         = NULL,
                            calcul.loadings = TRUE,
@@ -294,11 +299,11 @@ fpca.fit <- function(dat,
 
   ## fPCA
   fpca.obj       <- switch(fpca.method,
-                           Ramsay  =  fsvd.pca.ramsay(dat,
+                           Ramsay  =  fsvd.pca.ramsay(Q              = dat,
                                                       given.d        = given.d,
                                                       allow.dual     = allow.dual,
                                                       neglect.neg.ev = neglect.neg.ev),
-                           Kneip   = fsvd.pca.kneip(dat,
+                           Kneip   = fsvd.pca.kneip(Q                = dat,
                                                     given.d          = given.d,
                                                     neglect.neg.ev   = neglect.neg.ev))
   
@@ -308,3 +313,22 @@ fpca.fit <- function(dat,
   ## return
   structure(result, class = "fpca.fit")
 }
+
+
+
+
+## #### Test
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/Package_Version_31_3_2010/Generate_FPCAData.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/pca.fit.R")
+## library(pspline)
+## FS.dat      <- sim.3dim.fpca.equi(T = 300, N = 50, dim=4, sig.error = 0.07*(1/N^{0.25}), class = "matrix")
+## Ramsay     <- fpca.fit(dat= FS.dat, fpca.method  = c("Ramsay"))
+## Kneip      <- fpca.fit(dat= FS.dat, fpca.method  = c("Kneip"))
+## str(Kneip)
+
+## par(mfrow=c(1,3))
+## plot.ts(Ramsay$eigen.values, type="o", xlab="", ylab="", main="Eigen.values:\n Blue=Kneip, Black=Ramsay")
+## points(Kneip$eigen.values, col="blue", type="o")
+## matplot(Kneip$factors[,1:5], main="Kneip-Eigenfunctions")
+## matplot(Ramsay$factors[,1:5], main="Ramsay-Eigenfunctions")
+## par(mfrow=c(1,1))

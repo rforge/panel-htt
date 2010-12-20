@@ -9,7 +9,7 @@
 #    Restriktionen für die Identifikation.
 #    Also für 'Twoways' das argument 'is.intercept will be ingonred'
 
-# To Do: Evtl sollte man Einige listen-Componenten mit einer "drop=FALSE" variante ausstatten,
+# To Do: Evtl sollte man Einige listen-Componenten mit "drop=FALSE" ausstatten,
 # da z.B. ODM bei P=1 ein vector ist und keine matrix! 
 
 
@@ -17,7 +17,8 @@ FUN.with.trans <- function(z, N, T, is.intercept,
                            effect = c("none", "individual", "time", "twoways")) 
   {
 	with.trans <- match.arg(effect)
-	const <- ifelse(is.intercept, mean(z), 0)
+        const <- ifelse(is.intercept, mean(z), 0)
+        
 	switch(with.trans	
            , none = {
 			Z  	<- z - const
@@ -52,7 +53,7 @@ FUN.with.trans <- function(z, N, T, is.intercept,
            }
            , time = {
 			TiVC <- rowMeans(z)
-	           	Z  	<- z - TiVC 
+	           	Z  	<- z - TiVC
              	liste <- list(
 				   "Tr"  = "time",       # Name of *Tr*ansformation
                            "I"   = ifelse(is.intercept, TRUE, FALSE), 
@@ -67,16 +68,16 @@ FUN.with.trans <- function(z, N, T, is.intercept,
                   return(liste)								
            }
            , twoways = {
-			InC	<- colMeans(z)
+			InC   <- colMeans(z)
 			TiVC  <- rowMeans(z)
              	Z  	<- z - matrix(InC, T, N, byrow = TRUE) - TiVC + mean(z)
              	liste <- list(
-				   "Tr"  = "twoway",   # Name of *Tr*ansformation
-                           "I"   = ifelse(is.intercept, TRUE, FALSE), 
-                           "ODM" = z,          # *O*rig. *D*ata *M*atrix
-                           "TDM" = Z,          # *T*ransformed *D*ata *M*atrix
-                           "TDV" = c(Z),       # *T*ransformed *D*ata *V*ector
-                           "TRm" = list(	  	 # *TR*ansformation *m*eans. 
+                              "Tr"  = "twoway",   # Name of *Tr*ansformation
+                              "I"   = ifelse(is.intercept, TRUE, FALSE), 
+                              "ODM" = z,          # *O*rig. *D*ata *M*atrix
+                              "TDM" = Z,          # *T*ransformed *D*ata *M*atrix
+                              "TDV" = c(Z),       # *T*ransformed *D*ata *V*ector
+                              "TRm" = list(	  	 # *TR*ansformation *m*eans. 
 						"OVc"  = const,	# *OV*erall *c*onstant
 						"InC"  = InC, 	# *In*dividual *C*onstants
 						"TiVC" = TiVC)	# *Ti*m V*arying *C*onstants
