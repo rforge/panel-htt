@@ -60,18 +60,18 @@ fAFactMod <- function(dat, demean   = TRUE,
                      used.fdim     = used.d)
   }
   else{
-    factors <- matrix(0, nr, 1)
-    scores  <- matrix(0, nc, 1)
-    dat.fit <- tcrossprod(factors, scores)
-    sd2     <- fpca.fit.obj$Sd2[used.d+1]
+    factors  <- matrix(0, nr, 1)
+    loadings <- matrix(0, nc, 1)
+    dat.fit  <- tcrossprod(factors, loadings)
+    sd2      <- fpca.fit.obj$Sd2[used.d+1]
     
-    result  <- list(fitted.values = dat.fit,
-                    factors       = factors,
-                    loadings      = loadings,
-                    resid.sd2     = sd2,
-                    given.fdim    = factor.dim, 
-                    optimal.fdim  = opt.d,
-                    used.fdim     = used.d)
+    result   <- list(fitted.values = dat.fit,
+                    factors        = factors,
+                    loadings       = loadings,
+                    resid.sd2      = sd2,
+                    given.fdim     = factor.dim, 
+                    optimal.fdim   = opt.d,
+                    used.fdim      = used.d)
   }
   return(result)
 }
