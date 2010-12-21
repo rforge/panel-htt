@@ -1,5 +1,5 @@
 ######################################################################
-## rm(list=ls())
+rm(list=ls())
 fAFactMod <- function(dat, demean   = TRUE,
                       add.effects   = c("none", "individual", "time", "twoways"),
                       dim.criterion = c("KSS.C1", "KSS.C2",
@@ -77,15 +77,29 @@ fAFactMod <- function(dat, demean   = TRUE,
 }
 
 ## ## TEST: =========================================================================================================
-## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/OptDim.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/pca.fit.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/fpca.fit.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/subv/panel-htt/pkg/R/FUN.with.trans.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Con_Oualid/our_package/Package_Version_31_3_2010/Generate_FPCAData.R")
+
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/OptDim.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/pca.fit.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fpca.fit.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/FUN.with.trans.R")
+## source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
+
+## ## create data for FPCA
+## library(pspline)
+## T   = 100
+## N   = 50
+## dim = 4
+
+## ## FS-Structure
+## FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.25)
+## FS.obs   <- FS.obj[[1]]
+
 ## # create data for FPCA
 ## library(pspline)
-## dat        <- sim.3dim.fpca.equi(T = 100, N = 50, dim=4, sig.error = 0.07*(1/N^{0.25}), class = "matrix")
-## OptDim.obj <- OptDim(dat, criteria.of="KSS")
-## OptDim.obj
+## dat        <- FS.obs
+
+## ## OptDim.obj <- OptDim(dat, criteria.of="KSS")
+## ## OptDim.obj
+
 ## fAF.obj    <- fAFactMod(dat, dim.criterion="KSS.C1")
-## names(fAF.obj)
+## fAF.obj$used.fdim

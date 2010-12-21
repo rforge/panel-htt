@@ -298,7 +298,7 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, d.max = NULL){
   P             <- diag(1, nr) - tcrossprod(evec)
   pca.fit.p.obj <- eigen(P)
   W             <- pca.fit.p.obj[[2]]
-  ## is left out, since P.E[1:T]==rep(1,T)
+  ## P.E is left out in further computations, since P.E[1:T]==rep(1,T)
   P.E           <- pca.fit.p.obj[[1]]
 
   W.smth  <- smooth.Pspline(x=seq.int(0,1, length.out = nr), y = W,               spar = spar.low, method = 1)$ysmth
@@ -307,7 +307,7 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, d.max = NULL){
   tr.dim.zero     <- sum(diag(I.smth2))
   tr.dim.zero.sqr <- sum(diag(I.smth2)^2)
 
-  diag.Wsmt <- diag(crossprod(W.smth))
+  diag.Wsmt <- diag(crossprod(W.smth)) # t(x) %*% y
 
   tr1 <- c(tr.dim.zero,     (sum(diag.Wsmt)   - cumsum(diag.Wsmt)))
   tr2 <- c(tr.dim.zero.sqr, (sum(diag.Wsmt^2) - cumsum(diag.Wsmt^2)))
@@ -514,21 +514,30 @@ EstDim <- function(	Obj,
 	}
 
 
-## #### Test
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/Package_Version_31_3_2010/Generate_FPCAData.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fpca.fit.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/pca.fit.R")
-## ## create data for FPCA
-## library(pspline)
-## rm(dat)
-## FS.dat      <- sim.3dim.fpca.equi(T = 300, N = 50, dim=4, sig.error = 0.07*(1/N^{0.25}), class = "matrix")
+#### Test
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fpca.fit.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/pca.fit.R")
+source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
+# create data for FPCA
+library(pspline)
+T   = 100
+N   = 50
+dim = 2
 
-## OptDim(FS.dat, criteria.of = "KSS")
+## FS-Structure
+FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.7)
+str(FS.obj)
+FS.obs   <- FS.obj[[1]]
+matplot(FS.obj[[3]])
+matplot(FS.obj[[4]])
+FS.dat   <- FS.obs
 
-## Obj <- svd.pca(FS.dat)
-## OptDim(Obj, d.max = 10)
+OptDim(FS.dat, criteria.of = "KSS")
 
-## pcaObj <- svd.pca(dat)
-## Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
-## OptDim(dat)
-## #################################################
+Obj <- svd.pca(FS.dat)
+OptDim(Obj, d.max = 10)
+
+pcaObj <- svd.pca(dat)
+Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
+OptDim(dat)
+#################################################
