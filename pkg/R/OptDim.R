@@ -515,29 +515,29 @@ EstDim <- function(	Obj,
 
 
 #### Test
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fpca.fit.R")
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/pca.fit.R")
-source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
+#source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fpca.fit.R")
+#source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/pca.fit.R")
+#source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
 # create data for FPCA
-library(pspline)
-T   = 100
-N   = 50
-dim = 2
+#library(pspline)
+#T   = 100
+#N   = 50
+#dim = 2
 
 ## FS-Structure
-FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.7)
-str(FS.obj)
-FS.obs   <- FS.obj[[1]]
-matplot(FS.obj[[3]])
-matplot(FS.obj[[4]])
-FS.dat   <- FS.obs
+#FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.7)
+#str(FS.obj)
+#FS.obs   <- FS.obj[[1]]
+#matplot(FS.obj[[3]])
+#matplot(FS.obj[[4]])
+#FS.dat   <- FS.obs
 
-OptDim(FS.dat, criteria.of = "KSS")
+#OptDim(FS.dat, criteria.of = "KSS")
 
-Obj <- svd.pca(FS.dat)
-OptDim(Obj, d.max = 10)
+#Obj <- svd.pca(FS.dat)
+#OptDim(Obj, d.max = 10)
 
-pcaObj <- svd.pca(dat)
-Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
-OptDim(dat)
+#pcaObj <- svd.pca(dat)
+#Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
+#OptDim(dat)
 #################################################
