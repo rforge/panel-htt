@@ -361,15 +361,19 @@ Eup.default <- function(formula
 
     # additive effects
 
+	# calculate the constant
+	OvConst <- sapply(1:(P+1),  function(i) PF.obj[[i]]$TRm$OVc)
+	ConsCoef <- OvConst[1] - OvConst[-1]%*%beta.Eup 
+
 	# calculate the additive indivudal effects
 
 	ind.means <- sapply(1:(P+1),  function(i) PF.obj[[i]]$TRm$InC)
-	Ind.Eff <- ind.means[,1] - ind.means[,-1]%*%beta.Eup 
+	Ind.Eff <- ind.means[,1] - ind.means[,-1]%*%beta.Eup - c(ConsCoef)
 
 	# calculate the additive time effecs
 
 	tim.means <- sapply(1:(P+1),  function(i) PF.obj[[i]]$TRm$TiVC)
-	Tim.Eff <- tim.means[,1] - tim.means[,-1]%*%beta.Eup 
+	Tim.Eff <- tim.means[,1] - tim.means[,-1]%*%beta.Eup - c(ConsCoef)
 
 
     # factor dimension 
@@ -399,6 +403,7 @@ Eup.default <- function(formula
 ## Results
 				
 	list(Observed.Regressors = slope.inf
+		, Intercept = c(ConsCoef)
 		, Add.Ind.Eff = c(Ind.Eff)
 		, Add.Tim.Eff = c(Tim.Eff)
 		, used.dim= used.dim

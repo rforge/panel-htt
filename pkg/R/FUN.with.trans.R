@@ -30,8 +30,8 @@ FUN.with.trans <- function(z, N, T, is.intercept,
                            "TDV" = c(Z),     # *T*ransformed *D*ata *V*ector
                            "TRm" = list(     # *TR*ansformation *m*eans. 
 						"OVc"  = const,	# *OV*erall *c*onstant
-						"InC"  = rep.int(0, N),	# *In*dividual *C*onstants
-						"TiVC" = rep.int(0, T))	# *Ti*m V*arying *C*onstants
+						"InC"  = rep.int(const, N),	# *In*dividual *C*onstants
+						"TiVC" = rep.int(const, T))	# *Ti*m V*arying *C*onstants
 				   )    
                   return(liste)
            }
@@ -47,7 +47,7 @@ FUN.with.trans <- function(z, N, T, is.intercept,
                            "TRm" = list(	  	 # *TR*ansformation *m*eans. 
 						"OVc"  = const,	# *OV*erall *c*onstant
 						"InC"  = InC,	# *In*dividual *C*onstants
-						"TiVC" = rep.int(0, T))	# *Ti*m V*arying *C*onstants
+						"TiVC" = rep.int(const, T))	# *Ti*m V*arying *C*onstants
 				   )  
                   return(liste)								
            }
@@ -62,7 +62,7 @@ FUN.with.trans <- function(z, N, T, is.intercept,
                            "TDV" = c(Z),         # *T*ransformed *D*ata *V*ector
                            "TRm" = list(	  	 # *TR*ansformation *m*eans. 
 						"OVc"  = const,	# *OV*erall *c*onstant
-						"InC"  = rep.int(0, N), 	# *In*dividual *C*onstants
+						"InC"  = rep.int(const, N), 	# *In*dividual *C*onstants
 						"TiVC" = TiVC)	# *Ti*m V*arying *C*onstants
 				   )  
                   return(liste)								
@@ -70,7 +70,8 @@ FUN.with.trans <- function(z, N, T, is.intercept,
            , twoways = {
 			InC   <- colMeans(z)
 			TiVC  <- rowMeans(z)
-             	Z  	<- z - matrix(InC, T, N, byrow = TRUE) - TiVC + mean(z)
+			Cons  <- mean(z)
+             	Z  	<- z - matrix(InC, T, N, byrow = TRUE) - TiVC + Cons
              	liste <- list(
                               "Tr"  = "twoway",   # Name of *Tr*ansformation
                               "I"   = ifelse(is.intercept, TRUE, FALSE), 
@@ -78,7 +79,7 @@ FUN.with.trans <- function(z, N, T, is.intercept,
                               "TDM" = Z,          # *T*ransformed *D*ata *M*atrix
                               "TDV" = c(Z),       # *T*ransformed *D*ata *V*ector
                               "TRm" = list(	  	 # *TR*ansformation *m*eans. 
-						"OVc"  = const,	# *OV*erall *c*onstant
+						"OVc"  = Cons,	# *OV*erall *c*onstant
 						"InC"  = InC, 	# *In*dividual *C*onstants
 						"TiVC" = TiVC)	# *Ti*m V*arying *C*onstants
 				   )  
