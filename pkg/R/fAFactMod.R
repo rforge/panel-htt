@@ -1,5 +1,5 @@
 ######################################################################
-rm(list=ls())
+## rm(list=ls())
 fAFactMod <- function(dat, demean   = TRUE,
                       add.effects   = c("none", "individual", "time", "twoways"),
                       dim.criterion = c("KSS.C1", "KSS.C2",
