@@ -111,7 +111,7 @@ KSS.default <- function(formula,
                                 Or.X %*% beta    + matrix(factor.stract, N*T, 1),
                                 T, N)
     est$Orig.Y        <- Or.Y
-    est$residuals     <- as.vector(Or.Y) - as.vector(est$fitted.values)
+    est$residuals     <- Or.Y - est$fitted.values
     est$beta          <- beta
     est$call          <- match.call()
     est$effect        <- effect        #Additive-Effect-Type 
@@ -184,10 +184,10 @@ print.summary.KSS <- function(x, ...){
   ## 
   cat("\nAdditive Effects Type:")
   print(x$eff)
-  cat("Used Dimension:")
+  ## Number of Dimension:
   ud <- matrix(x$KSS.obj$fAFactMod$used.fdim)
   colnames(ud) <- ""; rownames(ud) <- "";
-  print(ud)
+  cat(c("Number of Dimension: ",ud))
   cat("\n")
   printCoefmat(x$coefficients)
 }
@@ -224,8 +224,6 @@ dim =   4
 ## FS-Structure
 FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.25)
 FS.obs   <- FS.obj[[1]]
-par(mfrow=c(1,1))
-matplot(FS.obs)
 
 ## Regressor 1
 X1 <- matrix(NA, T, N)
@@ -248,10 +246,22 @@ add.ind      <- matrix(rep(rnorm(N),each=T),T,N)
  # time
 add.tim.fun  <-  FS.obj[[3]] %*% as.matrix(colMeans(FS.obj[[4]]))*c(1e18,1e18,1e18,1e18)
 add.tim.fun  <-  matrix(rep(add.tim.fun,N),T,N); #matplot(add.tim.fun)
+add.tim.fun  <-  add.tim.fun - mean(add.tim.fun[,1])
 
 ## Panel-Model with Intercept, Global time trend-function, and const individual effects:
-Y            <- I.scl + add.tim.fun + add.ind + 5 * X1 - 5 * X2 + FS.obs
+Y            <- I.scl + add.tim.fun + add.ind + 5 * X1 - 5 * X2 + FS.obs; #matplot(Y)
+
+## Effecs: "None with Intercept" 
+none.intc.obj <- KSS(formula=Y ~ X1+X2, effect = "none", dim.crit = "KSS.C1"); str(none.intc.obj)
+summary(none.intc.obj)
+## check-plot:
+par(mfrow=c(1,3))
 matplot(Y)
+matplot(none.intc.obj$fitted.values)
+matplot(none.intc.obj$residuals)
+par(mfrow=c(1,1))
+
+colMeans(none.intc.obj$residuals)
 
 ## dieses model ist genau das gleiche wie im KSS-Paper:
 ## Transformation nur mit TimeVaryingConstants "TiVC":
