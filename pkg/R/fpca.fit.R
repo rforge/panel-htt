@@ -24,6 +24,7 @@ fsvd.pca.ramsay <- function(Q,
     spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, method = 3       )$spar  * 0.8 #
   }                                                                                            #
   Q          <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar   = spar.low)$ysmth       #
+  par(mfrow=c(1,3));matplot(Q, main="1.Step indiv Effects")
   ##===========================================================================================#
 
   ## For method=Ramsay: dual-matrix or not?
@@ -38,7 +39,7 @@ fsvd.pca.ramsay <- function(Q,
   ## Hier nicht unbedingt notwendig, da                                        #
   ## angenommen wird, dass:                                                    #
   ## -beide indizes i bzw. t bei 1 beginnen!                                   #
-  ## -len.Interval==n.discr-1 s.t: (len.Interval)/(n.discr-1) = 1              #
+  ## -len.Interval==n.discr-1 sodass h=(len.Interval)/(n.discr-1) = 1          #
   len.Interval    <- ifelse(dual, nc-1, nr-1)       # dual: N-1, non-dual: T-1 #
   n.discr         <- ifelse(dual, nc,   nr  )       # dual: N  , non-dual: T   #  
   h               <- (len.Interval)/(n.discr-1)                                #
@@ -50,6 +51,8 @@ fsvd.pca.ramsay <- function(Q,
   Spdec           <- eigen(cov.mat, symmetric= TRUE)
   Eval	          <- Spdec[[1]]
   Evec    	  <- Spdec[[2]]
+
+  ## 
 
   ## compare rank and given.d  
   nbr.pos.ev      <- length(Eval[Eval > 0])
@@ -125,7 +128,10 @@ fsvd.pca.ramsay <- function(Q,
     Q.fit      <- t(Q.fit)
     Q          <- t(Q)          # (under)smoothed Q   
   }
-    
+
+  matplot(R.fun[,1:4], main="R.fun",type="o")
+  matplot(L.fun[,1:4], main="L.fun",type="o")
+  
   ## prepare return-values       
   d.seq <- seq.int(0, (max.rk-1)) # dimension-sequence
   E     <- Eval[1:max.rk]

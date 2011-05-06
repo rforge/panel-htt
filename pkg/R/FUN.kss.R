@@ -227,7 +227,7 @@ N   =  50
 dim =   4
 
 ## FS-Structure
-FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.25)
+FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.25, plot.opt = FALSE)
 FS.obs   <- FS.obj[[1]]
 
 ## Regressor 1
@@ -256,29 +256,29 @@ add.tim.fun  <-  add.tim.fun - mean(add.tim.fun[,1])
 ## Panel-Model with Intercept, Global time trend-function, and const individual effects:
 Y            <- I.scl + add.tim.fun + add.ind + 5 * X1 - 5 * X2 + FS.obs; #matplot(Y)
 
-## Cigarets-Data Set: ##################################################
-library(plm);# ?Cigar
-data(Cigar)
-T        <- (1992-1962)
-N        <- 46
+## ## Cigarets-Data Set: ##################################################
+## library(plm);# ?Cigar
+## data(Cigar)
+## T        <- (1992-1962)
+## N        <- 46
 
-  ## Dependent-Var
-l.sales  <- log(matrix(Cigar$sales, T,N)) # log.Cigaret-Sales per Capita
-  ##
-cpi      <- matrix(Cigar$cpi, T,N)        # Consumer Price Index
-  ## Independent-Var
-l.r.ndi    <- log(matrix(Cigar$ndi,   T,N)/cpi) # log.real.Disposable Income per Capita
-l.r.price  <- log(matrix(Cigar$price, T,N)/cpi) # log.real.Price per Pack of Cigarets
-l.r.pimin  <- log(matrix(Cigar$pimin, T,N)/cpi) # log.real.Minimum-Price per Pack of Cigarets in Neighbouring States
-##
-par(mfrow=c(1,4))
-matplot(l.sales,main="l.Sales"); 
-matplot(l.r.ndi,main="l.r.ndi");
-matplot(l.r.price,main="l.r.Price");
-matplot(l.r.pimin,main="l.r.pimin");
-par(mfrow=c(1,1))
+##   ## Dependent-Var
+## l.sales  <- log(matrix(Cigar$sales, T,N)) # log.Cigaret-Sales per Capita
+##   ##
+## cpi      <- matrix(Cigar$cpi, T,N)        # Consumer Price Index
+##   ## Independent-Var
+## l.r.ndi    <- log(matrix(Cigar$ndi,   T,N)/cpi) # log.real.Disposable Income per Capita
+## l.r.price  <- log(matrix(Cigar$price, T,N)/cpi) # log.real.Price per Pack of Cigarets
+## l.r.pimin  <- log(matrix(Cigar$pimin, T,N)/cpi) # log.real.Minimum-Price per Pack of Cigarets in Neighbouring States
+## ##
+## par(mfrow=c(1,4))
+## matplot(l.sales,main="l.Sales"); 
+## matplot(l.r.ndi,main="l.r.ndi");
+## matplot(l.r.price,main="l.r.Price");
+## matplot(l.r.pimin,main="l.r.pimin");
+## par(mfrow=c(1,1))
 
-#########################################################################
+## #########################################################################
 
 
 ## Effecs: "None with Intercept" 
@@ -286,7 +286,7 @@ none.intc.obj      <- KSS(formula=Y       ~ X1          + X2,
                           effect = "none", dim.crit = "KSS.C1"); #str(none.intc.obj)
 Cigs.none.intc.obj <- KSS(formula=l.sales ~ l.r.ndi + l.r.price + l.r.pimin,
                           effect = "none", dim.crit = "KSS.C1", factor.dim=2); #str(Cigs.none.intc.obj)
-summary(none.intc.obj)
+summary(none.intc.obj); plot(summary(none.intc.obj))
 summary(Cigs.none.intc.obj); # plot(summary(Cigs.none.intc.obj))
 ## check-plot:
 par(mfrow=c(1,3))
@@ -303,7 +303,7 @@ time.obj      <- KSS(formula=Y       ~-1 + X1      + X2,
                      effect = "time", dim.crit = "KSS.C1"); #str(time.obj)
 Cigs.time.obj <- KSS(formula=l.sales ~-1 + l.r.ndi + l.r.price + l.r.pimin,
                      effect = "time", dim.crit = "KSS.C1", factor.dim=2); #str(Cigs.time.obj)
-summary(time.obj)
+summary(time.obj); plot(summary(time.obj))
 summary(Cigs.time.obj); # plot(summary(Cigs.time.obj))
 mean(time.obj$beta.0)
 ## check-plot:

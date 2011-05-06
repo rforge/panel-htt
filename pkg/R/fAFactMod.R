@@ -27,6 +27,7 @@ fAFactMod <- function(dat, demean   = TRUE,
   ## fpca.fit (within fpca.fit(): "dat" is (under)smoothed)
 
   fpca.fit.obj <- fpca.fit(dat           = dat,
+                           fpca.method   = "Ramsay",
                            spar.low      = spar.low,    # if NULL: 0.8*spar.opt (GCV)
                            given.d       = factor.dim,  # if NULL: max.rk <- ifelse(neglect.neg.ev,nbr.pos.ev, length(Eval))
                            restrict.mode = restrict.mode,
@@ -35,11 +36,13 @@ fAFactMod <- function(dat, demean   = TRUE,
   
   ## dimension selection
   dim.criterion <- match.arg(dim.criterion)
-  est.dim       <- EstDim(Obj           = dat,
+  est.dim       <- EstDim(Obj           = fpca.fit.obj, # Obj is also allowed to be a matrix
                           dim.criterion = dim.criterion,
                           d.max         = d.max,
+                          factor.dim    = factor.dim,
                           sig2.hat      = sig2.hat,
-                          level         = alpha, spar= 3)
+                          level         = alpha,
+                          spar          = 3)
   
   opt.d         <- est.dim[1,2]
   used.d        <- ifelse(is.null(factor.dim), opt.d, factor.dim)
