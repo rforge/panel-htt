@@ -110,8 +110,8 @@ KSS.default <- function(formula,
     est$fitted.values <- matrix(rep(est$mu, T*N) + rep(est$beta.0, N) + rep(est$tau, each=T) +
                                 Or.X %*% beta    + matrix(factor.stract, N*T, 1),
                                 T, N)
-    est$Orig.Y        <- Or.Y
-    est$residuals     <- Or.Y - est$fitted.values
+    est$Orig.Y        <- matrix(Or.Y, T, N)
+    est$residuals     <- est$Orig.Y - est$fitted.values
     est$beta          <- beta
     est$call          <- match.call()
     est$effect        <- effect        #Additive-Effect-Type 
@@ -164,10 +164,17 @@ summary.KSS <- function(x,...){
                 "z.value"  = round(as.numeric(zval), digits=2),
                 "Pr(>z)"   = round(as.numeric(2*pnorm(-abs(zval))), digits=2))  
   rownames(TAB) <- x$names[2:length(x$names)]
+
+  ## Number of Dimension and Effects-Type:
+  TAB2 <- rbind("Number of Factor-Dimension: "   = as.numeric(x$fAFactMod$used.fdim),
+                "Additive Effects Type: "        = as.character(x$eff))
+  colnames(TAB2) <- c("")
+  
   ## Result:
   result        <- list(call         = x$call,
                         eff          = eff,
                         coefficients = TAB,
+                        nDim.effType = TAB2,
                         Res.outpt    = Res.outpt,
                         KSS.obj      = x)                
   class(result) <- "summary.KSS"
@@ -181,26 +188,23 @@ print.summary.KSS <- function(x, ...){
   ## Residuals:
   cat("\nResiduals:\n")
   print(x$Res.outpt)
-  ## 
-  cat("\nAdditive Effects Type:")
-  print(x$eff)
-  ## Number of Dimension:
-  ud <- matrix(x$KSS.obj$fAFactMod$used.fdim)
-  colnames(ud) <- ""; rownames(ud) <- "";
-  cat(c("Number of Dimension: ",ud))
   cat("\n")
+  ## Number of Dimension and Effect-Type
+  print(x$nDim.effType)
+  ## Beta-Coeffs
+  cat("\n Beta-Coefficients\n")
   printCoefmat(x$coefficients)
 }
 
 plot.summary.KSS <- function(x,...){
-  if(x$obj$effect=="time"){
+  if(x$KSS.obj$eff=="time"){
     par(mfrow=c(1,3))
-    plot.ts(x$obj$beta.0, main="beta.0", ylab="",...)
+    plot.ts(x$KSS.obj$beta.0, main="beta.0", ylab="",...)
   }else{par(mfrow=c(1,2))}
-  matplot(x$obj$fAFactMod$factors,
-          main=paste("EstimatedFactor-Structure\n(Used Dimension=",x$obj$fAFactMod$used.fdim,")"),
+  matplot(x$KSS.obj$fAFactMod$factors,
+          main=paste("EstimatedFactor-Structure\n(Used Dimension=",x$KSS.obj$fAFactMod$used.fdim,")"),
           xlab="Time",ylab="", type="l",...)
-  matplot(x$obj$fAFactMod$fitted.values,
+  matplot(x$KSS.obj$fAFactMod$fitted.values,
           main=paste("Fitted individual \nTime-Trends"),
           xlab="Time",ylab="", type="l",...)
   par(mfrow=c(1,1))
@@ -240,10 +244,10 @@ for(i in 1:N){
 I.scl  <-  matrix(rep(70, N*T),T,N)
 
 
-## Additive-Effects
- # individual
+## Additive-Effects:
+   ## individual-effects
 add.ind      <- matrix(rep(rnorm(N),each=T),T,N)
- # time
+   ## time-effects
 add.tim.fun  <-  FS.obj[[3]] %*% as.matrix(colMeans(FS.obj[[4]]))*c(1e18,1e18,1e18,1e18)
 add.tim.fun  <-  matrix(rep(add.tim.fun,N),T,N); #matplot(add.tim.fun)
 add.tim.fun  <-  add.tim.fun - mean(add.tim.fun[,1])
@@ -251,9 +255,38 @@ add.tim.fun  <-  add.tim.fun - mean(add.tim.fun[,1])
 ## Panel-Model with Intercept, Global time trend-function, and const individual effects:
 Y            <- I.scl + add.tim.fun + add.ind + 5 * X1 - 5 * X2 + FS.obs; #matplot(Y)
 
+## Cigarets-Data Set: ##################################################
+library(plm);# ?Cigar
+data(Cigar)
+T        <- (1992-1962)
+N        <- 46
+
+  ## Dependent-Var
+l.sales  <- log(matrix(Cigar$sales, T,N)) # log.Cigaret-Sales per Capita
+  ##
+cpi      <- matrix(Cigar$cpi, T,N)        # Consumer Price Index
+  ## Independent-Var
+l.r.ndi    <- log(matrix(Cigar$ndi,   T,N)/cpi) # log.real.Disposable Income per Capita
+l.r.price  <- log(matrix(Cigar$price, T,N)/cpi) # log.real.Price per Pack of Cigarets
+l.r.pimin  <- log(matrix(Cigar$pimin, T,N)/cpi) # log.real.Minimum-Price per Pack of Cigarets in Neighbouring States
+##
+par(mfrow=c(1,4))
+matplot(l.sales,main="l.Sales"); 
+matplot(l.r.ndi,main="l.r.ndi");
+matplot(l.r.price,main="l.r.Price");
+matplot(l.r.pimin,main="l.r.pimin");
+par(mfrow=c(1,1))
+
+#########################################################################
+
+
 ## Effecs: "None with Intercept" 
-none.intc.obj <- KSS(formula=Y ~ X1+X2, effect = "none", dim.crit = "KSS.C1"); str(none.intc.obj)
+none.intc.obj      <- KSS(formula=Y       ~ X1          + X2,
+                          effect = "none", dim.crit = "KSS.C1"); #str(none.intc.obj)
+Cigs.none.intc.obj <- KSS(formula=l.sales ~ l.r.ndi + l.r.price + l.r.pimin,
+                          effect = "none", dim.crit = "KSS.C1"); #str(Cigs.none.intc.obj)
 summary(none.intc.obj)
+summary(Cigs.none.intc.obj); # plot(summary(Cigs.none.intc.obj))
 ## check-plot:
 par(mfrow=c(1,3))
 matplot(Y)
@@ -265,8 +298,11 @@ colMeans(none.intc.obj$residuals)
 
 ## dieses model ist genau das gleiche wie im KSS-Paper:
 ## Transformation nur mit TimeVaryingConstants "TiVC":
-time.obj <- KSS(formula=Y~-1+X1+X2, effect = "time", dim.crit = "KSS.C1"); str(time.obj)
+time.obj      <- KSS(formula=Y       ~-1 + X1      + X2,  effect = "time", dim.crit = "KSS.C1"); #str(time.obj)
+Cigs.time.obj <- KSS(formula=l.sales ~-1 + l.r.ndi + l.r.price + l.r.pimin,
+                     effect = "time", dim.crit = "KSS.C1"); #str(Cigs.time.obj)
 summary(time.obj)
+summary(Cigs.time.obj); # plot(summary(Cigs.time.obj))
 mean(time.obj$beta.0)
 ## check-plot:
 par(mfrow=c(1,2))
