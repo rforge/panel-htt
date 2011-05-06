@@ -276,7 +276,7 @@ RH.OptDim <- function(Obj, criteria = c("ER", "GR"), d.max = NULL){
 
 
 #####################################################################################################################
-KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, d.max = NULL){
+KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, factor.dim = NULL, d.max = NULL){
   # kann direkt mit fsvd.pca-objekten arbeiten
   nr       <- obj$nr
   nc       <- obj$nc
@@ -342,13 +342,21 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, d.max = NULL){
   d.opt.KSS1  <- length(crit1[crit1 > 0])# minus 1, weil start bei dim = 0
                                          # plus  1, weil nur die dim, die das crit nicht erfüllen.
   d.opt.KSS2  <- length(crit2[crit2 > 0])
-  result1     <- c(d.opt.KSS1, w[d.opt.KSS1+1], sig2.hat, alpha )
-  result2     <- c(d.opt.KSS2, w[d.opt.KSS2+1], sig2.hat, level2)# level2: p.value of thres2 (thres2: alternativ crit.value)
+
+  if(!is.null(factor.dim)){
+    used.dim.C1 <- ifelse(w[d.opt.KSS1+1]<factor.dim, w[d.opt.KSS1+1], factor.dim)
+    used.dim.C2 <- ifelse(w[d.opt.KSS2+1]<factor.dim, w[d.opt.KSS2+1], factor.dim)
+  }else{
+    used.dim.C1 <- w[d.opt.KSS1+1]
+    used.dim.C2 <- w[d.opt.KSS2+1]
+  }
+  result1     <- c(d.opt.KSS1, used.dim.C1, w[d.opt.KSS1+1], sig2.hat, alpha )
+  result2     <- c(d.opt.KSS2, used.dim.C2, w[d.opt.KSS2+1], sig2.hat, level2)# level2: p.value of thres2 (thres2: alternativ crit.value)
 
   result      <- rbind(result1, result2)
   Result      <- vector("list", 2)
   Result[[1]] <- data.frame(I(c("KSS.C1", "KSS.C2")), result)
-  colnames(Result[[1]]) <- c("Criterion", "Optimal Dimension", "sd2.rest", "sd2.hat", "level")
+  colnames(Result[[1]]) <- c("Criterion", "Used Dimension", "Optimal Dimension", "sd2.rest", "sd2.hat", "level")
   rownames(Result[[1]]) <- c("KSS.1", "KSS.2")
 ##   Result[[2]] <- c(round(delta[d.opt.KSS1],2), round(1-pnorm(delta[d.opt.KSS1]), 2), round(thres1, 2), round(alpha, 2))
 ##   names(Result[[2]]) <- c("Test.Stat", "p.value", "crit.value", "sig.level")
@@ -367,7 +375,8 @@ KSS.OptDim <- function(Obj,
                        sig2.hat    = NULL,
                        alpha       = 0.01, 
                        spar.low    = NULL,
-                       d.max       = NULL){
+                       d.max       = NULL,
+                       factor.dim  = NULL){
   ## what is Obj?
   if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca"){
     if(class(Obj)=="fsvd.pca") obj <- Obj
@@ -410,10 +419,10 @@ KSS.OptDim <- function(Obj,
   }else{
     if(is.matrix(Obj)){      
       ## fPCA
-      fsvd.obj  <- fsvd.pca.ramsay(Q = Obj)
+      obj  <- fsvd.pca.ramsay(Q = Obj)
     }
   }
-  result        <- KSS.dim.opt(fsvd.obj, sig2.hat = sig2.hat, alpha = alpha, d.max = d.max)
+  result        <- KSS.dim.opt(obj, sig2.hat = sig2.hat, alpha = alpha, factor.dim = factor.dim, d.max = d.max)
   criteria      <- match.arg(criteria, several.ok = TRUE)
   Result        <- vector("list", 2)
   Result[[1]]   <- result[[1]][result[[1]][,1] %in% criteria, ]
@@ -461,23 +470,24 @@ summary.OptDim <- function(x, ...)
 	}
 
 
-EstDim <- function(	Obj, 
-				dim.criterion = c("PC1", "PC2", "PC3",
-							"IC1", "IC2", "IC3",
-						      "IPC1","IPC2", "IPC3",
-							"KSS.C1", "KSS.C2",
-                                          "ED",  "ER",  "GR"),
-				d.max,
-				sig2.hat,
-				level = 0.01,
-				spar
-			)
-	{
+EstDim <- function(Obj, 
+                   dim.criterion = c("PC1", "PC2", "PC3",
+                     "IC1", "IC2", "IC3",
+                     "IPC1","IPC2", "IPC3",
+                     "KSS.C1", "KSS.C2",
+                     "ED",  "ER",  "GR"),
+                   d.max,
+                   factor.dim,
+                   sig2.hat,
+                   level = 0.01,
+                   spar
+                   )
+  {
   ## missing parameters
-
+         if(missing(factor.dim)) factor.dim  <- NULL
   	 if(missing(d.max))      d.max       <- NULL
  	 if(missing(sig2.hat))   sig2.hat    <- NULL
-  	 if(missing(spar))   	 spar    <- NULL
+  	 if(missing(spar))   	 spar        <- NULL
 
   ## estimation 
 	 dim.criterion <- match.arg(dim.criterion)
@@ -506,9 +516,11 @@ EstDim <- function(	Obj,
                           GR   = RH.OptDim(Obj, criteria = c("GR")
                             , d.max = d.max),
                           KSS.C1  = KSS.OptDim(Obj, criteria = c("KSS.C1")
-				    , sig2.hat = sig2.hat, alpha=level, spar.low= spar)[[1]],
+				    , sig2.hat = sig2.hat, alpha=level, spar.low= spar
+                                    , factor.dim=factor.dim, d.max=d.max)[[1]],
                           KSS.C2  = KSS.OptDim(Obj, criteria = c("KSS.C2")
-				    , sig2.hat = sig2.hat, alpha=level, spar.low= spar)[[1]]
+				    , sig2.hat = sig2.hat, alpha=level, spar.low= spar
+                                    , factor.dim=factor.dim, d.max=d.max)[[1]]
                           )
 	est.dim
 	}

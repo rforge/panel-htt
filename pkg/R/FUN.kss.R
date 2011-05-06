@@ -82,7 +82,7 @@ KSS.default <- function(formula,
                                add.effects = "none",
                                ## the following args go to KSS.dim.opt() via EstDim()
                                alpha       = alpha,
-                               dim.crit    = dim.crit)
+                               dim.crit    = dim.crit, ...)
     ## *fAFactMod.obj* is a list with: fitted.values,factors,loadings,resid.sd2,given.fdim,optimal.fdim,used.fdim    
     ##==========================================================================
 
@@ -166,7 +166,8 @@ summary.KSS <- function(x,...){
   rownames(TAB) <- x$names[2:length(x$names)]
 
   ## Number of Dimension and Effects-Type:
-  TAB2 <- rbind("Number of Factor-Dimension: "   = as.numeric(x$fAFactMod$used.fdim),
+  TAB2 <- rbind("Used Factor Dimension: "        = x$fAFactMod$used.fdim,
+                "Estimated Factor Dimension: "   = x$fAFactMod$optimal.fdim,
                 "Additive Effects Type: "        = as.character(x$eff))
   colnames(TAB2) <- c("")
   
@@ -197,7 +198,7 @@ print.summary.KSS <- function(x, ...){
 }
 
 plot.summary.KSS <- function(x,...){
-  if(x$KSS.obj$eff=="time"){
+  if(x$KSS.obj$eff=="time"|x$KSS.obj$eff=="twoways"){
     par(mfrow=c(1,3))
     plot.ts(x$KSS.obj$beta.0, main="beta.0", ylab="",...)
   }else{par(mfrow=c(1,2))}
@@ -284,7 +285,7 @@ par(mfrow=c(1,1))
 none.intc.obj      <- KSS(formula=Y       ~ X1          + X2,
                           effect = "none", dim.crit = "KSS.C1"); #str(none.intc.obj)
 Cigs.none.intc.obj <- KSS(formula=l.sales ~ l.r.ndi + l.r.price + l.r.pimin,
-                          effect = "none", dim.crit = "KSS.C1"); #str(Cigs.none.intc.obj)
+                          effect = "none", dim.crit = "KSS.C1", factor.dim=2); #str(Cigs.none.intc.obj)
 summary(none.intc.obj)
 summary(Cigs.none.intc.obj); # plot(summary(Cigs.none.intc.obj))
 ## check-plot:
@@ -298,9 +299,10 @@ colMeans(none.intc.obj$residuals)
 
 ## dieses model ist genau das gleiche wie im KSS-Paper:
 ## Transformation nur mit TimeVaryingConstants "TiVC":
-time.obj      <- KSS(formula=Y       ~-1 + X1      + X2,  effect = "time", dim.crit = "KSS.C1"); #str(time.obj)
+time.obj      <- KSS(formula=Y       ~-1 + X1      + X2,
+                     effect = "time", dim.crit = "KSS.C1"); #str(time.obj)
 Cigs.time.obj <- KSS(formula=l.sales ~-1 + l.r.ndi + l.r.price + l.r.pimin,
-                     effect = "time", dim.crit = "KSS.C1"); #str(Cigs.time.obj)
+                     effect = "time", dim.crit = "KSS.C1", factor.dim=2); #str(Cigs.time.obj)
 summary(time.obj)
 summary(Cigs.time.obj); # plot(summary(Cigs.time.obj))
 mean(time.obj$beta.0)
@@ -312,10 +314,14 @@ matlines(time.obj$beta.0[,1], col="red", lwd=3)
 par(mfrow=c(1,1))
 
 ## model mit time effekten u individuellen effekten:
-tway.obj <- KSS(formula=Y~-1+X1+X2, effect = "twoways",    dim.crit = "KSS.C1"); str(tway.obj)
+tway.obj      <- KSS(formula=Y       ~-1 + X1 + X2,
+                     effect = "twoways",    dim.crit = "KSS.C1"); # str(tway.obj)
+Cigs.tway.obj <- KSS(formula=l.sales ~-1 + l.r.ndi + l.r.price + l.r.pimin,
+                     effect = "twoways", dim.crit = "KSS.C1"); # str(Cigs.tway.obj)
 summary(tway.obj)
+summary(Cigs.tway.obj); # plot(summary(Cigs.tway.obj))
 
-mean(tway.obj$beta.0)
+round(mean(Cigs.tway.obj$beta.0),digits=2)
 ## check-plot:
 par(mfrow=c(1,2))
 matplot(Y)
