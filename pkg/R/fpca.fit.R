@@ -3,7 +3,6 @@
 ## Ramsay-approach 
 #########################################################################################
 
-
 fsvd.pca.ramsay <- function(Q,
                             allow.dual      = TRUE,
                             given.d         = NULL,
@@ -43,7 +42,7 @@ fsvd.pca.ramsay <- function(Q,
   len.Interval    <- ifelse(dual, nc-1, nr-1)       # dual: N-1, non-dual: T-1 #
   n.discr         <- ifelse(dual, nc,   nr  )       # dual: N  , non-dual: T   #  
   h               <- (len.Interval)/(n.discr-1)                                #
-  w               <- c(h/2, rep(h, n.discr-2), h/2)                            #
+  w               <- c(rep(h, n.discr))   #c(h/2, rep(h, n.discr-2), h/2)                            #
   cov.mat         <- diag(sqrt(w)) %*% tcrossprod(Q) %*% diag(sqrt(w))         #
   ##===========================================================================#
   
@@ -89,13 +88,13 @@ fsvd.pca.ramsay <- function(Q,
   if(calcul.loadings){
     S                       <- crossprod(Q, L)[, 0:max.rk , drop= FALSE] # crossprod: t(Q) %*% L
                                                                          # if dual: dim(S)= TxN, if non-dual: dim(S)=NxT
-    ## scaling such that: ||R.fun||_E == I
+    ## scaling such that: ||R.fun||_E == 1
     R                       <- S %*% diag(1/(sqrt(diag(crossprod(S)))))  # if dual: dim(R)= TxN, if non-dual: dim(R)=NxT
     ## approximation to L2-norm ===========================================================================#
     len.Interval.ast    <- ifelse(!dual, nc-1, nr-1)                     # if dual: N-1, if non-dual: T-1  #
     n.discr.ast         <- ifelse(!dual, nc,   nr  )                     # if dual: N  , if non-dual: T    #
     h.ast               <- (len.Interval.ast)/(n.discr.ast-1)                                              #
-    w.ast               <- c(h.ast/2, rep(h.ast, n.discr.ast-2), h.ast/2)                                  #
+    w.ast               <- c(rep(h.ast, n.discr.ast)) #c(h.ast/2, rep(h.ast, n.discr.ast-2), h.ast/2)                                  #
     R.fun               <- diag(1/(sqrt(w.ast))) %*% R                                                     #
     ##=====================================================================================================#
 

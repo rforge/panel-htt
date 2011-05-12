@@ -6,7 +6,7 @@ fAFactMod <- function(dat, demean   = TRUE,
                         "PC1", "PC2", "PC3", "IC1", "IC2", "IC3", "IPC1", "IPC2", "IPC3", "ED", "ER", "GR"),
                       factor.dim, d.max, sig2.hat, spar.low,
                       alpha         = 0.01,
-                      restrict.mode = c("restrict.factors","restrict.loadings"), allow.dual = TRUE)  
+                      restrict.mode = c("restrict.factors","restrict.loadings"), allow.dual = FALSE)  
 {
   ## checks and preparations
   is.regular.panel(dat, stopper = TRUE) 
@@ -49,13 +49,15 @@ fAFactMod <- function(dat, demean   = TRUE,
 
   ## factors and loadings parameters
   if(used.d!=0){
-    factors  <- fpca.fit.obj$factors[,  1:used.d, drop= FALSE]
-    loadings <- fpca.fit.obj$loadings[, 1:used.d, drop= FALSE]
-    dat.fit  <- tcrossprod(factors, loadings)
-    sd2      <- fpca.fit.obj$Sd2[used.d+1]
+    factors      <- fpca.fit.obj$factors[,  1:used.d, drop= FALSE]
+    factors.all  <- fpca.fit.obj$factors
+    loadings     <- fpca.fit.obj$loadings[, 1:used.d, drop= FALSE]
+    dat.fit      <- tcrossprod(factors, loadings)
+    sd2          <- fpca.fit.obj$Sd2[used.d+1]
     
     result   <- list(fitted.values = dat.fit,
-                     factors       = factors, 
+                     factors       = factors,
+                     factors.all   = factors.all,
                      loadings      = loadings,
                      sd2           = sd2,
                      given.fdim    = factor.dim,
@@ -63,13 +65,15 @@ fAFactMod <- function(dat, demean   = TRUE,
                      used.fdim     = used.d)
   }
   else{
-    factors  <- matrix(0, nr, 1)
-    loadings <- matrix(0, nc, 1)
-    dat.fit  <- tcrossprod(factors, loadings)
-    sd2      <- fpca.fit.obj$Sd2[used.d+1]
+    factors      <- matrix(0, nr, 1)
+    factors.all  <- fpca.fit.obj$factors
+    loadings     <- matrix(0, nc, 1)
+    dat.fit      <- tcrossprod(factors, loadings)
+    sd2          <- fpca.fit.obj$Sd2[used.d+1]
     
     result   <- list(fitted.values = dat.fit,
                     factors        = factors,
+                    factors.all    = factors.all,
                     loadings       = loadings,
                     resid.sd2      = sd2,
                     given.fdim     = factor.dim, 

@@ -86,6 +86,8 @@ KSS.default <- function(formula,
     ## *fAFactMod.obj* is a list with: fitted.values,factors,loadings,resid.sd2,given.fdim,optimal.fdim,used.fdim    
     ##==========================================================================
 
+
+   
     ## re-estimate beta=========================================================
     factor.stract <- tcrossprod(fAFactMod.obj$factors, fAFactMod.obj$loadings)
     NEW.TR.Y.mat  <- TR.Y.mat - factor.stract
@@ -101,14 +103,19 @@ KSS.default <- function(formula,
                        beta.hat      = beta)
     
     ## re-estimation of sig2.hat (Paper KSS Section 3.4)==========================================
-    est$sig2.hat <- 1/((N-1)*T) * sum((TR.Y - TR.X %*% beta - matrix(factor.stract, N*T, 1))^2)
+    YOVc            <- PF.obj[[1]]$TRm$OVc
+    XOVc            <- sapply(2:(P+1), function(i)PF.obj[[i]]$TRm$OVc)
+    Or.Y_minus_YOVc <- Or.Y - YOVc
+    Or.X_minus_XOVc <- Or.X - matrix(rep(XOVc, each=(N*T)), N*T, P)
+    
+    est$sig2.hat <- 1/((N-1)*T) * sum((Or.Y_minus_YOVc - Or.X_minus_XOVc %*% beta - matrix(factor.stract, N*T, 1))^2)
     
     ## estimation of beta-variance beta.V ========================================================
-    est$beta.V <- est$sig2.hat * solve(bloc1) %*% t.TR.X.TR.X + t.TR.X.TR.X.smth2 - 2*t.TR.X.TR.X.smth %*% solve(bloc1)
+    est$beta.V <- est$sig2.hat * solve(bloc1) %*% (t.TR.X.TR.X + t.TR.X.TR.X.smth2 - 2*t.TR.X.TR.X.smth) %*% solve(bloc1)
     
     ##============================================================================================
     est$fitted.values <- matrix(rep(est$mu, T*N) + rep(est$beta.0, N) + rep(est$tau, each=T) +
-                                Or.X %*% beta    + matrix(factor.stract, N*T, 1),
+                                Or.X %*% beta    + matrix(fAFactMod.obj$fitted.values,N*T,1),#matrix(factor.stract, N*T, 1),
                                 T, N)
     est$Orig.Y        <- matrix(Or.Y, T, N)
     est$residuals     <- est$Orig.Y - est$fitted.values
@@ -247,7 +254,10 @@ I.scl  <-  matrix(rep(70, N*T),T,N)
 
 ## Additive-Effects:
    ## individual-effects
-add.ind      <- matrix(rep(rnorm(N),each=T),T,N)
+
+add.ind      <- sample(c(1:100),N)
+add.ind      <- add.ind-mean(add.ind)
+add.ind      <- matrix(rep(add.ind,each=T),T,N)
    ## time-effects
 add.tim.fun  <-  FS.obj[[3]] %*% as.matrix(colMeans(FS.obj[[4]]))*c(1e18,1e18,1e18,1e18)
 add.tim.fun  <-  matrix(rep(add.tim.fun,N),T,N); #matplot(add.tim.fun)
@@ -281,13 +291,13 @@ Y            <- I.scl + add.tim.fun + add.ind + 5 * X1 - 5 * X2 + FS.obs; #matpl
 ## #########################################################################
 
 
-## Effecs: "None with Intercept" 
+## ## Effecs: "None with Intercept" 
 none.intc.obj      <- KSS(formula=Y       ~ X1          + X2,
                           effect = "none", dim.crit = "KSS.C1"); #str(none.intc.obj)
-Cigs.none.intc.obj <- KSS(formula=l.sales ~ l.r.ndi + l.r.price + l.r.pimin,
-                          effect = "none", dim.crit = "KSS.C1", factor.dim=2); #str(Cigs.none.intc.obj)
+## Cigs.none.intc.obj <- KSS(formula=l.sales ~ l.r.ndi + l.r.price + l.r.pimin,
+##                           effect = "none", dim.crit = "KSS.C1", factor.dim=2); #str(Cigs.none.intc.obj)
 summary(none.intc.obj); plot(summary(none.intc.obj))
-summary(Cigs.none.intc.obj); # plot(summary(Cigs.none.intc.obj))
+## summary(Cigs.none.intc.obj); # plot(summary(Cigs.none.intc.obj))
 ## check-plot:
 par(mfrow=c(1,3))
 matplot(Y)
@@ -295,31 +305,35 @@ matplot(none.intc.obj$fitted.values)
 matplot(none.intc.obj$residuals)
 par(mfrow=c(1,1))
 
-colMeans(none.intc.obj$residuals)
+
 
 ## dieses model ist genau das gleiche wie im KSS-Paper:
 ## Transformation nur mit TimeVaryingConstants "TiVC":
 time.obj      <- KSS(formula=Y       ~-1 + X1      + X2,
                      effect = "time", dim.crit = "KSS.C1"); #str(time.obj)
-Cigs.time.obj <- KSS(formula=l.sales ~-1 + l.r.ndi + l.r.price + l.r.pimin,
-                     effect = "time", dim.crit = "KSS.C1", factor.dim=2); #str(Cigs.time.obj)
+## Cigs.time.obj <- KSS(formula=l.sales ~-1 + l.r.ndi + l.r.price + l.r.pimin,
+##                      effect = "time", dim.crit = "KSS.C1", factor.dim=2); #str(Cigs.time.obj)
+
 summary(time.obj); plot(summary(time.obj))
-summary(Cigs.time.obj); # plot(summary(Cigs.time.obj))
+##summary(Cigs.time.obj); # plot(summary(Cigs.time.obj))
+
+## sollte den Intercept-Parameter ergeben:
 mean(time.obj$beta.0)
 ## check-plot:
-par(mfrow=c(1,2))
-matplot(Y)
+par(mfrow=c(1,3))
+matplot(time.obj$Orig.Y)
 matplot(time.obj$fitted.values)
 matlines(time.obj$beta.0[,1], col="red", lwd=3)
+matplot(time.obj$residuals)
 par(mfrow=c(1,1))
 
 ## model mit time effekten u individuellen effekten:
 tway.obj      <- KSS(formula=Y       ~-1 + X1 + X2,
                      effect = "twoways",    dim.crit = "KSS.C1"); # str(tway.obj)
-Cigs.tway.obj <- KSS(formula=l.sales ~-1 + l.r.ndi + l.r.price + l.r.pimin,
-                     effect = "twoways", dim.crit = "KSS.C1"); # str(Cigs.tway.obj)
+## Cigs.tway.obj <- KSS(formula=l.sales ~-1 + l.r.ndi + l.r.price + l.r.pimin,
+##                      effect = "twoways", dim.crit = "KSS.C1"); # str(Cigs.tway.obj)
 summary(tway.obj)
-summary(Cigs.tway.obj); # plot(summary(Cigs.tway.obj))
+## summary(Cigs.tway.obj); # plot(summary(Cigs.tway.obj))
 
 round(mean(Cigs.tway.obj$beta.0),digits=2)
 ## check-plot:
@@ -331,17 +345,50 @@ matlines(tway.obj$beta.0[,1], col="red", lwd=3)
 par(mfrow=c(1,1))
 
 ## model mit time effekten, individuellen effekten und Intercept:
-tway.intcpt.obj <- KSS(formula=Y ~ X1+X2, effect = "twoways",  dim.crit = "KSS.C1"); str(tway.intcpt.obj)
+tway.intcpt.obj <- KSS(formula=Y ~ X1+X2, effect = "twoways",  dim.crit = "KSS.C1"); ## str(tway.intcpt.obj)
 summary(tway.intcpt.obj)
+plot(summary(tway.intcpt.obj))
 
 tway.intcpt.obj$mu
 mean(tway.intcpt.obj$beta.0)
+## Intercept:
+I.scl[1,1]
+tway.intcpt.obj$mu
+## Individual-Effects:
+add.ind[1,]
+mean(tway.intcpt.obj$tau)
+tway.intcpt.obj$tau
+
 ## check-plot:
-par(mfrow=c(1,2))
+par(mfrow=c(1,4))
 matplot(Y)
 matlines(add.tim.fun, col="red", lwd=3)
 matplot(tway.intcpt.obj$fitted.values)
 matlines(tway.intcpt.obj$beta.0[,1], col="red", lwd=3)
+matplot(tway.intcpt.obj$residuals)
+plot.ts(c(add.tim.fun[,1]-tway.intcpt.obj$beta.0[,1]))
+par(mfrow=c(1,1))
+
+
+
+
+## model mit nur mit individuellen effekten:
+indv.obj <- KSS(formula=Y ~ -1+ X1+X2, effect = "individual",  dim.crit = "KSS.C1"); ## str(tway.intcpt.obj)
+summary(indv.obj)
+plot(summary(indv.obj))
+
+indv.obj$mu
+## check individual effects:
+indv.obj$tau-70
+add.ind[1,] 
+mean(indv.obj$beta.0)
+## check-plot:
+par(mfrow=c(1,3))
+matplot(Y)
+matlines(add.tim.fun, col="red", lwd=3)
+matplot(indv.obj$fitted.values)
+## matlines(indv.obj$beta.0[,1], col="red", lwd=3)
+matplot(indv.obj$residuals)
 par(mfrow=c(1,1))
 
 

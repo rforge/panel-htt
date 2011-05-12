@@ -26,6 +26,11 @@ FUN.add.eff <- function(PF.obj, fAFactMod.obj=NULL, g.fun=NULL, beta.hat)
     }
     P         <- length(PF.obj)-1
     y.in.list <- PF.obj[[1]]
+    T         <- nrow(PF.obj[[1]]$ODM)
+    N         <- ncol(PF.obj[[1]]$ODM)
+
+    max.dim   <- length(fAFactMod.obj$factors.all[1,])
+    max.dim   <- min(c(trunc(T*.8), max.dim))
       
     ##=========================================================================================================
     YInC  <- y.in.list$TRm$InC                                 ## *Y**In*dividual *C*onstants
@@ -36,21 +41,28 @@ FUN.add.eff <- function(PF.obj, fAFactMod.obj=NULL, g.fun=NULL, beta.hat)
     XOVc  <- sapply(2:(P+1), function(i)PF.obj[[i]]$TRm$OVc)   ## *X**OV*erall *c*onstant      
     ##=========================================================================================================
 
+    ## mu:        overall mean effect
+    mu           <- ifelse(y.in.list$I, YOVc - XOVc %*% beta.hat, 0)
     
-    mu           <- ifelse(y.in.list$I, YOVc - XOVc %*% beta.hat, 0) ## mu:        overall mean effect
     if(y.in.list$Tr=="individual"|y.in.list$Tr=="twoway"){
-      tau        <- c((YInC  - YOVc) - (XInC  - XOVc) %*% beta.hat)  ## tau:       individual effects
-    }else{tau    <- 0}    
+      ## tau:       individual effects
+      tau        <- c((YInC  - YOVc) - (XInC  - matrix(rep(XOVc, each=N), N, P)) %*% beta.hat) ## dim(tau): Nx1  
+    }else{
+      ## diese else()-Abfrage könnte weg, da bei "none"/"time" die elemente in YInC gleich wie YOVc sind 
+      tau    <- 0
+    }
     if(y.in.list$Tr=="time"|y.in.list$Tr=="twoway"){
-      tmp        <- (YTiVC - YOVc) - (XTiVC - XOVc) %*% beta.hat     ## see section 3.1, paper KSS-2009:
+      ## see section 3.1, paper KSS-2009:
+      tmp        <- (YTiVC - YOVc) - (XTiVC - matrix(rep(XOVc, each=T), T, P)) %*% beta.hat     ## dim(tmp): Tx1
       if(is.null(g.fun)){# if empirical factor structure
-        theta.bar  <-  qr.solve(fAFactMod.obj$factors, tmp)          ## theta.bar: scores regarding to TiVC
-        beta.0     <-  fAFactMod.obj$factors %*% theta.bar           ## beta.0:    functional time effects
+        ## theta.bar: scores regarding to TiVC
+        theta.bar  <-  qr.solve(fAFactMod.obj$factors.all[,1:max.dim, drop= FALSE], tmp)
+        ## beta.0:    functional time effects
+        beta.0     <-  fAFactMod.obj$factors.all[,1:max.dim, drop= FALSE] %*% theta.bar         ## dim(tmp): Tx1
       }else{# if hypothetical factor structure
         theta.bar  <-  qr.solve(g.fun, tmp)
         beta.0     <-  g.fun %*% theta.bar
-      }
-      
+      }      
     }else{beta.0 <- 0}
     result    <- list(mu = mu, tau = tau, beta.0 = beta.0)
     return(result)
