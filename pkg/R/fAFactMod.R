@@ -44,7 +44,7 @@ fAFactMod <- function(dat, demean   = TRUE,
                           level         = alpha,
                           spar          = 3)
   
-  opt.d         <- est.dim[1,2]
+  opt.d         <- est.dim[1,3]
   used.d        <- ifelse(is.null(factor.dim), opt.d, factor.dim)
 
   ## factors and loadings parameters

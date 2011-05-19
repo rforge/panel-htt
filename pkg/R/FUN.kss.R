@@ -227,11 +227,13 @@ source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeit
 source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fpca.fit.R")
 source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.with.trans.R")
 source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
-# create data for FPCA
+
+
+## create data for FPCA
 library(pspline)
 T   = 100
 N   =  50
-dim =   4
+dim =   6
 
 ## FS-Structure
 FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.25, plot.opt = FALSE)
@@ -288,7 +290,7 @@ Y            <- I.scl + add.tim.fun + add.ind + 5 * X1 - 5 * X2 + FS.obs; #matpl
 ## matplot(l.r.pimin,main="l.r.pimin");
 ## par(mfrow=c(1,1))
 
-## #########################################################################
+## ## #########################################################################
 
 
 ## ## Effecs: "None with Intercept" 
@@ -311,11 +313,11 @@ par(mfrow=c(1,1))
 ## Transformation nur mit TimeVaryingConstants "TiVC":
 time.obj      <- KSS(formula=Y       ~-1 + X1      + X2,
                      effect = "time", dim.crit = "KSS.C1"); #str(time.obj)
-## Cigs.time.obj <- KSS(formula=l.sales ~-1 + l.r.ndi + l.r.price + l.r.pimin,
-##                      effect = "time", dim.crit = "KSS.C1", factor.dim=2); #str(Cigs.time.obj)
+Cigs.time.obj <- KSS(formula=l.sales ~-1 + l.r.ndi + l.r.price + l.r.pimin,
+                     effect = "time", dim.crit = "KSS.C1", factor.dim=5); #str(Cigs.time.obj)
 
 summary(time.obj); plot(summary(time.obj))
-##summary(Cigs.time.obj); # plot(summary(Cigs.time.obj))
+summary(Cigs.time.obj); plot(summary(Cigs.time.obj))
 
 ## sollte den Intercept-Parameter ergeben:
 mean(time.obj$beta.0)
@@ -374,9 +376,11 @@ par(mfrow=c(1,1))
 
 ## model mit nur mit individuellen effekten:
 indv.obj <- KSS(formula=Y ~ -1+ X1+X2, effect = "individual",  dim.crit = "KSS.C1"); ## str(tway.intcpt.obj)
-summary(indv.obj)
-plot(summary(indv.obj))
+Cigs.indv.obj <- KSS(formula=l.sales ~ l.r.ndi + l.r.price + l.r.pimin,
+                     effect = "individual", dim.crit = "KSS.C1", factor.dim=21); ## str(tway.intcpt.obj)
+summary(indv.obj); plot(summary(indv.obj))
 
+summary(Cigs.indv.obj); plot(summary(Cigs.indv.obj))
 indv.obj$mu
 ## check individual effects:
 indv.obj$tau-70
@@ -398,3 +402,4 @@ par(mfrow=c(1,1))
 
 
 ## plot(summary(time.obj))
+

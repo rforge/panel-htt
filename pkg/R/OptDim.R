@@ -344,24 +344,23 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, factor.dim = NULL, d.m
   d.opt.KSS2  <- length(crit2[crit2 > 0])
 
   if(!is.null(factor.dim)){
-    used.dim.C1 <- ifelse(w[d.opt.KSS1+1]<factor.dim, w[d.opt.KSS1+1], factor.dim)
-    used.dim.C2 <- ifelse(w[d.opt.KSS2+1]<factor.dim, w[d.opt.KSS2+1], factor.dim)
+    used.dim.C1 <- factor.dim
+    used.dim.C2 <- factor.dim
   }else{
-    used.dim.C1 <- w[d.opt.KSS1+1]
-    used.dim.C2 <- w[d.opt.KSS2+1]
+    used.dim.C1 <- d.opt.KSS1
+    used.dim.C2 <- d.opt.KSS2
   }
-  result1     <- c(d.opt.KSS1, used.dim.C1, w[d.opt.KSS1+1], sig2.hat, alpha )
-  result2     <- c(d.opt.KSS2, used.dim.C2, w[d.opt.KSS2+1], sig2.hat, level2)# level2: p.value of thres2 (thres2: alternativ crit.value)
+  result1     <- c(used.dim.C1, d.opt.KSS1, w[d.opt.KSS1+1], sig2.hat, alpha )
+  result2     <- c(used.dim.C2, d.opt.KSS2, w[d.opt.KSS2+1], sig2.hat, level2)# level2: p.value of thres2 (thres2: alternativ crit.value)
 
   result      <- rbind(result1, result2)
   Result      <- vector("list", 2)
   Result[[1]] <- data.frame(I(c("KSS.C1", "KSS.C2")), result)
   colnames(Result[[1]]) <- c("Criterion", "Used Dimension", "Optimal Dimension", "sd2.rest", "sd2.hat", "level")
   rownames(Result[[1]]) <- c("KSS.1", "KSS.2")
-##   Result[[2]] <- c(round(delta[d.opt.KSS1],2), round(1-pnorm(delta[d.opt.KSS1]), 2), round(thres1, 2), round(alpha, 2))
-##   names(Result[[2]]) <- c("Test.Stat", "p.value", "crit.value", "sig.level")
-  Result[[2]] <- list(Test.Stat  = round(delta[d.opt.KSS1],2), p.value = round(1-pnorm(delta[d.opt.KSS1]), 2),
-                      crit.value = round(thres1, 2), sig.level = round(alpha, 2))
+
+  Result[[2]] <- list(Test.Stat  = round(delta[1],2), p.value = round(1-pnorm(delta[1]), 2),
+                      crit.value = round(thres1, 2),  sig.level = round(alpha, 2))
 return(Result)
 }
 
