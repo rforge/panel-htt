@@ -217,189 +217,183 @@ plot.summary.KSS <- function(x,...){
           xlab="Time",ylab="", type="l",...)
   par(mfrow=c(1,1))
 }
-## ================================================================================================
-## TEST: ==========================================================================================
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/OptDim.R")
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/pca.fit.R")
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fAFactMod.R")
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.Pformula.R")
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.add.eff.R")
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fpca.fit.R")
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.with.trans.R")
-source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
+## ## ================================================================================================
+## ## TEST: ==========================================================================================
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/OptDim.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/pca.fit.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fAFactMod.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.Pformula.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.add.eff.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fpca.fit.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.with.trans.R")
+## source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
 
 
-## create data for FPCA
-library(pspline)
-T   = 100
-N   =  50
-dim =   6
+## ## create data for FPCA
+## library(pspline)
+## T   = 100
+## N   =  50
+## dim =   6
 
-## FS-Structure
-FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.25, plot.opt = FALSE)
-FS.obs   <- FS.obj[[1]]
+## ## FS-Structure
+## FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.25, plot.opt = FALSE)
+## FS.obs   <- FS.obj[[1]]
 
-## Regressor 1
-X1 <- matrix(NA, T, N)
-for(i in 1:N){
-  X1[,i]       <- seq(1,rnorm(1)*10,length.out=T)+rnorm(T)
-}
-## Regressor 2
-X2 <- matrix(NA, T, N)
-for(i in 1:N){
-  X2[,i]       <- seq(5,rnorm(1)*1,length.out=T)+rnorm(T,sd=0.75)
-}
+## ## Regressor 1
+## X1 <- matrix(NA, T, N)
+## for(i in 1:N){
+##   X1[,i]       <- seq(1,rnorm(1)*10,length.out=T)+rnorm(T)
+## }
+## ## Regressor 2
+## X2 <- matrix(NA, T, N)
+## for(i in 1:N){
+##   X2[,i]       <- seq(5,rnorm(1)*1,length.out=T)+rnorm(T,sd=0.75)
+## }
 
-## Intercept-Scalar
-I.scl  <-  matrix(rep(70, N*T),T,N)
+## ## Intercept-Scalar
+## I.scl  <-  matrix(rep(70, N*T),T,N)
 
 
-## Additive-Effects:
-   ## individual-effects
+## ## Additive-Effects:
+##    ## individual-effects
 
-add.ind      <- sample(c(1:100),N)
-add.ind      <- add.ind-mean(add.ind)
-add.ind      <- matrix(rep(add.ind,each=T),T,N)
-   ## time-effects
-add.tim.fun  <-  FS.obj[[3]] %*% as.matrix(colMeans(FS.obj[[4]]))*c(1e18,1e18,1e18,1e18)
-add.tim.fun  <-  matrix(rep(add.tim.fun,N),T,N); #matplot(add.tim.fun)
-add.tim.fun  <-  add.tim.fun - mean(add.tim.fun[,1])
+## add.ind      <- sample(c(1:100),N)
+## add.ind      <- add.ind-mean(add.ind)
+## add.ind      <- matrix(rep(add.ind,each=T),T,N)
+##    ## time-effects
+## add.tim.fun  <-  FS.obj[[3]] %*% as.matrix(colMeans(FS.obj[[4]]))*c(1e18,1e18,1e18,1e18)
+## add.tim.fun  <-  matrix(rep(add.tim.fun,N),T,N); #matplot(add.tim.fun)
+## add.tim.fun  <-  add.tim.fun - mean(add.tim.fun[,1])
 
-## Panel-Model with Intercept, Global time trend-function, and const individual effects:
-Y            <- I.scl + add.tim.fun + add.ind + 5 * X1 - 5 * X2 + FS.obs; #matplot(Y)
+## ## Panel-Model with Intercept, Global time trend-function, and const individual effects:
+## Y            <- I.scl + add.tim.fun + add.ind + 5 * X1 - 5 * X2 + FS.obs; #matplot(Y)
 
-## ## Cigarets-Data Set: ##################################################
-## library(plm);# ?Cigar
-## data(Cigar)
-## T        <- (1992-1962)
-## N        <- 46
+## ## ## Cigarets-Data Set: ##################################################
+## ## library(plm);# ?Cigar
+## ## data(Cigar)
+## ## T        <- (1992-1962)
+## ## N        <- 46
 
-##   ## Dependent-Var
-## l.sales  <- log(matrix(Cigar$sales, T,N)) # log.Cigaret-Sales per Capita
-##   ##
-## cpi      <- matrix(Cigar$cpi, T,N)        # Consumer Price Index
-##   ## Independent-Var
-## l.r.ndi    <- log(matrix(Cigar$ndi,   T,N)/cpi) # log.real.Disposable Income per Capita
-## l.r.price  <- log(matrix(Cigar$price, T,N)/cpi) # log.real.Price per Pack of Cigarets
-## l.r.pimin  <- log(matrix(Cigar$pimin, T,N)/cpi) # log.real.Minimum-Price per Pack of Cigarets in Neighbouring States
-## ##
-## par(mfrow=c(1,4))
-## matplot(l.sales,main="l.Sales"); 
-## matplot(l.r.ndi,main="l.r.ndi");
-## matplot(l.r.price,main="l.r.Price");
-## matplot(l.r.pimin,main="l.r.pimin");
+## ##   ## Dependent-Var
+## ## l.sales  <- log(matrix(Cigar$sales, T,N)) # log.Cigaret-Sales per Capita
+## ##   ##
+## ## cpi      <- matrix(Cigar$cpi, T,N)        # Consumer Price Index
+## ##   ## Independent-Var
+## ## l.r.ndi    <- log(matrix(Cigar$ndi,   T,N)/cpi) # log.real.Disposable Income per Capita
+## ## l.r.price  <- log(matrix(Cigar$price, T,N)/cpi) # log.real.Price per Pack of Cigarets
+## ## l.r.pimin  <- log(matrix(Cigar$pimin, T,N)/cpi) # log.real.Minimum-Price per Pack of Cigarets in Neighbouring States
+## ## ##
+## ## par(mfrow=c(1,4))
+## ## matplot(l.sales,main="l.Sales"); 
+## ## matplot(l.r.ndi,main="l.r.ndi");
+## ## matplot(l.r.price,main="l.r.Price");
+## ## matplot(l.r.pimin,main="l.r.pimin");
+## ## par(mfrow=c(1,1))
+
+## ## ## #########################################################################
+
+
+## ## ## Effecs: "None with Intercept" 
+## none.intc.obj      <- KSS(formula=Y       ~ X1          + X2,
+##                           effect = "none", dim.crit = "KSS.C1"); #str(none.intc.obj)
+## ## Cigs.none.intc.obj <- KSS(formula=l.sales ~ l.r.ndi + l.r.price + l.r.pimin,
+## ##                           effect = "none", dim.crit = "KSS.C1", factor.dim=2); #str(Cigs.none.intc.obj)
+## summary(none.intc.obj); plot(summary(none.intc.obj))
+## ## summary(Cigs.none.intc.obj); # plot(summary(Cigs.none.intc.obj))
+## ## check-plot:
+## par(mfrow=c(1,3))
+## matplot(Y)
+## matplot(none.intc.obj$fitted.values)
+## matplot(none.intc.obj$residuals)
 ## par(mfrow=c(1,1))
 
-## ## #########################################################################
 
 
-## ## Effecs: "None with Intercept" 
-none.intc.obj      <- KSS(formula=Y       ~ X1          + X2,
-                          effect = "none", dim.crit = "KSS.C1"); #str(none.intc.obj)
-## Cigs.none.intc.obj <- KSS(formula=l.sales ~ l.r.ndi + l.r.price + l.r.pimin,
-##                           effect = "none", dim.crit = "KSS.C1", factor.dim=2); #str(Cigs.none.intc.obj)
-summary(none.intc.obj); plot(summary(none.intc.obj))
-## summary(Cigs.none.intc.obj); # plot(summary(Cigs.none.intc.obj))
-## check-plot:
-par(mfrow=c(1,3))
-matplot(Y)
-matplot(none.intc.obj$fitted.values)
-matplot(none.intc.obj$residuals)
-par(mfrow=c(1,1))
+## ## dieses model ist genau das gleiche wie im KSS-Paper:
+## ## Transformation nur mit TimeVaryingConstants "TiVC":
+## time.obj      <- KSS(formula=Y       ~-1 + X1      + X2,
+##                      effect = "time", dim.crit = "KSS.C1"); #str(time.obj)
+## Cigs.time.obj <- KSS(formula=l.sales ~-1 + l.r.ndi + l.r.price + l.r.pimin,
+##                      effect = "time", dim.crit = "KSS.C1", factor.dim=5); #str(Cigs.time.obj)
 
+## summary(time.obj); plot(summary(time.obj))
+## summary(Cigs.time.obj); plot(summary(Cigs.time.obj))
 
+## ## sollte den Intercept-Parameter ergeben:
+## mean(time.obj$beta.0)
+## ## check-plot:
+## par(mfrow=c(1,3))
+## matplot(time.obj$Orig.Y)
+## matplot(time.obj$fitted.values)
+## matlines(time.obj$beta.0[,1], col="red", lwd=3)
+## matplot(time.obj$residuals)
+## par(mfrow=c(1,1))
 
-## dieses model ist genau das gleiche wie im KSS-Paper:
-## Transformation nur mit TimeVaryingConstants "TiVC":
-time.obj      <- KSS(formula=Y       ~-1 + X1      + X2,
-                     effect = "time", dim.crit = "KSS.C1"); #str(time.obj)
-Cigs.time.obj <- KSS(formula=l.sales ~-1 + l.r.ndi + l.r.price + l.r.pimin,
-                     effect = "time", dim.crit = "KSS.C1", factor.dim=5); #str(Cigs.time.obj)
+## ## model mit time effekten u individuellen effekten:
+## tway.obj      <- KSS(formula=Y       ~-1 + X1 + X2,
+##                      effect = "twoways",    dim.crit = "KSS.C1"); # str(tway.obj)
+## ## Cigs.tway.obj <- KSS(formula=l.sales ~-1 + l.r.ndi + l.r.price + l.r.pimin,
+## ##                      effect = "twoways", dim.crit = "KSS.C1"); # str(Cigs.tway.obj)
+## summary(tway.obj)
+## ## summary(Cigs.tway.obj); # plot(summary(Cigs.tway.obj))
 
-summary(time.obj); plot(summary(time.obj))
-summary(Cigs.time.obj); plot(summary(Cigs.time.obj))
+## round(mean(Cigs.tway.obj$beta.0),digits=2)
+## ## check-plot:
+## par(mfrow=c(1,2))
+## matplot(Y)
+## matlines(add.tim.fun, col="red", lwd=3)
+## matplot(tway.obj$fitted.values)
+## matlines(tway.obj$beta.0[,1], col="red", lwd=3)
+## par(mfrow=c(1,1))
 
-## sollte den Intercept-Parameter ergeben:
-mean(time.obj$beta.0)
-## check-plot:
-par(mfrow=c(1,3))
-matplot(time.obj$Orig.Y)
-matplot(time.obj$fitted.values)
-matlines(time.obj$beta.0[,1], col="red", lwd=3)
-matplot(time.obj$residuals)
-par(mfrow=c(1,1))
+## ## model mit time effekten, individuellen effekten und Intercept:
+## tway.intcpt.obj <- KSS(formula=Y ~ X1+X2, effect = "twoways",  dim.crit = "KSS.C1"); ## str(tway.intcpt.obj)
+## summary(tway.intcpt.obj)
+## plot(summary(tway.intcpt.obj))
 
-## model mit time effekten u individuellen effekten:
-tway.obj      <- KSS(formula=Y       ~-1 + X1 + X2,
-                     effect = "twoways",    dim.crit = "KSS.C1"); # str(tway.obj)
-## Cigs.tway.obj <- KSS(formula=l.sales ~-1 + l.r.ndi + l.r.price + l.r.pimin,
-##                      effect = "twoways", dim.crit = "KSS.C1"); # str(Cigs.tway.obj)
-summary(tway.obj)
-## summary(Cigs.tway.obj); # plot(summary(Cigs.tway.obj))
+## tway.intcpt.obj$mu
+## mean(tway.intcpt.obj$beta.0)
+## ## Intercept:
+## I.scl[1,1]
+## tway.intcpt.obj$mu
+## ## Individual-Effects:
+## add.ind[1,]
+## mean(tway.intcpt.obj$tau)
+## tway.intcpt.obj$tau
 
-round(mean(Cigs.tway.obj$beta.0),digits=2)
-## check-plot:
-par(mfrow=c(1,2))
-matplot(Y)
-matlines(add.tim.fun, col="red", lwd=3)
-matplot(tway.obj$fitted.values)
-matlines(tway.obj$beta.0[,1], col="red", lwd=3)
-par(mfrow=c(1,1))
-
-## model mit time effekten, individuellen effekten und Intercept:
-tway.intcpt.obj <- KSS(formula=Y ~ X1+X2, effect = "twoways",  dim.crit = "KSS.C1"); ## str(tway.intcpt.obj)
-summary(tway.intcpt.obj)
-plot(summary(tway.intcpt.obj))
-
-tway.intcpt.obj$mu
-mean(tway.intcpt.obj$beta.0)
-## Intercept:
-I.scl[1,1]
-tway.intcpt.obj$mu
-## Individual-Effects:
-add.ind[1,]
-mean(tway.intcpt.obj$tau)
-tway.intcpt.obj$tau
-
-## check-plot:
-par(mfrow=c(1,4))
-matplot(Y)
-matlines(add.tim.fun, col="red", lwd=3)
-matplot(tway.intcpt.obj$fitted.values)
-matlines(tway.intcpt.obj$beta.0[,1], col="red", lwd=3)
-matplot(tway.intcpt.obj$residuals)
-plot.ts(c(add.tim.fun[,1]-tway.intcpt.obj$beta.0[,1]))
-par(mfrow=c(1,1))
+## ## check-plot:
+## par(mfrow=c(1,4))
+## matplot(Y)
+## matlines(add.tim.fun, col="red", lwd=3)
+## matplot(tway.intcpt.obj$fitted.values)
+## matlines(tway.intcpt.obj$beta.0[,1], col="red", lwd=3)
+## matplot(tway.intcpt.obj$residuals)
+## plot.ts(c(add.tim.fun[,1]-tway.intcpt.obj$beta.0[,1]))
+## par(mfrow=c(1,1))
 
 
 
 
-## model mit nur mit individuellen effekten:
-indv.obj <- KSS(formula=Y ~ -1+ X1+X2, effect = "individual",  dim.crit = "KSS.C1"); ## str(tway.intcpt.obj)
-Cigs.indv.obj <- KSS(formula=l.sales ~ l.r.ndi + l.r.price + l.r.pimin,
-                     effect = "individual", dim.crit = "KSS.C1", factor.dim=21); ## str(tway.intcpt.obj)
-summary(indv.obj); plot(summary(indv.obj))
+## ## model mit nur mit individuellen effekten:
+## indv.obj <- KSS(formula=Y ~ -1+ X1+X2, effect = "individual",  dim.crit = "KSS.C1"); ## str(tway.intcpt.obj)
+## Cigs.indv.obj <- KSS(formula=l.sales ~ l.r.ndi + l.r.price + l.r.pimin,
+##                      effect = "individual", dim.crit = "KSS.C1", factor.dim=21); ## str(tway.intcpt.obj)
+## summary(indv.obj); plot(summary(indv.obj))
 
-summary(Cigs.indv.obj); plot(summary(Cigs.indv.obj))
-indv.obj$mu
-## check individual effects:
-indv.obj$tau-70
-add.ind[1,] 
-mean(indv.obj$beta.0)
-## check-plot:
-par(mfrow=c(1,3))
-matplot(Y)
-matlines(add.tim.fun, col="red", lwd=3)
-matplot(indv.obj$fitted.values)
-## matlines(indv.obj$beta.0[,1], col="red", lwd=3)
-matplot(indv.obj$residuals)
-par(mfrow=c(1,1))
-
-
+## summary(Cigs.indv.obj); plot(summary(Cigs.indv.obj))
+## indv.obj$mu
+## ## check individual effects:
+## indv.obj$tau-70
+## add.ind[1,] 
+## mean(indv.obj$beta.0)
+## ## check-plot:
+## par(mfrow=c(1,3))
+## matplot(Y)
+## matlines(add.tim.fun, col="red", lwd=3)
+## matplot(indv.obj$fitted.values)
+## ## matlines(indv.obj$beta.0[,1], col="red", lwd=3)
+## matplot(indv.obj$residuals)
+## par(mfrow=c(1,1))
 
 
-
-
-
-## plot(summary(time.obj))
 
