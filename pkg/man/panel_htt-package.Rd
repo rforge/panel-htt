@@ -7,11 +7,9 @@
 Panel Data Models for HTT
 }
 \description{
-  The Package implements a new class of panel data models.
-  This class allows for unobserved heterogeneity in time trends.
-  These can be interpreted in the classical way as realizations
-  from a real random variable or as realizations from a functional
-  random variable. The package comes with diverse recently
+  The Package implements a new class of panel data models. This class
+  allows for unobserved heterogeneity in time trends as suggested in .
+  The package comes with diverse recently
   developed tests on dimensionality as well as with a routine
   for (functional) principal component analysis.  
 }
@@ -29,9 +27,14 @@ Panel Data Models for HTT
   Oualid Bada
   Dominik Liebl
 }
-%\references{
-%~~ Literature or other references for background information ~~
-%}
+\references{
+  \itemize{
+    \item Bai, J., (2009): "Panel Data Models with Interactive Fixed Effects," Econometrica
+    \item Kneip, A., Sickles, R. C., Wonho, S., 2011: "A New Panel Data
+    Treatment for Heterogneity in Time Trends", Forthcoming in
+    Econometric Theory
+}
+}
 %~~ Optionally other standard keywords, one per line, from file KEYWORDS in ~~
 %~~ the R documentation directory ~~
 %\keyword{ package }
@@ -39,6 +42,6 @@ Panel Data Models for HTT
 %~~ Optional links to other man pages, e.g. ~~
 %~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
 %}
-%\examples{
-%~~ simple examples of the most important functions ~~
-%}
+% \examples{
+
+% }

@@ -1,10 +1,15 @@
 \name{grid-internal}
 \alias{AFactMod}
-\alias{FUN.kss}
+\alias{Eup}
+\alias{fAFactMod}
+\alias{fpca.fit}
+\alias{FUN.add.eff}
+\alias{KSS}
 \alias{FUN.Pformula}
 \alias{FUN.with.trans}
-\alias{gafsa}
-\title{Opt.dim}
+\alias{KSS.model.test}
+\alias{OptDim}
+\title{OptDim}
 \description{
   Internal phtt functions
 }
