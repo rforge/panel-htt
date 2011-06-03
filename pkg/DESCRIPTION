@@ -1,10 +1,10 @@
 Package: phtt
 Type: Package
-Title: Panel Data Models for HTT
+Title: Panel Data Models for unobserved Heterogeneous Time Trends in Individual Effects
 Version: 1.0
 Date: 2010-03-31
 Author: Oualid Bada, Dominik Liebl
-Maintainer: <liebl@statistik.uni-koeln.de>
+Maintainer: <bada@uni-bonn.de>, <liebl@statistik.uni-koeln.de>
 Depends: R(>= 1.8.0)
 Imports: pspline
 Description: The Package implements a new class of panel data models. This class allows for unobserved heterogeneity in time trends. The package comes with diverse recently developed tests on dimensionality as well as with a routine for (functional) principal component analysis. 

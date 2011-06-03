@@ -45,9 +45,12 @@ Estimation of Panel Data Models with Heterogeneous Time Trends
 % %%  \item{comp2 }{Description of 'comp2'}
 % %% ...
 % }
-% \references{
-% %% ~put references to the literature/web site here ~
-% }
+\references{
+  \itemize{
+    \item Kneip, A., Sickles, R. C., Wonho, S., 2011 \dQuote{A New Panel Data
+      Treatment for Heterogneity in Time Trends}, \emph{Forthcoming in
+      Econometric Theory}
+}
 % \author{
 % %%  ~~who you are~~
 % }
@@ -64,17 +67,6 @@ Estimation of Panel Data Models with Heterogeneous Time Trends
 % ##---- Should be DIRECTLY executable !! ----
 % ##-- ==>  Define data, use random,
 % ##--	or do  help(data=index)  for the standard data sets.
-
-% ## The function is currently defined as
-% function(dat, given.d=NULL 
-% 		, restrict.mode= c("restrict.factors","restrict.loadings")
-% 		, allow.dual = TRUE, neglect.neg.ev = TRUE){
-% 	is.regular.panel(dat, stop = TRUE)
-% 	svd.pca.obj  <- svd.pca(dat, given.d = given.d, allow.dual= allow.dual
-% 							, neglect.neg.ev = neglect.neg.ev)
-% 	result <- restrict.pca(svd.pca.obj)
-% 	structure(result, class = "pca.fit")
-% 	}
 % }
 % % Add one or more standard keywords, see file 'KEYWORDS' in the
 % % R documentation directory.

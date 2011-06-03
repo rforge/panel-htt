@@ -29,9 +29,9 @@ Panel Data Models for HTT
 }
 \references{
   \itemize{
-    \item Bai, J., (2009): "Panel Data Models with Interactive Fixed Effects," Econometrica
-    \item Kneip, A., Sickles, R. C., Wonho, S., 2011: "A New Panel Data
-    Treatment for Heterogneity in Time Trends", Forthcoming in
+    \item Bai, J., (2009) \dQuote{Panel Data Models with Interactive Fixed Effects}, Econometrica
+    \item Kneip, A., Sickles, R. C., Wonho, S., 2011 \dQuote{A New Panel Data
+    Treatment for Heterogneity in Time Trends}, Forthcoming in
     Econometric Theory
 }
 }
