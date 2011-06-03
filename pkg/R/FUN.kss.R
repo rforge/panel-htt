@@ -217,6 +217,7 @@ plot.summary.KSS <- function(x,...){
           xlab="Time",ylab="", type="l",...)
   par(mfrow=c(1,1))
 }
+
 ## ## ================================================================================================
 ## ## TEST: ==========================================================================================
 ## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/OptDim.R")

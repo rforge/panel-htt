@@ -23,7 +23,7 @@ fsvd.pca.ramsay <- function(Q,
     spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, method = 3       )$spar  * 0.8 #
   }                                                                                            #
   Q          <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar   = spar.low)$ysmth       #
-  par(mfrow=c(1,3));matplot(Q, main="1.Step indiv Effects")
+  par(mfrow=c(1,3)); ## matplot(Q, main="1.Step indiv Effects")
   ##===========================================================================================#
 
   ## For method=Ramsay: dual-matrix or not?
@@ -128,8 +128,8 @@ fsvd.pca.ramsay <- function(Q,
     Q          <- t(Q)          # (under)smoothed Q   
   }
 
-  matplot(R.fun[,1:4], main="R.fun",type="o")
-  matplot(L.fun[,1:4], main="L.fun",type="o")
+  ## matplot(R.fun[,1:4], main="R.fun",type="o")
+  ## matplot(L.fun[,1:4], main="L.fun",type="o")
   
   ## prepare return-values       
   d.seq <- seq.int(0, (max.rk-1)) # dimension-sequence
