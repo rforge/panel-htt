@@ -4,7 +4,6 @@
 \alias{fAFactMod}
 \alias{fpca.fit}
 \alias{FUN.add.eff}
-\alias{KSS}
 \alias{FUN.Pformula}
 \alias{FUN.with.trans}
 \alias{KSS.model.test}

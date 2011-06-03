@@ -29,15 +29,16 @@ Panel Data Models for HTT
 }
 \references{
   \itemize{
-    \item Bai, J., (2009) \dQuote{Panel Data Models with Interactive Fixed Effects}, Econometrica
+    \item Bai, J., (2009) \dQuote{Panel Data Models with Interactive
+      Fixed Effects}, \emph{Econometrica}, \bold{4}, 1229-1279
     \item Kneip, A., Sickles, R. C., Wonho, S., 2011 \dQuote{A New Panel Data
-    Treatment for Heterogneity in Time Trends}, Forthcoming in
-    Econometric Theory
+      Treatment for Heterogneity in Time Trends}, \emph{Forthcoming in
+      Econometric Theory}
 }
 }
 %~~ Optionally other standard keywords, one per line, from file KEYWORDS in ~~
 %~~ the R documentation directory ~~
-%\keyword{ package }
+\keyword{package, panel data, factor models}
 %\seealso{
 %~~ Optional links to other man pages, e.g. ~~
 %~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~

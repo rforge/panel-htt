@@ -1,4 +1,5 @@
-\name{KSS.default}
+\name{KSS}
+\alias{KSS}
 \alias{KSS.default}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
@@ -8,11 +9,13 @@ KSS-Routine
 Estimation of Panel Data Models with Heterogeneous Time Trends
 }
 \usage{
+KSS(x,\dots)
 \method{KSS}{default}(formula, effect = c("none", "individual", "time", "twoways"),
                       dim.crit = c("KSS.C1", "KSS.C2"), alpha = 0.01, \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
+  \item{x}{What the hell ? }
   \item{formula}{An object of class "formula".}
   \item{effect}{
     Type of Data Transformations:
@@ -32,7 +35,7 @@ Estimation of Panel Data Models with Heterogeneous Time Trends
     }
   }
   \item{alpha}{alpha for Dimensionality-Criterion "KSS.C1"}
-  \item{\dots}{Additional arguments to be passed to the low level functions.}
+  \item{\dots}{Additional arguments to be passed to low level functions.}
 
 }
 % \details{
@@ -50,7 +53,7 @@ Estimation of Panel Data Models with Heterogeneous Time Trends
     \item Kneip, A., Sickles, R. C., Wonho, S., 2011 \dQuote{A New Panel Data
       Treatment for Heterogneity in Time Trends}, \emph{Forthcoming in
       Econometric Theory}
-}
+}}
 % \author{
 % %%  ~~who you are~~
 % }
