@@ -57,7 +57,7 @@ KSS(formula,\dots)
       \itemize{
 	\item{\code{formula}: }{Usual 'formula'-object. If you wish to
 	  estimate a model without an intercept use '-1' in the
-	  formula-specification.}
+	  formula-specification. Each Variable has to be given as a TxN-matrix.}
 	\item{\code{effect}}{
 	  \itemize{
 	    \item \code{none}: The data is not transformed, except for an
@@ -106,7 +106,7 @@ KSS(formula,\dots)
    effects, beta_0(t).}
  \item{sig2.hat}{Estimated variance of the error term epsilon_{it}}
  \item{beta.V}{Var- covariance matrix of the beta-parameters.}
- \item{fitted.values}{The fitted values, hat{y}_{ti}, as TxN-matrix}
+ \item{fitted.values}{The fitted values as TxN-matrix}
  \item{Orig.Y}{Original dependent observations, y_{ti}, as TxN-matrix}
  \item{beta}{Estimated beta-parameters}
  \item{effect}{The chosen effect-type.}
