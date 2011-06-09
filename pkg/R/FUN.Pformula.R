@@ -18,15 +18,16 @@
 #           3. TiVC (Time variaing constants)
 #==============================================================================
 
-FUN.Pformula <- function(formula, effect= c("none", "individual"
-								, "time", "twoways"))
+FUN.Pformula <- function(formula, effect= c("none", "individual", "time", "twoways"))
   {
     data.fra <- model.frame(formula)
     dat.term <- attr(data.fra, "terms")	
 
     ## Construct data from formula
     ## dim(response) == TxN == dim(y.matrix) == TxN:
-    y.matrix <- model.response(data.fra, "numeric")  
+    y.matrix <- model.response(data.fra, "numeric")
+    ## Check Data: Each Variable has to be a matrix
+    if(!is.matrix(y.matrix)) stop("Each Variable has to be a TxN-matrix.")
     N  <- ncol(y.matrix)
     T  <- nrow(y.matrix)
 
