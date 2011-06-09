@@ -80,6 +80,7 @@ fAFactMod <- function(dat, demean   = TRUE,
                     optimal.fdim   = opt.d,
                     used.fdim      = used.d)
   }
+  class(result)        <- "fAFactMod" 
   return(result)
 }
 

@@ -133,7 +133,7 @@ KSS.default <- function(formula,
 
 ## Methods ========================================================================================
 
-KSS <- function(x, ...){ UseMethod("KSS")}
+KSS <- function(formula, ...){ UseMethod("KSS")}
 
 print.KSS <- function(x,...){
   cat("Call:\n")
@@ -294,7 +294,7 @@ plot.summary.KSS <- function(x,...){
 ## ## ## #########################################################################
 
 
-## ## ## Effecs: "None with Intercept" 
+## ## Effecs: "None with Intercept" 
 ## none.intc.obj      <- KSS(formula=Y       ~ X1          + X2,
 ##                           effect = "none", dim.crit = "KSS.C1"); #str(none.intc.obj)
 ## ## Cigs.none.intc.obj <- KSS(formula=l.sales ~ l.r.ndi + l.r.price + l.r.pimin,

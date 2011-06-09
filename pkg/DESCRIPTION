@@ -2,7 +2,7 @@ Package: phtt
 Type: Package
 Title: Panel Data Models for unobserved Heterogeneous Time Trends in Individual Effects
 Version: 1.0
-Date: 2010-03-31
+Date: 2011-06-09
 Author: Oualid Bada, Dominik Liebl
 Maintainer: <bada@uni-bonn.de>, <liebl@statistik.uni-koeln.de>
 Depends: R(>= 1.8.0)
