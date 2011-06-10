@@ -406,6 +406,7 @@ Eup.default <- function(formula
 		, Intercept = c(ConsCoef)
 		, Add.Ind.Eff = c(Ind.Eff)
 		, Add.Tim.Eff = c(Tim.Eff)
+		, unob.fact.stru = unob.fact.stru
 		, used.dim= used.dim
 		, proposed.dim= proposed.dim
 		, optimal.dim = optimal.dim
