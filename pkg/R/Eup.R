@@ -61,9 +61,9 @@ FUN.Eup <- function(dat.matrix, dat.dim
 #### if  d.max not given then d.max will be setted to sqrt(min(N, T))
 	if(is.null(d.max)) d.max <- round(sqrt(min(nr, nc)))
 
-#### define given.d = factor.dim and set factor.dim= 1 if it is null
+#### define given.d = factor.dim and set factor.dim= d.max if it is null
 	given.d <- factor.dim
-	if(is.null(factor.dim)) factor.dim <- 1
+	if(is.null(factor.dim)) factor.dim <- d.max
 
 #### Inner Iteration
 
@@ -237,7 +237,7 @@ Eup.inference <- function(FUN.Eup.Obj){
 	X.mat.list <- NULL
 	for(p in 1:P) X.mat.list[[p]] <- matrix(x[,p], nr, nc)
 
-  # Z_i = M * X_i - sum{M * X_k*a_ik}/n
+  # Z_i = M.F * X_i - sum{M.F * X_k*a_ik}/n
 	Z.list	<- sapply (X.mat.list, function(X) M.F %*% X %*% M.A 
 				, simplify = FALSE)
 
@@ -252,8 +252,8 @@ Eup.inference <- function(FUN.Eup.Obj){
 	mpp <- sqrt(diag(asy.var))
 	test <- slope/mpp 
 	p.value <- (1 - pnorm(abs(test)))*2
-	inf.result <- cbind(slope, mpp,p.value)
-	colnames(inf.result) <- c("Slope Estimate", "std", " Pr(>|z|)")
+	inf.result <- cbind(slope, mpp, test,p.value)
+	colnames(inf.result) <- c("Slope Estimate", "std", "z.value", " Pr(>|z|)")
 	result <- list(inf.result=inf.result, var.result= var.result) 	
 }
 

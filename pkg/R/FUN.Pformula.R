@@ -47,15 +47,27 @@ FUN.Pformula <- function(formula, effect= c("none", "individual", "time", "twowa
 
     NT <- N*T
     P  <- as.integer(ncol(x.all.matrix)/N)
-
-    ## Write the response, Y, and the 'p' regressors, X, in a list,
-    ## where each component contains one of p+1 TxN-Matrices
+    if(P!= ncol(x.all.matrix)/N) stop("All the regressors must have the same dimension as the response variable Y")
 
     data.all.mat  <- cbind(y.matrix, x.all.matrix)
     
-    ## New of Object: From Matrix data.all.mat a List model.in.list 
-
+    ## Write the response variable, Y, and the 'p' regressors, X, in a list,
+    ## where each component contains one of p+1 TxN-Matrices
     model.in.list <- lapply(1:(P+1), function(z, i) z[,seq((i-1)*N+1,i*N)], z = data.all.mat)
+    
+    ## Transform the response variable as well as the 'P' regressors and give them in a list wehre ech 
+    ## componente contains also a list with:
+    #       1 - Name of the transformation
+    #       2- Logical variable if ther is intercept or no
+    #       3- Original Data matrix
+    #       4- Transformed Data in a matrix
+    #       5- Transformed Data in a NT x 1 Vector
+    #       6- Sublist with
+    #           a- Overall Constant
+    #           b- time constant individual effects
+    #           c- additive time varying effects
+
+
     data.in.list  <- sapply(model.in.list,
                             function(z) FUN.with.trans(z,
                                                        N            = N,
