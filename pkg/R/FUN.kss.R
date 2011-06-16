@@ -219,55 +219,91 @@ plot.summary.KSS <- function(x,...){
 }
 
 ## ## ================================================================================================
-## ## TEST: ==========================================================================================
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/OptDim.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/pca.fit.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fAFactMod.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.Pformula.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.add.eff.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fpca.fit.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.with.trans.R")
-## source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
+## TEST: ==========================================================================================
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/OptDim.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/pca.fit.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fAFactMod.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.Pformula.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.add.eff.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fpca.fit.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.with.trans.R")
+source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
 
 
-## ## create data for FPCA
-## library(pspline)
-## T   = 100
-## N   =  50
-## dim =   6
+## create data for FPCA
+library(pspline)
+T   = 100
+N   =  50
+dim =   6
 
-## ## FS-Structure
-## FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.25, plot.opt = FALSE)
-## FS.obs   <- FS.obj[[1]]
+## FS-Structure
+FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.25, plot.opt = FALSE)
+FS.obs   <- FS.obj[[1]]
 
-## ## Regressor 1
-## X1 <- matrix(NA, T, N)
-## for(i in 1:N){
-##   X1[,i]       <- seq(1,rnorm(1)*10,length.out=T)+rnorm(T)
-## }
-## ## Regressor 2
-## X2 <- matrix(NA, T, N)
-## for(i in 1:N){
-##   X2[,i]       <- seq(5,rnorm(1)*1,length.out=T)+rnorm(T,sd=0.75)
-## }
+## Regressor 1
+X1 <- matrix(NA, T, N)
+for(i in 1:N){
+  X1[,i]       <- seq(1,rnorm(1)*10,length.out=T)+rnorm(T)
+}
+## Regressor 2
+X2 <- matrix(NA, T, N)
+for(i in 1:N){
+  X2[,i]       <- seq(5,rnorm(1)*1,length.out=T)+rnorm(T,sd=0.75)
+}
 
-## ## Intercept-Scalar
-## I.scl  <-  matrix(rep(70, N*T),T,N)
+## Intercept-Scalar
+I.scl  <-  matrix(rep(70, N*T),T,N)
 
 
-## ## Additive-Effects:
-##    ## individual-effects
+## Additive-Effects:
+   ## individual-effects
 
-## add.ind      <- sample(c(1:100),N)
-## add.ind      <- add.ind-mean(add.ind)
-## add.ind      <- matrix(rep(add.ind,each=T),T,N)
-##    ## time-effects
-## add.tim.fun  <-  FS.obj[[3]] %*% as.matrix(colMeans(FS.obj[[4]]))*c(1e18,1e18,1e18,1e18)
-## add.tim.fun  <-  matrix(rep(add.tim.fun,N),T,N); #matplot(add.tim.fun)
-## add.tim.fun  <-  add.tim.fun - mean(add.tim.fun[,1])
+add.ind      <- sample(c(1:100),N)
+add.ind      <- add.ind-mean(add.ind)
+add.ind      <- matrix(rep(add.ind,each=T),T,N)
+   ## time-effects
+add.tim.fun  <-  FS.obj[[3]] %*% as.matrix(colMeans(FS.obj[[4]]))*c(1e18,1e18,1e18,1e18)
+add.tim.fun  <-  matrix(rep(add.tim.fun,N),T,N); #matplot(add.tim.fun)
+add.tim.fun  <-  add.tim.fun - mean(add.tim.fun[,1])
 
-## ## Panel-Model with Intercept, Global time trend-function, and const individual effects:
-## Y            <- I.scl + add.tim.fun + add.ind + 5 * X1 - 5 * X2 + FS.obs; #matplot(Y)
+## Panel-Model with Intercept, Global time trend-function, and const individual effects:
+Y            <- I.scl + add.tim.fun + add.ind + 5 * X1 - 5 * X2 + FS.obs; #matplot(Y)
+data.tmp <- data.frame("Y"=as.vector(Y),"X1"=as.vector(X1),"X2"=as.vector(X2))
+write.table(x=data.tmp,file="/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/data/kss_twoways_with_Intercept.rda")
+## Panel-Model without Intercept, Global time trend-function, and const individual effects:
+Y            <-         add.tim.fun + add.ind + 5 * X1 - 5 * X2 + FS.obs; #matplot(Y)
+data.tmp <- data.frame("Y"=as.vector(Y),"X1"=as.vector(X1),"X2"=as.vector(X2))
+write.table(x=data.tmp,file="/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/data/kss_twoways_without_Intercept.rda")
+
+## Panel-Model with Intercept and Global time trend-function:
+Y            <- I.scl + add.tim.fun + 5 * X1 - 5 * X2 + FS.obs; #matplot(Y)
+data.tmp <- data.frame("Y"=as.vector(Y),"X1"=as.vector(X1),"X2"=as.vector(X2))
+write.table(x=data.tmp,file="/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/data/kss_time_with_Intercept.rda")
+## Panel-Model without Intercept and Global time trend-function:
+Y            <-         add.tim.fun + 5 * X1 - 5 * X2 + FS.obs; #matplot(Y)
+data.tmp <- data.frame("Y"=as.vector(Y),"X1"=as.vector(X1),"X2"=as.vector(X2))
+write.table(x=data.tmp,file="/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/data/kss_time_without_Intercept.rda")
+
+## Panel-Model with Intercept and individual effects:
+Y            <-  I.scl + add.ind + 5 * X1 - 5 * X2 + FS.obs; #matplot(Y)
+data.tmp <- data.frame("Y"=as.vector(Y),"X1"=as.vector(X1),"X2"=as.vector(X2))
+write.table(x=data.tmp,file="/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/data/kss_individual_with_Intercept.rda")
+## Panel-Model without Intercept and individual effects:
+Y            <-          add.ind + 5 * X1 - 5 * X2 + FS.obs; #matplot(Y)
+data.tmp <- data.frame("Y"=as.vector(Y),"X1"=as.vector(X1),"X2"=as.vector(X2))
+write.table(x=data.tmp,file="/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/data/kss_individual_without_Intercept.rda")
+
+## Panel-Model with Intercept:
+Y            <-  I.scl + 5 * X1 - 5 * X2 + FS.obs; #matplot(Y)
+data.tmp <- data.frame("Y"=as.vector(Y),"X1"=as.vector(X1),"X2"=as.vector(X2))
+write.table(x=data.tmp,file="/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/data/kss_none_with_Intercept.rda")
+## Panel-Model without Intercept:
+Y            <-          5 * X1 - 5 * X2 + FS.obs; #matplot(Y)
+data.tmp <- data.frame("Y"=as.vector(Y),"X1"=as.vector(X1),"X2"=as.vector(X2))
+write.table(x=data.tmp,file="/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/data/kss_none_without_Intercept.rda")
+
+
+
 
 ## ## ## Cigarets-Data Set: ##################################################
 ## ## library(plm);# ?Cigar
