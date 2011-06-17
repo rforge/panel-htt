@@ -55,17 +55,17 @@ FUN.Pformula <- function(formula, effect= c("none", "individual", "time", "twowa
     ## where each component contains one of p+1 TxN-Matrices
     model.in.list <- lapply(1:(P+1), function(z, i) z[,seq((i-1)*N+1,i*N)], z = data.all.mat)
     
-    ## Transform the response variable as well as the 'P' regressors and give them in a list wehre ech 
+  ## Transform the response variable as well as the 'P' regressors and give them in a list where ech 
     ## componente contains also a list with:
-    #       1 - Name of the transformation
-    #       2- Logical variable if ther is intercept or no
-    #       3- Original Data matrix
-    #       4- Transformed Data in a matrix
-    #       5- Transformed Data in a NT x 1 Vector
-    #       6- Sublist with
-    #           a- Overall Constant
-    #           b- time constant individual effects
-    #           c- additive time varying effects
+    #       1- "Tr" Name of the transformation
+    #       2- "I" Logical variable if ther is intercept or no
+    #       3- "ODM" Original Data matrix
+    #       4- "TDM" Transformed Data in a matrix
+    #       5- "TDV" Transformed Data in a NT x 1 Vector
+    #       6- "TRm" Sublist with
+    #           a- "OVc" Overall Constant
+    #           b- "InC" time constant individual effects
+    #           c- "TiVC" additive time varying effects
 
 
     data.in.list  <- sapply(model.in.list,

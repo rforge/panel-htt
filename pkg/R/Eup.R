@@ -43,7 +43,7 @@ FUN.Eup <- function(dat.matrix, dat.dim
 	x 	<- dat.matrix[,-1, drop = FALSE]
 	nr 	<- dat.dim[1]
 	nc	<- dat.dim[2]
-	P	<- ncol(x)
+	P	<- dat.dim[3]# or ncol(x)
 
 #### start value #####
 	beta.0 <- start.beta
@@ -187,75 +187,7 @@ FUN.Eup <- function(dat.matrix, dat.dim
   }
 
 
-################################## Eup slope inference ####################
-## Input:
-# 		dat.matrix	= the data in matrix form where the first colomn
-#				  contain NT vector of Y second one the NT vector 
-#				  of the first regressor X
-# 		dat.dim	= the dimension of the data N and T
-# 		used.d	= used dimension d in the interative procedure
-#	 	beta.Eup	= the estimated slope estimator for given d
-# 		factors	= common factors after scaling according the used 
-#				  restriction
-# 		loadings	= individual loading parameters after scaling
-#				 (according restriction)
-#		residuals	= the residual terms
-## Output:
-#		Eup slope Estimate
-#		std
-#		Pr(>|z|)
-##########################################################################
 
-Eup.inference <- function(FUN.Eup.Obj){
-
-## collect informations from the FUN.Eup.Obj
-
-	y 	<- FUN.Eup.Obj$y
-	x 	<- FUN.Eup.Obj$x
-	nr 	<- FUN.Eup.Obj$dat.dim[1]
-	nc	<- FUN.Eup.Obj$dat.dim[2]
-	P	<- ncol(x)
-	d	<- FUN.Eup.Obj$opt.d
-	slope <- FUN.Eup.Obj$beta
-	F	<- FUN.Eup.Obj$PCA$L[, 0:d, drop = FALSE]
-	A	<- FUN.Eup.Obj$PCA$R[, 0:d, drop = FALSE]
-	res	<- FUN.Eup.Obj$PCA$Q - FUN.Eup.Obj$PCA$Q.fit
-
-
-## Projection matrix of the factors F
-
-	P.F   <- tcrossprod(F)
-	M.F   <- diag(1, ncol= nr, nrow= nr) - P.F
-
-## Projection matrix of the loadings A
-
-	P.A   <- tcrossprod(A)
-	M.A   <- diag(1, ncol= nc, nrow= nc) - P.A
-
-## write the x matrices in a list: each regressor is written in a 
-## list component
-	X.mat.list <- NULL
-	for(p in 1:P) X.mat.list[[p]] <- matrix(x[,p], nr, nc)
-
-  # Z_i = M.F * X_i - sum{M.F * X_k*a_ik}/n
-	Z.list	<- sapply (X.mat.list, function(X) M.F %*% X %*% M.A 
-				, simplify = FALSE)
-
-  # construct the matrix D= sum Z_i'Z_i/NT
-	Z		<- sapply (Z.list, function(Z) c(Z), simplify = TRUE)
-	ZZ     <- crossprod(Z)/(nr*nc)
-	inv.ZZ <- solve(ZZ)
-	sig2.hat <- sum(diag( crossprod(res)))/(nr*nc - (nr+nc)*d - p)
-	var.result <- list(residuals = res, sig2.hat=sig2.hat , ZZ = ZZ, inv.ZZ = inv.ZZ)
-
-	asy.var <- (inv.ZZ * sig2.hat)/(nr*nc)
-	mpp <- sqrt(diag(asy.var))
-	test <- slope/mpp 
-	p.value <- (1 - pnorm(abs(test)))*2
-	inf.result <- cbind(slope, mpp, test,p.value)
-	colnames(inf.result) <- c("Slope Estimate", "std", "z.value", " Pr(>|z|)")
-	result <- list(inf.result=inf.result, var.result= var.result) 	
-}
 
 
 ############################### Eup.default ###############################
@@ -316,23 +248,39 @@ Eup.default <- function(formula
 		stop("\n Argument >>formula<< needs a formula-object like 
 					y~x1+... where the elements are matrices")
 	}
-	
+  
+  # names 
+  
+  names  <- names(model.frame(formula))
+
   # define additive.effects
 	
 	additive.effects <- match.arg(additive.effects)
 
-  # transform the data (output in a list)
+  ## Transform the response variable as well as the 'P' regressors and give them in a list where ech 
+    ## componente contains also a list with:
+    #       1- "Tr" Name of the transformation
+    #       2- "I" Logical variable if ther is intercept or no
+    #       3- "ODM" Original Data matrix
+    #       4- "TDM" Transformed Data in a matrix
+    #       5- "TDV" Transformed Data in a NT x 1 Vector
+    #       6- "TRm" Sublist with
+    #           a- "OVc" Overall Constant
+    #           b- "InC" time constant individual effects
+    #           c- "TiVC" additive time varying effects
 
 	PF.obj	<- FUN.Pformula(formula = formula
 						, effect = additive.effects)    
 	nc 		<- ncol(PF.obj[[1]]$ODM)
 	nr 		<- nrow(PF.obj[[1]]$ODM)
 	P  		<- length(PF.obj) - 1
+  intercept <- PF.obj[[1]]$I
 
-  # prepare for FUN.default (output in a matrix)
+  # prepare for FUN.default (give the data in a large matrix: (y, x1, ...xP) where y, xp are  NT x1 Vectors  )
 
-	dat.dim 	  <- c(nr, nc)
-	dat.matrix	  <- sapply(1:(P+1), function(i) PF.obj[[i]]$TDM) 
+	dat.dim 	  <- c(nr, nc, P)
+  dat.matrix	  <- sapply(1:(P+1), function(i) PF.obj[[i]]$TDV)
+
 	dim.criterion <- match.arg(dim.criterion)
 	
   # Estimation results
@@ -352,19 +300,21 @@ Eup.default <- function(formula
 
 	Nbr.iteration	<- tr.model.est$nbr.iterations
 	beta.Eup		<- tr.model.est$beta
+  colnames(beta.Eup) <- ""
+  rownames(beta.Eup) <- names[-1]
 
     # Inference for beta
 
-	Inf.result	<- Eup.inference(tr.model.est)
-	slope.inf 	<- Inf.result$inf.result
-	var.result	<- Inf.result$var.result
+# 	Inf.result	<- Eup.inference(tr.model.est)
+# 	slope.inf 	<- Inf.result$inf.result
+# 	var.result	<- Inf.result$var.result
 
     # additive effects
 
 	# calculate the constant
 	OvConst <- sapply(1:(P+1),  function(i) PF.obj[[i]]$TRm$OVc)
 	ConsCoef <- OvConst[1] - OvConst[-1]%*%beta.Eup 
-
+  
 	# calculate the additive indivudal effects
 
 	ind.means <- sapply(1:(P+1),  function(i) PF.obj[[i]]$TRm$InC)
@@ -399,26 +349,45 @@ Eup.default <- function(formula
 	loadings			<- restrict.fs.a.resid$loadings
 	unob.fact.stru		<- restrict.fs.a.resid$fitted.values
 	residuals			<- fs.and.resid - unob.fact.stru
+  
+    # fitted values
+    
+  orig.Y <- PF.obj[[1]]$ODM
+  fitted.values <- orig.Y - residuals
+  degree.of.freedom <- (nr*nc - (nr+nc)*used.dim - P - 
+                    intercept -
+                    nc*(additive.effects == "individual"| additive.effects == "twoways") - 
+                    nr*(additive.effects == "time"| additive.effects == "twoways"))
+  sig2.hat <- sum(diag(crossprod(residuals)))/degree.of.freedom
 
 ## Results
 				
-	list(Observed.Regressors = slope.inf
+	final.result <- list(
+    dat.matrix = dat.matrix
+    , dat.dim = dat.dim
+    , OvMeans = OvConst
+    , ColMean = ind.means
+    , RowMean = tim.means
+    , slope.para = beta.Eup
+    , names = names
+    , is.intercept = intercept
+    , additive.effects = additive.effects
 		, Intercept = c(ConsCoef)
 		, Add.Ind.Eff = c(Ind.Eff)
 		, Add.Tim.Eff = c(Tim.Eff)
+    , unob.factors = factors
+    , ind.loadings = loadings
 		, unob.fact.stru = unob.fact.stru
 		, used.dim= used.dim
 		, proposed.dim= proposed.dim
 		, optimal.dim = optimal.dim
-		, Nbr.iteration= Nbr.iteration
-		, var.resid = var.result$sig2.hat
-		, inv.ZZ = var.result$inv.ZZ)
+    , fitted.values = fitted.values
+    , residuals = residuals
+    , orig.Y = orig.Y
+  	, sig2.hat = sig2.hat
+    , degree.of.freedom = degree.of.freedom
+    , call = match.call()
+		, Nbr.iteration= Nbr.iteration)
+  class(final.result) <- "Eup"
+  return(final.result)  
   }
-
-
-
-
-
-
-
-
