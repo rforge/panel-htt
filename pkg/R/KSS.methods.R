@@ -3,18 +3,22 @@
 KSS <- function(formula, ...){ UseMethod("KSS")}
 
 print.KSS <- function(x,...){
-  cat("Call:\n")
-  print(x$call)
-  cat("\nAdditive Effects Type:")
-  eff              <- matrix(x$effect)
-  colnames(eff)    <- ""
-  rownames(eff)    <- ""
-  print(eff)
-  cat("\nCoeffs of Regressors :\n")
-  colnames(x$beta) <- "Beta"
-  rownames(x$beta) <- x$names[2:length(x$names)]
-  print(x$beta)
-}
+   cat("Call:\n")
+   print(x$call)
+
+   cat("\nCoeff(s) of the Observed Regressor(s) :\n\n")
+   slope.para <- x$beta
+    if(x$is.intercept){
+      inter <- matrix(x$mu, 1, 1)
+      colnames(inter) <- ""
+      rownames(inter) <- "(Intercept)"
+      slope.para <- rbind(signif(inter,digits=3), signif(slope.para,digits=3))
+    }
+   print(t(slope.para))
+   cat("\nAdditive Effects Type: ", as.name(x$effect)," \n")
+   cat("\nDimension of the Unobserved Factors:", x$fAFactMod$used.fdim," \n")
+ }
+
 
 coef.KSS <- function(x,...){
   coef.list  <- list(beta=x$beta, beta.0=x$beta.0, mu=x$mu, tau=x$tau)

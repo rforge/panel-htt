@@ -1,4 +1,4 @@
-## rm(list=ls())
+## 
 KSS.default <- function(formula,
                         effect   = c("none", "individual", "time", "twoways"),
                         dim.crit = c("KSS.C1", "KSS.C2"),
@@ -28,6 +28,7 @@ KSS.default <- function(formula,
     N <- ncol(PF.obj[[1]]$ODM)
     T <- nrow(PF.obj[[1]]$ODM)
     P <- length(PF.obj)-1
+    is.intercept <- PF.obj[[1]]$I
 
     ## *OR*iginal *dat*a
     ORdat    <- sapply(1:(P+1), function(i) PF.obj[[i]]$ODM)
@@ -121,7 +122,8 @@ KSS.default <- function(formula,
     est$residuals     <- est$Orig.Y - est$fitted.values
     est$beta          <- beta
     est$call          <- match.call()
-    est$effect        <- effect        #Additive-Effect-Type 
+    est$effect        <- effect        #Additive-Effect-Type
+    est$is.intercept  <- is.intercept  #Intercept: TRUE or FALSE
     est$names         <- names         #Names of: dependent variable and regressors
     est$fAFactMod     <- fAFactMod.obj #Elements: fitted.values,factors,loadings,resid.sd2,given.fdim,optimal.fdim,used.fdim
     class(est)        <- "KSS" 

@@ -14,7 +14,7 @@ Eup <- function(formula, ...){ UseMethod("Eup")}
       inter <- matrix(x$Intercept, 1, 1)
       colnames(inter) <- ""
       rownames(inter) <- "(Intercept)"
-      slope.para <- rbind(inter, slope.para)
+      slope.para <- rbind(signif(inter,digits=3), signif(slope.para,digits=3))
     }
    print(t(slope.para))
    cat("\nAdditive Effects Type: ", as.name(x$additive.effects)," \n")
