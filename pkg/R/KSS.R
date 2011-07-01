@@ -69,8 +69,8 @@ KSS.default <- function(formula,
     
     bloc1            <- t.TR.X.TR.X - t.TR.X.TR.X.smth     		       # (PxP)
     bloc2            <- t.TR.X.TR.Y - t.TR.X.TR.Y.smth     	               # (Px1)
-    
-    com.slops.0 <- solve(bloc1)%*%bloc2					       # (Px1)
+    ## common-Slope.Coefficients:
+    com.slops.0      <- solve(bloc1)%*%bloc2				       # (Px1)
 
 
     ## calculate first step residuals and estimate dimension of factor-structure
@@ -78,7 +78,7 @@ KSS.default <- function(formula,
 
     fAFactMod.obj <- fAFactMod(dat         = Residu.mat,
                                ## the following args go to FUN.with.trans() and leave Residu.mat unchanged
-                               ## add.effects = "none" & demean = FALSE: Because, with.transformations is already done above.
+                               ## add.effects = "none"&demean = FALSE: Because, within.transf is already done above.
                                demean      = FALSE,
                                add.effects = "none",
                                ## the following args go to KSS.dim.opt() via EstDim()
@@ -86,8 +86,6 @@ KSS.default <- function(formula,
                                dim.crit    = dim.crit, ...)
     ## *fAFactMod.obj* is a list with: fitted.values,factors,loadings,resid.sd2,given.fdim,optimal.fdim,used.fdim    
     ##==========================================================================
-
-
    
     ## re-estimate beta=========================================================
     factor.stract <- tcrossprod(fAFactMod.obj$factors, fAFactMod.obj$loadings)
@@ -99,9 +97,9 @@ KSS.default <- function(formula,
 
     ## Built up the return object *est*
     
-    est <- FUN.add.eff(PF.obj        = PF.obj,
-                       fAFactMod.obj = fAFactMod.obj,
-                       beta.hat      = beta)
+    FUN.add.eff.obj <- FUN.add.eff(PF.obj        = PF.obj,
+                                   fAFactMod.obj = fAFactMod.obj,
+                                   beta.hat      = beta)
     
     ## re-estimation of sig2.hat (Paper KSS Section 3.4)==========================================
     YOVc            <- PF.obj[[1]]$TRm$OVc
@@ -109,31 +107,47 @@ KSS.default <- function(formula,
     Or.Y_minus_YOVc <- Or.Y - YOVc
     Or.X_minus_XOVc <- Or.X - matrix(rep(XOVc, each=(N*T)), N*T, P)
     
-    est$sig2.hat <- 1/((N-1)*T) * sum((Or.Y_minus_YOVc - Or.X_minus_XOVc %*% beta - matrix(factor.stract, N*T, 1))^2)
+    sig2.hat        <- 1/((N-1)*T) * sum((Or.Y_minus_YOVc - Or.X_minus_XOVc %*% beta - matrix(factor.stract, N*T, 1))^2)
+
+    ## degrees.of.freedom =======================================================================
+    degrees.of.freedom <- (T*N - (T+N)*fAFactMod.obj$used.fdim - P - 
+                           is.intercept -
+                           N*(effect == "individual"| effect == "twoways") - 
+                           T*(effect == "time"      | effect == "twoways"))
     
-    ## estimation of beta-variance beta.V ========================================================
-    est$beta.V <- est$sig2.hat * solve(bloc1) %*% (t.TR.X.TR.X + t.TR.X.TR.X.smth2 - 2*t.TR.X.TR.X.smth) %*% solve(bloc1)
+    ## estimation of Variances  =================================================================
+    ## estimation of beta-variance beta.V 
+    beta.V <- sig2.hat * solve(bloc1) %*% (t.TR.X.TR.X + t.TR.X.TR.X.smth2 - 2*t.TR.X.TR.X.smth) %*% solve(bloc1)
+    ## estimation of Intercept-variance
     
-    ##============================================================================================
-    est$fitted.values <- matrix(rep(est$mu, T*N) + rep(est$beta.0, N) + rep(est$tau, each=T) +
-                                Or.X %*% beta    + matrix(fAFactMod.obj$fitted.values,N*T,1),#matrix(factor.stract, N*T, 1),
-                                T, N)
-    est$Orig.Y        <- matrix(Or.Y, T, N)
-    est$residuals     <- est$Orig.Y - est$fitted.values
-    est$beta          <- beta
-    est$call          <- match.call()
-    est$effect        <- effect        #Additive-Effect-Type
-    est$is.intercept  <- is.intercept  #Intercept: TRUE or FALSE
-    est$names         <- names         #Names of: dependent variable and regressors
-    est$fAFactMod     <- fAFactMod.obj #Elements: fitted.values,factors,loadings,resid.sd2,given.fdim,optimal.fdim,used.fdim
-    class(est)        <- "KSS" 
+    if(is.intercept){
+      Intercept.V <- (sig2.hat + matrix(colMeans(Or.X),1,P) %*% beta.V %*% t(matrix(colMeans(Or.X),1,P)))/(N*T)
+    }else{Intercept.V <- NULL}
+    
+    ## Fitted Values =============================================================================
+    fitted.values      <- matrix(rep(FUN.add.eff.obj$mu, T*N) + rep(FUN.add.eff.obj$beta.0, N) +
+                                 rep(FUN.add.eff.obj$tau, each=T) +
+                                 Or.X %*% beta + matrix(fAFactMod.obj$fitted.values,N*T,1),T, N)
+
+    ## Return ====================================================================================
+    est                    <- vector("list")
+    est$mu                 <- FUN.add.eff.obj$mu     # Intercept
+    est$tau                <- FUN.add.eff.obj$tau    # Add. indiv. Effects
+    est$beta.0             <- FUN.add.eff.obj$beta.0 # Add. time Effects
+    est$Orig.Y             <- matrix(Or.Y, T, N)
+    est$fitted.values      <- fitted.values
+    est$beta.V             <- beta.V
+    est$Intercept.V        <- Intercept.V
+    est$residuals          <- est$Orig.Y - est$fitted.values
+    est$sig2.hat           <- sig2.hat
+    est$degrees.of.freedom <- degrees.of.freedom
+    est$beta               <- beta
+    est$call               <- match.call()
+    est$additive.effects   <- effect        #Additive-Effect-Type
+    est$is.intercept       <- is.intercept  #Intercept: TRUE or FALSE
+    est$names              <- names         #Names of: dependent variable and regressors
+    est$fAFactMod          <- fAFactMod.obj #Elements: fitted.values,factors,loadings,resid.sd2,given.fdim,optimal.fdim,used.fdim
+    class(est)             <- "KSS" 
     ##=============================================================================================
     return(est)
   }
-
-
-
-
-
-
-
