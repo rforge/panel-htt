@@ -7,68 +7,68 @@ print.KSS <- function(x,...){
    print(x$call)
 
    cat("\nCoeff(s) of the Observed Regressor(s) :\n\n")
-   slope.para <- x$beta
+   slope.para <- x$slope.para
     if(x$is.intercept){
-      Intercept <- matrix(x$mu, 1, 1)
-      colnames(Intercept) <- ""
-      rownames(Intercept) <- "(Intercept)"
-      Para <- rbind(signif(Intercept,digits=3), signif(slope.para,digits=3))
+      inter <- matrix(x$Intercept, 1, 1)
+      colnames(inter) <- ""
+      rownames(inter) <- "(Intercept)"
+      slope.para <- rbind(signif(inter,digits=3), signif(slope.para,digits=3))
     }
-   print(t(Para))
-   cat("\nAdditive Effects Type: ", as.name(x$additive.effects)," \n")
-   cat("\nDimension of the Unobserved Factors:", x$fAFactMod$used.fdim," \n")
+   cat(signif(t(slope.para),5))
+   cat("\n\nAdditive Effects Type: ", as.name(x$additive.effects)," \n")
+   cat("\nDimension of the Unobserved Factors:", x$used.dim," \n")
  }
 
 coef.KSS <- function(x,...){
     if(x$is.intercept)
-    Intercept        <- x$mu
-    else Intercept   <- NULL
+    Intercept <- x$Intercept
+    else Intercept <- NULL
     
-    Slope.Coef       <- x$beta
+    Slope.Coef <- x$slope.para
     
     if(x$additive.effects== "individual"| x$additive.effects== "twoways")
-    Add.Ind.Eff      <- x$tau
+    Add.Ind.Eff <- x$Add.Ind.Eff
     else Add.Ind.Eff <- NULL
 
     if(x$additive.effects== "time"| x$additive.effects== "twoways")
-    Add.Tim.Eff      <- x$beta.0
+    Add.Tim.Eff <- x$Add.Tim.Eff
     else Add.Tim.Eff <- NULL
     
-    Factors       <- x$fAFactMod$factors
+    Factors <- x$unob.factors
     
-    Loadings      <- x$fAFactMod$loadings
+    Loadings <- x$ind.loadings
     
-    Heterogeneity <- x$fAFactMod$fitted.values
+    Heterogeneity <- x$unob.fact.stru
     
-    Factor.Dim    <- x$fAFactMod$used.fdim
+    Factor.Dim <- x$used.dim
     
-    coef.list     <- list(
-        Intercept     = Intercept,
-        Slope.Coef    = Slope.Coef,
-        Add.Ind.Eff   = Add.Ind.Eff, 
-        Add.Tim.Eff   = Add.Tim.Eff, 
-        Factors       = Factors, 
-        Loadings      = Loadings, 
+    coef.list <- list(
+        Intercept = Intercept,
+        Slope.Coef = Slope.Coef,
+        Add.Ind.Eff = Add.Ind.Eff, 
+        Add.Tim.Eff = Add.Tim.Eff, 
+        Factors = Factors, 
+        Loadings = Loadings, 
         Heterogeneity = Heterogeneity,
-        Factor.Dim    = Factor.Dim)  
+        Factor.Dim = Factor.Dim)  
         
     return(coef.list)
 }
 
-
 summary.KSS <- function(x,...){
-  ## Residuals & R2: =======================================================================
+  ## Residuals:
   Res.outpt <- round((summary(as.vector(x$residuals))), digits=2)[-4]
   names(Res.outpt) <- c("Min", "1Q", "Median", "3Q", "Max")
-  yy <- sum(diag(crossprod(x$Orig.Y - mean(x$Orig.Y))))
+  yy <- sum(diag(crossprod(x$orig.Y - mean(x$orig.Y))))
   ee <- sum(diag(crossprod(x$residuals)))
   R2 <- 1 - ee/yy
+  #R2a <- 1 - (ee/x$degree.of.freedom)/(yy - 1)
   
-  ## Add-Effect-Type: ======================================================================
+  ## Add-Effect-Type:
   eff              <- matrix(x$additive.effects)
   colnames(eff)    <- ""
   rownames(eff)    <- ""
-
+  
   ## Inference for Coefficients: ============================================================
   if(x$is.intercept){
     Intercept.se   <- sqrt(x$Intercept.V)
@@ -96,14 +96,15 @@ summary.KSS <- function(x,...){
     rownames(TAB)  <- x$names[2:length(x$names)]
   }
   
-  ## Result: ==================================================================================
+  ## Result: ==============================================================================
   result        <- list(Res.outpt    = Res.outpt,
                         coefficients = TAB,
                         R2           = R2,
                         KSS.obj      = x)                
   class(result) <- "summary.KSS"
-  return(result)
+  result
 }
+
 
 print.summary.KSS <- function(x, ...){
   ## Call
@@ -125,16 +126,17 @@ print.summary.KSS <- function(x, ...){
   cat("Multiple R-squared:",                    signif(x$R2,digits=3),"\n")
 }
 
+
 plot.summary.KSS <- function(x,...){
   if(x$KSS.obj$additive.effects=="time"|x$KSS.obj$additive.effects=="twoways"){
     par(mfrow=c(1,3))
-    plot.ts(x$KSS.obj$beta.0, main="beta.0", ylab="",...)
+    plot.ts(x$KSS.obj$Add.Tim.Eff, main="Add.Tim.Eff", ylab="",...)
   }else{par(mfrow=c(1,2))}
-  matplot(x$KSS.obj$fAFactMod$factors,
-          main=paste("EstimatedFactor-Structure\n(Used Dimension=",x$KSS.obj$fAFactMod$used.fdim,")"),
+  matplot(x$KSS.obj$unob.factors,
+          main=paste("Estimated Factors\n(Used Dimension=",x$KSS.obj$used.dim,")"),
           xlab="Time",ylab="", type="l",...)
-  matplot(x$KSS.obj$fAFactMod$fitted.values,
-          main=paste("Fitted individual \nTime-Trends"),
+  matplot(x$KSS.obj$unob.fact.stru,
+          main=paste("Estimated Factor-Structure"),
           xlab="Time",ylab="", type="l",...)
   par(mfrow=c(1,1))
 }

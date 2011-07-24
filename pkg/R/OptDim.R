@@ -1,4 +1,3 @@
-##rm(list=ls())
 ##################################### Bai ##################################
 bai.dim.opt <- function(Obj, d.max = NULL, sig2.hat = NULL)
 	{
@@ -350,13 +349,13 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, factor.dim = NULL, d.m
     used.dim.C1 <- d.opt.KSS1
     used.dim.C2 <- d.opt.KSS2
   }
-  result1     <- c(used.dim.C1, d.opt.KSS1, w[d.opt.KSS1+1], sig2.hat, alpha )
-  result2     <- c(used.dim.C2, d.opt.KSS2, w[d.opt.KSS2+1], sig2.hat, level2)# level2: p.value of thres2 (thres2: alternativ crit.value)
+  result1     <- c(d.opt.KSS1, used.dim.C1, w[d.opt.KSS1+1], sig2.hat, alpha )
+  result2     <- c(d.opt.KSS2, used.dim.C2, w[d.opt.KSS2+1], sig2.hat, level2)# level2: p.value of thres2 (thres2: alternativ crit.value)
 
   result      <- rbind(result1, result2)
   Result      <- vector("list", 2)
   Result[[1]] <- data.frame(I(c("KSS.C1", "KSS.C2")), result)
-  colnames(Result[[1]]) <- c("Criterion", "Used Dimension", "Optimal Dimension", "sd2.rest", "sd2.hat", "level")
+  colnames(Result[[1]]) <- c("Criterion", "Optimal Dimension", "Used Dimension", "sd2.rest", "sd2.hat", "level")
   rownames(Result[[1]]) <- c("KSS.1", "KSS.2")
 
   Result[[2]] <- list(Test.Stat  = round(delta[1],2), p.value = round(1-pnorm(delta[1]), 2),
@@ -373,7 +372,6 @@ KSS.OptDim <- function(Obj,
                        criteria    = c("KSS.C1", "KSS.C2"),
                        sig2.hat    = NULL,
                        alpha       = 0.01, 
-                       spar.low    = NULL,
                        d.max       = NULL,
                        factor.dim  = NULL){
   ## what is Obj?
@@ -387,21 +385,23 @@ KSS.OptDim <- function(Obj,
       Q.orig      <- Obj$Q.orig
       Q.orig.smth <- NULL
       L           <- Obj$L
-      V.d         <- Obj$V.d  
+      V.d         <- Obj$V.d
+      
       obj <- list(nr = nr, nc = nc, spar.low = spar.low, Q.orig = Q.orig,
                   Q.orig.smth = Q.orig.smth, L = L, V.d = V.d)
     }    
   }
   if(class(Obj)=="pca.fit"|class(Obj)=="fpca.fit"){
     if(class(Obj)=="fpca.fit"){
-      ## umbenennungen zu (f)svd.pca-Elementen
+      ## umbenennungen zu fsvd.pca-Elementen
       nr          <- Obj$data.dim[1]
       nc          <- Obj$data.dim[2]
       spar.low    <- Obj$spar.low
       Q.orig      <- Obj$orig.values
       Q.orig.smth <- Obj$orig.values.smth
       L           <- Obj$L
-      V.d         <- Obj$Sd2*(nr*nc)      
+      V.d         <- Obj$Sd2*(nr*nc)
+      
       obj <- list(nr = nr, nc = nc, spar.low = spar.low, Q.orig = Q.orig,
                   Q.orig.smth = Q.orig.smth, L = L, V.d = V.d)
     }else{
@@ -411,14 +411,27 @@ KSS.OptDim <- function(Obj,
       Q.orig      <- Obj$orig.values
       Q.orig.smth <- NULL
       L           <- Obj$L
-      V.d         <- Obj$Sd2*(nr*nc)     
+      V.d         <- Obj$Sd2*(nr*nc)
+      
       obj <- list(nr = nr, nc = nc, spar.low = spar.low, Q.orig = Q.orig,
                   Q.orig.smth = Q.orig.smth, L = L, V.d = V.d)
     } 
   }else{
-    if(is.matrix(Obj)){      
+    if(is.matrix(Obj)){
       ## fPCA
-      obj  <- fsvd.pca.ramsay(Q = Obj)
+      Obj        <- fpca.fit(dat = Obj, given.d = factor.dim)
+      ## umbenennungen zu fsvd.pca-Elementen
+      nr          <- Obj$data.dim[1]
+      nc          <- Obj$data.dim[2]
+      spar.low    <- Obj$spar.low
+      Q.orig      <- Obj$orig.values
+      Q.orig.smth <- Obj$orig.values.smth
+      L           <- Obj$L
+      V.d         <- Obj$Sd2*(nr*nc)
+      
+      obj <- list(nr = nr, nc = nc, spar.low = spar.low, Q.orig = Q.orig,
+                  Q.orig.smth = Q.orig.smth, L = L, V.d = V.d)
+      
     }
   }
   result        <- KSS.dim.opt(obj, sig2.hat = sig2.hat, alpha = alpha, factor.dim = factor.dim, d.max = d.max)
@@ -436,13 +449,13 @@ KSS.OptDim <- function(Obj,
 
 OptDim.default <- function(Obj, criteria.of = c("Bai", "KSS", "Onatski", "RH")
 				, d.max = NULL, sig2.hat=NULL, level= 0.05
-				, spar = NULL){
+				){
 	criteria.of <- match.arg(criteria.of, several.ok = TRUE)
 	FUN.crit <- function(criteria.of, d.max, sig2.hat, level, spar) {
 		switch(criteria.of,
 		Bai = { B.OptDim(Obj = Obj, d.max = d.max, sig2.hat=NULL)
 			},
-		KSS = { KSS.OptDim(Obj = Obj, sig2.hat = sig2.hat, alpha = level, spar = spar)[[1]]
+		KSS = { KSS.OptDim(Obj = Obj, sig2.hat = sig2.hat, alpha = level)[[1]]
 			},
 		Onatski = {O.OptDim(Obj = Obj, d.max  = d.max)
 			},
@@ -478,19 +491,18 @@ EstDim <- function(Obj,
                    d.max,
                    factor.dim,
                    sig2.hat,
-                   level = 0.01,
-                   spar
+                   level = 0.01
                    )
   {
   ## missing parameters
          if(missing(factor.dim)) factor.dim  <- NULL
   	 if(missing(d.max))      d.max       <- NULL
  	 if(missing(sig2.hat))   sig2.hat    <- NULL
-  	 if(missing(spar))   	 spar        <- NULL
 
   ## estimation 
-	 dim.criterion <- match.arg(dim.criterion)
- 	 est.dim       <- switch(dim.criterion,
+	 criteria <- match.arg(dim.criterion)
+         
+ 	 est.dim       <- switch(criteria,
                           PC1  = B.OptDim(Obj, criteria = c("PC1")
                             , d.max = d.max, sig2.hat = sig2.hat),
                           PC2  = B.OptDim(Obj, criteria = c("PC2")
@@ -515,40 +527,13 @@ EstDim <- function(Obj,
                           GR   = RH.OptDim(Obj, criteria = c("GR")
                             , d.max = d.max),
                           KSS.C1  = KSS.OptDim(Obj, criteria = c("KSS.C1")
-				    , sig2.hat = sig2.hat, alpha=level, spar.low= spar
+				    , sig2.hat = sig2.hat, alpha=level
                                     , factor.dim=factor.dim, d.max=d.max)[[1]],
                           KSS.C2  = KSS.OptDim(Obj, criteria = c("KSS.C2")
-				    , sig2.hat = sig2.hat, alpha=level, spar.low= spar
+				    , sig2.hat = sig2.hat, alpha=level
                                     , factor.dim=factor.dim, d.max=d.max)[[1]]
                           )
 	est.dim
-	}
+       }
 
 
-#### Test
-#source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/fpca.fit.R")
-#source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/pca.fit.R")
-#source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
-# create data for FPCA
-#library(pspline)
-#T   = 100
-#N   = 50
-#dim = 2
-
-## FS-Structure
-#FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.7)
-#str(FS.obj)
-#FS.obs   <- FS.obj[[1]]
-#matplot(FS.obj[[3]])
-#matplot(FS.obj[[4]])
-#FS.dat   <- FS.obs
-
-#OptDim(FS.dat, criteria.of = "KSS")
-
-#Obj <- svd.pca(FS.dat)
-#OptDim(Obj, d.max = 10)
-
-#pcaObj <- svd.pca(dat)
-#Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
-#OptDim(dat)
-#################################################

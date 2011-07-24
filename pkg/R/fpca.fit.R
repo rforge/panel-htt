@@ -1,16 +1,12 @@
-##rm(list=ls())
 #########################################################################################
 ## Ramsay-approach 
 #########################################################################################
 
-fsvd.pca.ramsay <- function(Q,
+fsvd.pca <- function(Q,
                             allow.dual      = TRUE,
                             given.d         = NULL,
                             calcul.loadings = TRUE,
-                            neglect.neg.ev  = FALSE,
-                            spar.low        = NULL   # No smoothing is done, if: spar.low = 0
-                     ){
-
+                            neglect.neg.ev  = FALSE){
   ## extract data information
   nr      <- nrow(Q)
   nc      <- ncol(Q)
@@ -18,14 +14,12 @@ fsvd.pca.ramsay <- function(Q,
   ## save original Q-values 
   Q.non.smth <- Q 
 
-  ## smoothing Q (small degree of undersmoothing)==============================================#
-  if(is.null(spar.low)){                                                                       #
-    spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, method = 3       )$spar  * 0.8 #
-  }                                                                                            #
-  Q          <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar   = spar.low)$ysmth       #
-  ## par(mfrow=c(1,3)); matplot(Q, main="1.Step indiv Effects")
-  ##===========================================================================================#
-
+  ## smoothing Q (small degree of undersmoothing) ===============================================#
+  spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar=0.01, method = 4       )$spar  * 0.99    #
+                                                                                                 #
+  Q          <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar   = spar.low)$ysmth         #
+  ##=============================================================================================#
+  
   ## For method=Ramsay: dual-matrix or not?
   dual    <- (nr>nc & allow.dual | calcul.loadings )
  
@@ -33,17 +27,19 @@ fsvd.pca.ramsay <- function(Q,
     Q <- t(Q)
   }
 
-  ## classical approach of Ramsay et al.
-  ## trapezoidal rule (for integral-approximation)=============================#
-  ## Hier nicht unbedingt notwendig, da                                        #
-  ## angenommen wird, dass:                                                    #
-  ## -beide indizes i bzw. t bei 1 beginnen!                                   #
-  ## -len.Interval==n.discr-1 sodass h=(len.Interval)/(n.discr-1) = 1          #
-  len.Interval    <- ifelse(dual, nc-1, nr-1)       # dual: N-1, non-dual: T-1 #
-  n.discr         <- ifelse(dual, nc,   nr  )       # dual: N  , non-dual: T   #  
-  h               <- (len.Interval)/(n.discr-1)                                #
-  w               <- c(rep(h, n.discr))   #c(h/2, rep(h, n.discr-2), h/2)                            #
-  cov.mat         <- diag(sqrt(w)) %*% tcrossprod(Q) %*% diag(sqrt(w))         #
+##   ## classical approach of Ramsay et al.
+##   ## trapezoidal rule (for integral-approximation)=============================#
+##   ## Hier nicht unbedingt notwendig, da                                        #
+##   ## angenommen wird, dass:                                                    #
+##   ## -beide indizes i bzw. t bei 1 beginnen!                                   #
+##   ## -len.Interval==n.discr-1 sodass h=(len.Interval)/(n.discr-1) = 1          #
+##   len.Interval    <- ifelse(dual, nc-1, nr-1)       # dual: N-1, non-dual: T-1 #
+##   n.discr         <- ifelse(dual, nc,   nr  )       # dual: N  , non-dual: T   #  
+##   h               <- (len.Interval)/(n.discr-1)                                #
+##   w               <- c(rep(h, n.discr))   #c(h/2, rep(h, n.discr-2), h/2)              
+                                        #
+##  cov.mat         <- diag(sqrt(w)) %*% tcrossprod(Q) %*% diag(sqrt(w))         #
+    cov.mat         <- tcrossprod(Q)
   ##===========================================================================#
   
   ## Compute spectral decompostion 
@@ -75,7 +71,8 @@ fsvd.pca.ramsay <- function(Q,
   ## Left side decomposion
   L                         <- Evec[,0:max.rk , drop= FALSE]   # dual==FALSE: (T x max.rk), dual==TRUE: (N x max.rk)
   ## *fun*ctional approximation
-  L.fun                     <- diag(1/(sqrt(w))) %*% L
+##  L.fun                     <- diag(1/(sqrt(w))) %*% L
+  L.fun                     <- L
 
   ## sqrt of eigenvalues      
   if(!neglect.neg.ev){
@@ -90,13 +87,14 @@ fsvd.pca.ramsay <- function(Q,
                                                                          # if dual: dim(S)= TxN, if non-dual: dim(S)=NxT
     ## scaling such that: ||R.fun||_E == 1
     R                       <- S %*% diag(1/(sqrt(diag(crossprod(S)))))  # if dual: dim(R)= TxN, if non-dual: dim(R)=NxT
-    ## approximation to L2-norm ===========================================================================#
-    len.Interval.ast    <- ifelse(!dual, nc-1, nr-1)                     # if dual: N-1, if non-dual: T-1  #
-    n.discr.ast         <- ifelse(!dual, nc,   nr  )                     # if dual: N  , if non-dual: T    #
-    h.ast               <- (len.Interval.ast)/(n.discr.ast-1)                                              #
-    w.ast               <- c(rep(h.ast, n.discr.ast)) #c(h.ast/2, rep(h.ast, n.discr.ast-2), h.ast/2)                                  #
-    R.fun               <- diag(1/(sqrt(w.ast))) %*% R                                                     #
-    ##=====================================================================================================#
+##     ## approximation to L2-norm ===========================================================================#
+##     len.Interval.ast    <- ifelse(!dual, nc-1, nr-1)                     # if dual: N-1, if non-dual: T-1  #
+##     n.discr.ast         <- ifelse(!dual, nc,   nr  )                     # if dual: N  , if non-dual: T    #
+##     h.ast               <- (len.Interval.ast)/(n.discr.ast-1)                                              #
+##     w.ast               <- c(rep(h.ast, n.discr.ast)) #c(h.ast/2, rep(h.ast, n.discr.ast-2), h.ast/2)                                  #
+##     R.fun               <- diag(1/(sqrt(w.ast))) %*% R                                                     #
+    R.fun               <- R                 
+##     ##=====================================================================================================#
 
     ## no pca-fitting
     if(((given.d==max.rk)&&!neglect.neg.ev)){
@@ -127,9 +125,6 @@ fsvd.pca.ramsay <- function(Q,
     Q.fit      <- t(Q.fit)
     Q          <- t(Q)          # (under)smoothed Q   
   }
-
-  ## matplot(R.fun[,1:4], main="R.fun",type="o")
-  ## matplot(L.fun[,1:4], main="L.fun",type="o")
   
   ## prepare return-values       
   d.seq <- seq.int(0, (max.rk-1)) # dimension-sequence
@@ -153,104 +148,11 @@ fsvd.pca.ramsay <- function(Q,
                  nr             = nr,
                  nc             = nc ,
                  cov.mat        = cov.mat,
-                 dual           = dual,
-                 fpca.method    = "Ramsay"),
+                 dual           = dual),
             class   = "fsvd.pca")
 }
 
-#########################################################################################
-## DUAL-approach (Benko, Härdle, Kneip 2008: "Common functional principal components") ##
-#########################################################################################
-fsvd.pca.kneip <- function(Q,
-                           given.d         = NULL,
-                           calcul.loadings = TRUE,
-                           neglect.neg.ev  = FALSE,
-                           spar.low        = NULL   # No smoothing is done, if: spar.low = 0
-                           ){
-  
-  ## extract data information
-  nr      <- nrow(Q)
-  nc      <- ncol(Q)
-  
-  M       <- crossprod(Q)                                                             # t(TxN)%*%(TxN)=(NxN)
-  ## Weights for non param variance estimator
-  ## (Rice 1984 bzw. Hall, Key & Titterington 1990)
-  d.0         <-  1/sqrt(1)
-  d.1         <- -1/sqrt(1)
-  sig2.hat    <- (colSums((d.0*Q[-nr,] + d.1*Q[-1,])^2)) / (nr - 1)                   # (1xN)
-  ## Subtract the Variance from the observation-errors
-  M           <- M-diag(sig2.hat)                                                     # (NxN)=(NxN)-(NxN)
-  
-  ## Compute spectral decompostion of the M matrix
-  M.Spdec     <- eigen(M, symmetric= TRUE)
-  M.Eval      <- M.Spdec[[1]]
-  M.Evec      <- M.Spdec[[2]]
 
-  ## Compare rank and given.d  
-  nbr.pos.ev      <- length(M.Eval[M.Eval > 0])
-  max.rk          <- ifelse(neglect.neg.ev, nbr.pos.ev, length(M.Eval))
-  if(is.null(given.d)){
-    given.d <- max.rk
-  }else{
-    if(given.d > max.rk){
-      warning(c("The given dimension 'given.d' is larger than the number of positve eigen values."))
-    }
-    given.d <- min(given.d, max.rk)
-  }
-  
-
-  R                 <- M.Evec                                                         # (N x max.rk)
- 
-  ## save original Q-values 
-  Q.non.smth <- Q 
-
-  ## smoothing Q (small degree of undersmoothing)================================================#
-  if(is.null(spar.low)){                                                                         #
-    spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, method = 3       )$spar  * 0.8   #
-  }                                                                                              #
-  Q          <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar   = spar.low)$ysmth # (TxN) #
-  ##=============================================================================================#
-
-  sqrt.inv.eval.mat  <- matrix(rep(1/(sqrt(M.Eval[1:max.rk ])), each=nr), nr, max.rk)
-  L                  <- sqrt.inv.eval.mat * Q %*% R                                   # (TxN)%*%(N x max.rk)=(T x max.rk)
-
-  ## no fpca-fitting
-    if(((given.d==max.rk)&&!neglect.neg.ev)){
-      Q.fit                 <- Q
-      ## fpca-fitting  
-    }else{
-      Q.fit                 <- tcrossprod(L[, 0:given.d , drop= FALSE],
-                                          L[, 0:given.d , drop= FALSE]) %*% Q
-    }
-
-  
-  ## prepare return-values       
-  d.seq <- seq.int(0, (max.rk-1)) # dimension-sequence
-  E     <- M.Eval[1:max.rk]
-  sqr.E <- sqrt(E)
-  sum.e <- sum(E)
-  cum.e <- cumsum(E)
-  V.d   <- c(sum.e, sum.e-cum.e[-length(cum.e)])
-
-  ## return
-  structure(list(L              = L,
-                 R              = R,
-                 Q.orig         = Q.non.smth,
-                 Q.orig.smth    = Q,
-                 Q.fit          = Q.fit,
-                 spar.low       = spar.low,
-                 E              = E,
-                 sqr.E          = sqr.E,
-                 given.d        = given.d,
-                 d.seq          = d.seq,
-                 V.d            = V.d,
-                 nr             = nr,
-                 nc             = nc ,
-                 cov.mat        = M,
-                 dual           = NULL,
-                 fpca.method    = "Kneip"),
-            class   = "fsvd.pca")
-}
 
 
 
@@ -290,27 +192,21 @@ fsvd.pca.kneip <- function(Q,
 ####################################################################################################
 
 fpca.fit <- function(dat,
-                     fpca.method    = c("Ramsay", "Kneip"),
-                     spar.low       = NULL,# no smoothing, iff: spar.low=0  
                      given.d        = NULL,
                      restrict.mode  = c("restrict.factors","restrict.loadings"),
                      allow.dual     = TRUE,
                      neglect.neg.ev = TRUE){
 
-  ## Method: Ramsay or Kneip?
-  fpca.method  <- match.arg(fpca.method)  
+
   ## Check input
   is.regular.panel(dat, stopper = TRUE)
 
   ## fPCA
-  fpca.obj       <- switch(fpca.method,
-                           Ramsay  =  fsvd.pca.ramsay(Q              = dat,
-                                                      given.d        = given.d,
-                                                      allow.dual     = allow.dual,
-                                                      neglect.neg.ev = neglect.neg.ev),
-                           Kneip   = fsvd.pca.kneip(Q                = dat,
-                                                    given.d          = given.d,
-                                                    neglect.neg.ev   = neglect.neg.ev))
+  fpca.obj       <- fsvd.pca(Q              = dat,
+                             given.d        = given.d,
+                             allow.dual     = allow.dual,
+                             neglect.neg.ev = neglect.neg.ev)
+                           
   
   ## impose Restrictions (default: restrict.factors such that F'F/T = I )
   result        <- restrict.pca(fpca.obj)
@@ -318,22 +214,3 @@ fpca.fit <- function(dat,
   ## return
   structure(result, class = "fpca.fit")
 }
-
-
-
-
-## #### Test
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/Package_Version_31_3_2010/Generate_FPCAData.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel-htt/pkg/R/pca.fit.R")
-## library(pspline)
-## FS.dat      <- sim.3dim.fpca.equi(T = 300, N = 50, dim=4, sig.error = 0.07*(1/N^{0.25}), class = "matrix")
-## Ramsay     <- fpca.fit(dat= FS.dat, fpca.method  = c("Ramsay"))
-## Kneip      <- fpca.fit(dat= FS.dat, fpca.method  = c("Kneip"))
-## str(Kneip)
-
-## par(mfrow=c(1,3))
-## plot.ts(Ramsay$eigen.values, type="o", xlab="", ylab="", main="Eigen.values:\n Blue=Kneip, Black=Ramsay")
-## points(Kneip$eigen.values, col="blue", type="o")
-## matplot(Kneip$factors[,1:5], main="Kneip-Eigenfunctions")
-## matplot(Ramsay$factors[,1:5], main="Ramsay-Eigenfunctions")
-## par(mfrow=c(1,1))

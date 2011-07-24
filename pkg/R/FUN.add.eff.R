@@ -19,18 +19,18 @@
 
 
 
-FUN.add.eff <- function(PF.obj, fAFactMod.obj=NULL, g.fun=NULL, beta.hat)
+FUN.add.eff <- function(PF.obj, fpca.fit.obj=NULL, g.fun=NULL, beta.hat)
   {
-    if(!is.null(fAFactMod.obj) & !is.null(g.fun)){
-      stop("Only one of the arguments >>fAFactMod.obj<< or >>g.fun<< is allowed.")
+    if(!is.null(fpca.fit.obj) & !is.null(g.fun)){
+      stop("Only one of the arguments >>fpca.fit.obj<< or >>g.fun<< is allowed to be used.")
     }
     P         <- length(PF.obj)-1
     y.in.list <- PF.obj[[1]]
     T         <- nrow(PF.obj[[1]]$ODM)
     N         <- ncol(PF.obj[[1]]$ODM)
 
-    max.dim   <- length(fAFactMod.obj$factors.all[1,])
-    max.dim   <- min(c(trunc(T*.8), max.dim))
+    given.d   <- fpca.fit.obj$given.d
+
       
     ##=========================================================================================================
     YInC  <- y.in.list$TRm$InC                                 ## *Y**In*dividual *C*onstants
@@ -56,9 +56,9 @@ FUN.add.eff <- function(PF.obj, fAFactMod.obj=NULL, g.fun=NULL, beta.hat)
       tmp        <- (YTiVC - YOVc) - (XTiVC - matrix(rep(XOVc, each=T), T, P)) %*% beta.hat     ## dim(tmp): Tx1
       if(is.null(g.fun)){# if empirical factor structure
         ## theta.bar: scores regarding to TiVC
-        theta.bar  <-  qr.solve(fAFactMod.obj$factors.all[,1:max.dim, drop= FALSE], tmp)
+        theta.bar  <-  qr.solve(fpca.fit.obj$factors[,1:given.d, drop= FALSE], tmp)
         ## beta.0:    functional time effects
-        beta.0     <-  fAFactMod.obj$factors.all[,1:max.dim, drop= FALSE] %*% theta.bar         ## dim(tmp): Tx1
+        beta.0     <-  fpca.fit.obj$factors[,1:given.d, drop= FALSE] %*% theta.bar         ## dim(tmp): Tx1
       }else{# if hypothetical factor structure
         theta.bar  <-  qr.solve(g.fun, tmp)
         beta.0     <-  g.fun %*% theta.bar
