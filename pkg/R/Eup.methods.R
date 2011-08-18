@@ -15,6 +15,7 @@ Eup <- function(formula, ...){ UseMethod("Eup")}
       colnames(inter) <- ""
       rownames(inter) <- "(Intercept)"
       slope.para <- rbind(signif(inter,digits=3), signif(slope.para,digits=3))
+      slope.para <- round(slope.para, 3)
     }
    print(t(slope.para))
    cat("\nAdditive Effects Type: ", as.name(x$additive.effects)," \n")
