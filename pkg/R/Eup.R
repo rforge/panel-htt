@@ -37,7 +37,7 @@
 FUN.Eup <- function(dat.matrix, dat.dim
 		, double.iteration = double.iteration
 		, dim.criterion, factor.dim, d.max, sig2.hat
-		, level, spar, start.beta){
+		, start.beta){
 #### data 
 	y 	<- dat.matrix[, 1, drop = FALSE]
 	x 	<- dat.matrix[,-1, drop = FALSE]
@@ -70,8 +70,7 @@ FUN.Eup <- function(dat.matrix, dat.dim
 	inner.iteration <- function(y, x, inv.xx.x =inv.xx.x 
 				  , beta.0 = beta.0
 				  , factor.dim = factor.dim, d.max=d.max
-				  , sig2.hat= sig2.hat, level = level
-				  , spar = spar
+				  , sig2.hat= sig2.hat
 				  , double.iteration = double.iteration
 				  , i=1){
   # Iteration (0): initial cumputations
@@ -86,8 +85,7 @@ FUN.Eup <- function(dat.matrix, dat.dim
 		if(!double.iteration && is.null(given.d)){
 			OptDim.0   <- EstDim(PCA.0
 					   , dim.criterion = dim.criterion 
-					   , d.max = d.max, sig2.hat= sig2.hat
-					   , level = level, spar = spar)
+					   , d.max = d.max, sig2.hat= sig2.hat)
 			opt.dim.0  <- OptDim.0[,2]
 			factor.dim <- opt.dim.0
 			y.fitted.0 <- tcrossprod(PCA.0$L[, 0:opt.dim.0
@@ -116,7 +114,6 @@ FUN.Eup <- function(dat.matrix, dat.dim
 		else inner.iteration(y=y, x=x, inv.xx.x =inv.xx.x 
 			,beta.0 = beta.1,factor.dim = factor.dim 
 			,d.max=d.max,sig2.hat= sig2.hat 
-			,level = level, spar = spar
 			,double.iteration = double.iteration, (i+1))
 	}
 
@@ -125,14 +122,12 @@ FUN.Eup <- function(dat.matrix, dat.dim
 	entire.iteration <- function(y=y, x=x, inv.xx.x =inv.xx.x 
 				    , beta.0 = beta.0, factor.dim = factor.dim 
 				    , d.max=d.max, sig2.hat= sig2.hat 
-				    , level = level, spar = spar
 				    , double.iteration = double.iteration
 				    , past.iterations = 0, l =1){
 	# first inner iteration 
 		In.Iter.0 <- inner.iteration(y=y, x=x, inv.xx.x =inv.xx.x 
 				, beta.0 = beta.0, factor.dim = factor.dim
 				, d.max=d.max, sig2.hat= sig2.hat
-				, level = level, spar = spar
 				, double.iteration = double.iteration, i =1)
 		pca.d0 	  <- In.Iter.0$PCA
 		beta.d0 	  <- In.Iter.0$beta 
@@ -144,8 +139,7 @@ FUN.Eup <- function(dat.matrix, dat.dim
 		if(double.iteration && is.null(given.d)){	
 		  # 1 new optimal dimension
 		opt.dim1 <- EstDim(pca.d0, dim.criterion = dim.criterion 
-				, d.max = d.max, sig2.hat= sig2.hat
-				, level = level, spar = spar)
+				, d.max = d.max, sig2.hat= sig2.hat)
 		opt.d1  <- opt.dim1[,2]
 		  # convergence condition
 			if(opt.d1==opt.d0|l >= d.max){
@@ -161,7 +155,6 @@ FUN.Eup <- function(dat.matrix, dat.dim
 			else entire.iteration(y=y, x=x, inv.xx.x =inv.xx.x 
 					, beta.0 = beta.d0, factor.dim = opt.d1
 					, d.max=d.max, sig2.hat= sig2.hat
-					, level = level, spar = spar
 					, double.iteration = double.iteration
 					, past.iterations = nbr.iteration
 					, l = (l+1))
@@ -179,7 +172,6 @@ FUN.Eup <- function(dat.matrix, dat.dim
 	Result	 <- entire.iteration(y=y, x=x, inv.xx.x =inv.xx.x 
 			    , beta.0 = beta.0 , factor.dim = factor.dim
 			    , d.max=d.max, sig2.hat= sig2.hat 
-			    , level = level, spar = spar
 			    , double.iteration = double.iteration
 			    , past.iterations = 0, l =1)
 
@@ -227,12 +219,9 @@ Eup.default <- function(formula
 							, "time", "twoways")
 				, dim.criterion	= c("PC1", "PC2", "PC3", "IC1"
 							, "IC2" , "IC3", "IPC1", "IPC2"
-							, "IPC3" , "KSS.C1", "KSS.C2"
-							, "ED", "ER", "GR")
+							, "IPC3" , "ED")
 				, d.max = NULL
-				,  sig2.hat = NULL
-				, level= 0.01
-				, spar=NULL
+				, sig2.hat = NULL
 				, factor.dim = NULL
 				, double.iteration = FALSE
 				, start.beta= NULL
@@ -292,9 +281,7 @@ Eup.default <- function(formula
 					, dim.criterion 	= dim.criterion
 					, factor.dim	= factor.dim
 					, d.max		= d.max
-					, sig2.hat		= sig2.hat
-					, level		= level
-					, spar		= spar) 
+					, sig2.hat = sig2.hat)
 
     # Eup beta and Nbr.iteration
 
@@ -336,8 +323,7 @@ Eup.default <- function(formula
 	else{
 		optimal.dim <- EstDim(tr.model.est$PCA
 						, dim.criterion = dim.criterion 
-						, d.max = d.max, sig2.hat= sig2.hat
-					 	, level = level, spar = spar)[,2]
+						, d.max = d.max, sig2.hat= sig2.hat)[,2]
 		}
 
     # factor structure and resuduals 
