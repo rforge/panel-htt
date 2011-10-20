@@ -223,7 +223,7 @@ Eup.default <- function(formula
 				, d.max = NULL
 				, sig2.hat = NULL
 				, factor.dim = NULL
-				, double.iteration = FALSE
+				, double.iteration = TRUE
 				, start.beta= NULL
 				, restrict.mode= c("restrict.factors"
 							,"restrict.loadings")){
