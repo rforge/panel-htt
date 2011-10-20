@@ -1,5 +1,6 @@
 export(pca.fit)
 export(KSS)
+export(KSScf)
 import(pspline)
-S3method(KSScf,phtt)
-S3method(print.KSScf,phtt)
+S3method(KSScf,default)
+S3method(print,KSScf)
