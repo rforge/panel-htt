@@ -1,8 +1,6 @@
 ## 
-KSS.default <- function(formula,
+KSS.default <- function(formula, consult.dim.crit = FALSE,
                         additive.effects        = c("none", "individual", "time", "twoways"),
-                        dim.criterion = c("PC1", "PC2", "PC3", "IC1", "IC2" , "IC3",
-                          "IPC1", "IPC2", "IPC3" , "KSS.C1", "KSS.C2", "ED", "ER", "GR"),
                         level = 0.01,
                         factor.dim=NULL,
                         d.max=NULL,
@@ -23,7 +21,8 @@ KSS.default <- function(formula,
     
     ## check "effect" and "dim.crit"
     effect        <- match.arg(additive.effects)
-    dim.criterion <- match.arg(dim.criterion, several.ok=TRUE)
+    dim.criterion <- c("PC1", "PC2", "PC3", "IC1", "IC2" , "IC3",
+                        "IPC1", "IPC2", "IPC3" , "KSS.C1", "KSS.C2", "ED", "ER", "GR")
     
     ## extract data from formula
     names  <- names(model.frame(formula))
@@ -96,8 +95,7 @@ KSS.default <- function(formula,
     names(Opt.dim.Output.Onatski) <- c(" ED")
     Opt.dim.Output.RH <- c(as.numeric(Opt.dim.Output[13:14,1]))
     names(Opt.dim.Output.RH) <- c(" ER","GR")
-    
-    if(is.null(factor.dim)){
+    if(is.null(factor.dim)&& consult.dim.crit){
       cat("-----------------------------------------------------------\n")
       cat("Results of Dimension-Estimation");cat("\n\n-Bai:\n")
       print(Opt.dim.Output.Bai, quote = FALSE, na.print="");    cat("\n-KSS:\n")
@@ -109,7 +107,10 @@ KSS.default <- function(formula,
       used.dim <- scan(n=1)
       cat("Used Dimension of unobs. Factor-Structure is:\n", used.dim, "\n")
       cat("-----------------------------------------------------------\n")
-    }else used.dim <- factor.dim
+    }else {
+	if(!is.null(factor.dim)) used.dim <- factor.dim
+	else used.dim <- c(as.numeric(Opt.dim.Output[10,1]))
+	}
     
     
     factors       <- fpca.fit.obj$factors[,  1:used.dim, drop= FALSE]
