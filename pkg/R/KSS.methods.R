@@ -1,6 +1,6 @@
 ## Methods ========================================================================================
 
-KSS <- function(formula, ...){ UseMethod("KSS")}
+KSS <- function(formula,...){ UseMethod("KSS")}
 
 print.KSS <- function(x,...){
    cat("Call:\n")

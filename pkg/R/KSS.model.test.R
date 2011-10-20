@@ -181,7 +181,6 @@ KSS.model.test.default <- function(formula,
 
     ## functional principal component analysis
     M.fpca.fit.obj  <- fpca.fit(dat        = M.Residu.mat,
-                             spar.low      = NULL,  # if NULL: 0.8*spar.opt (GCV)
                              given.d       = NULL,  # if NULL: max.rk <- ifelse(neglect.neg.ev,nbr.pos.ev, length(Eval))
                              restrict.mode = "restrict.factors",
                              allow.dual    = TRUE)
@@ -193,7 +192,6 @@ KSS.model.test.default <- function(formula,
                           criteria = c("KSS.C1", "KSS.C2"),
                           sig2.hat = NULL,
                           alpha    = alpha,
-                          spar.low = NULL,
                           d.max    = NULL)[[2]]
     result$L       <- L
     if(missing(g.function)){

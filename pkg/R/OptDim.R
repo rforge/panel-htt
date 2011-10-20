@@ -451,7 +451,7 @@ OptDim.default <- function(Obj, criteria.of = c("Bai", "KSS", "Onatski", "RH")
 				, d.max = NULL, sig2.hat=NULL, level= 0.05
 				){
 	criteria.of <- match.arg(criteria.of, several.ok = TRUE)
-	FUN.crit <- function(criteria.of, d.max, sig2.hat, level, spar) {
+	FUN.crit <- function(criteria.of, d.max, sig2.hat, level) {
 		switch(criteria.of,
 		Bai = { B.OptDim(Obj = Obj, d.max = d.max, sig2.hat=NULL)
 			},
@@ -464,7 +464,7 @@ OptDim.default <- function(Obj, criteria.of = c("Bai", "KSS", "Onatski", "RH")
 		}
 
 	structure(sapply(criteria.of, FUN.crit, d.max = d.max, sig2.hat=NULL
-		, level= level, spar = spar, simplify = FALSE)
+		, level= level, simplify = FALSE)
 		, class = "OptDim")
 
 	}
