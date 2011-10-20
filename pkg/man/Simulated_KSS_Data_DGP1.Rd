@@ -19,11 +19,15 @@
 data(DGP1)
 }
 
-\format{A data frame containing :
+\format{A list containing :
   \describe{
     \item{Y}{dependent variable as N*T-vector}
     \item{X1}{first regressor as N*T-vector}
     \item{X2}{second regressor as N*T-vector}
+    \item{CF.1}{first (unobserved) common factor \eqn{$1$}{1}}
+    \item{CF.2}{second (unobserved) common factor
+      \eqn{$\frac{t}{T}$}{(t/T)}}
+    \item{CF.3}{thrid (unobserved) common factor \eqn{$\left(\frac{t}{T}\right)^2$}{(t/T)^2}}
     
     The time-index t is running "faster" than the individual-index i
     such that e.g. Y_{it} is ordered as:
@@ -39,11 +43,11 @@ data(DGP1)
     t=1,\dots,T$}{Y_{it}=\beta_{1}X_{it1}+\beta_{2}X_{it2}+v_i(t)+\epsilon_{it},
     i=1,\dots,n, t=1,\dots,T}
   -Slope parameters:
-  \eqn{$beta_{1}=beta_{2}=0.5$}{beta_{1}=beta_{2}=0.5}
+  \eqn{$\beta_{1}=\beta_{2}=0.5$}{beta_{1}=beta_{2}=0.5}
 
   -Time varying individual effects being second order polynomials:
   \eqn{$v_i(t)=\theta_{i0}+\theta_{i1}\frac{t}{T}+\theta_{i2}\left(\frac{t}{T}\right)^2$}{v_i(t)=theta_{i0}+theta_{i1}*frac{t}{T}+theta_{i2}*(frac{t}{T})^2}
-  Where theta_{i1}, theta_{i1}, and theta_{i1} are iid as N(0,0.25)
+  Where theta_{i1}, theta_{i1}, and theta_{i1} are iid as N(0,4)
   
   The Regressors X_{it}=(X_{it1},X_{it2})' are simulated from a bivariate VAR model:
   \eqn{$X_{it}=R X_{i,t-1}+\eta_{it}\quad\textrm{with}\quad
@@ -73,3 +77,23 @@ data(DGP1)
   Dominik Liebl
 }
 \keyword{datasets}
+\examples{
+data(DGP1)
+N <- 100
+T <-  30
+
+## Take a look at the simulated data set DGP1:
+par(mfrow=c(2,2))
+matplot(matrix(DGP1$Y,  nrow=T,ncol=N),
+        type="l", xlab="Time", ylab="", main="Depend Variable")
+matplot(matrix(DGP1$X1, nrow=T,ncol=N),
+        type="l", xlab="Time", ylab="", main="First Regressor")
+matplot(matrix(DGP1$X2, nrow=T,ncol=N),
+        type="l", xlab="Time", ylab="", main="Second Regressor")
+## Usually unobserved common factors:
+matplot(matrix(c(DGP1$CF.1[1:T],
+                 DGP1$CF.2[1:T],
+                 DGP1$CF.3[1:T]), nrow=T,ncol=3),
+        type="l", xlab="Time", ylab="", main="Unobserved Common Factors")
+par(mfrow=c(1,1))
+}

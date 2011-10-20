@@ -38,11 +38,11 @@ data(DGP2)
     t=1,\dots,T$}{Y_{it}=\beta_{1}X_{it1}+\beta_{2}X_{it2}+v_i(t)+\epsilon_{it},
     i=1,\dots,n, t=1,\dots,T}
   -Slope parameters:
-  \eqn{$beta_{1}=beta_{2}=0.5$}{beta_{1}=beta_{2}=0.5}
+  \eqn{$\beta_{1}=\beta_{2}=0.5$}{beta_{1}=beta_{2}=0.5}
 
   -Time varying individual effects being second order polynomials:
   \eqn{$v_i(t)=\theta_{i0}+\theta_{i1}\frac{t}{T}+\theta_{i2}\left(\frac{t}{T}\right)^2$}{v_i(t)=theta_{i0}+theta_{i1}*frac{t}{T}+theta_{i2}*(frac{t}{T})^2}
-  Where theta_{i1}, theta_{i1}, and theta_{i1} are iid as N(0,0.25)
+  Where theta_{i1}, theta_{i1}, and theta_{i1} are iid as N(0,4)
 
   The Regressors X_{it}=(X_{it1},X_{it2})' are simulated from a bivariate VAR model:
   \eqn{$X_{it}=R X_{i,t-1}+\eta_{it}\quad\textrm{with}\quad

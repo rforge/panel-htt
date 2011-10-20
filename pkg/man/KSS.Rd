@@ -10,13 +10,19 @@ Estimation of Panel Data Models with Heterogeneous Time Trends
 }
 \usage{
 KSS(formula,\dots)
-\method{KSS}{default}(formula, effect = c("none", "individual", "time", "twoways"),
-                      dim.crit = c("KSS.C1", "KSS.C2"), alpha = 0.01, \dots)
+\method{KSS}{default}(formula,
+consult.dim.crit = FALSE,
+additive.effects = c("none","individual","time", "twoways"),
+level = 0.01, factor.dim=NULL, d.max=NULL, sig2.hat = NULL,
+restrict.mode= c("restrict.factors","restrict.loadings"), ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{formula}{An object of class "formula".}
-  \item{effect}{
+  \item{consult.dim.crit}{logical, if TRUE all implemented
+    dimensionality criteria are computed, if FALSE only the
+    dimensionality criterion of Kneip, Sickles & Song 2011 is used.}
+  \item{additive.effects}{
     Type of Data Transformations:
     \itemize{
       \item "\code{none}": for no transformation
@@ -24,17 +30,27 @@ KSS(formula,\dots)
       \item "\code{time}": for between transformation
       \item "\code{twoways}": for twoways transformation
   }}
-  \item{dim.crit}{
-    Selection of the threshold for Dimensionality-Criterion:
+  \item{level}{alpha-level for Dimensionality-Criterion of Kneip,
+    Sickles & Song 2011}
+  \item{factor.dim}{Dimension of Factor-Structure, chosen by the
+    user. The default (factor.dim=NULL) yields to an internal
+    estimation.}
+  \item{d.max}{Maximal Dimension for Dimensionalty-Estimation of Bai
+    (2009). The default (d.max=NULL) yields to an internal selection of
+    d.max.}
+  \item{sig2.hat}{Standard deviation of the error-term, chosen by
+    the user. The default (sig2.hat=NULL) yields to an internal
+    estimation.}
+  \item{restrict.mode}{
+    Type of Restriction on the Factor-Structure:
     \itemize{
-      \item "KSS.C1": (1-alpha)-quantile of the stand. normal
-      distribution. This is the default.  
-      \item "KSS.C2": (1-dyn.alpha)-quantile of the stand. normal
-      distribution, where \eqn{$\textrm{dyn.alpha}=1-\texttt{pnorm(}\sqrt{2\,\log(\min(N,T))}\texttt{)}$}{dyn.alpha=1-pnorm(sqrt(2*log(min(N,T))))}.
+      \item "restrict.factors": Factors are restricted to have an
+      euclidean norm of 1.
+      \item "restrict.loadings": Factor-Loadings are restricted to have an
+      euclidean norm of 1.
     }
   }
-  \item{alpha}{alpha for Dimensionality-Criterion "KSS.C1"}
-  \item{\dots}{Additional arguments to be passed to low level functions.}
+  \item{...}{Additional arguments to be passed to the low level functions.}
 
 }
 \details{
@@ -117,6 +133,8 @@ KSS(formula,\dots)
     \item Kneip, A., Sickles, R. C., Song, W., 2011 \dQuote{A New Panel Data
       Treatment for Heterogneity in Time Trends}, \emph{Forthcoming in
       Econometric Theory}
+    \item Bai, J., 2009 \dQuote{Panel data models with interactive fixed
+      effects}, \emph{Econometrica}
 }}
 \author{
   Dominik Liebl

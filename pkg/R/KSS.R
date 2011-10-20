@@ -5,7 +5,7 @@ KSS.default <- function(formula, consult.dim.crit = FALSE,
                         factor.dim=NULL,
                         d.max=NULL,
                         sig2.hat = NULL,
-                        restrict.mode= c("restrict.factors","restrict.loadings"))
+                        restrict.mode= c("restrict.factors","restrict.loadings"),...)
   {
     ##===================================================================================
     if(!class(formula)=="formula"){

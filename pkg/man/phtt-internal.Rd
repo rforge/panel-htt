@@ -1,12 +1,10 @@
 \name{grid-internal}
 \alias{AFactMod}
 \alias{Eup}
-\alias{fAFactMod}
 \alias{fpca.fit}
 \alias{FUN.add.eff}
 \alias{FUN.Pformula}
 \alias{FUN.with.trans}
-\alias{KSS.model.test}
 \alias{OptDim}
 \title{OptDim}
 \description{

@@ -1,5 +1,5 @@
-useDynlib(phtt)
 export(pca.fit)
+export(KSS)
 import(pspline)
-
-
+S3method(KSScf,phtt)
+S3method(print.KSScf,phtt)

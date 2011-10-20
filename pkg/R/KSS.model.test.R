@@ -15,10 +15,7 @@
 
 ## rm(list=ls())
 
-KSS.model.test.default <- function(formula,
-                                   g.function,
-                                   alpha      = 0.05,
-                                   ...)# ...  = sign.vec= NULL 
+KSScf.default <- function(formula, g.function, level = 0.05)
   {
     ## ==================================================================================
     ## effect-only "time"
@@ -29,8 +26,8 @@ KSS.model.test.default <- function(formula,
     if(!class(formula)=="formula"){
       stop("\n Argument >>formula<< needs a formula-object like y~x1+...")
     }
-    if(!is.numeric(alpha)){
-      stop("\n Argument >>alpha<< has to be numeric.")
+    if(!is.numeric(level)){
+      stop("\n Argument >>level<< has to be numeric.")
     }
     
     ##====================================================================================
@@ -191,7 +188,7 @@ KSS.model.test.default <- function(formula,
     result  <- KSS.OptDim(Obj      = M.fpca.fit.obj,
                           criteria = c("KSS.C1", "KSS.C2"),
                           sig2.hat = NULL,
-                          alpha    = alpha,
+                          alpha    = level,
                           d.max    = NULL)[[2]]
     result$L       <- L
     if(missing(g.function)){
@@ -202,16 +199,16 @@ KSS.model.test.default <- function(formula,
       }else{result$print <- NULL}
     }
     ## ====================================================================================
-    class(result)        <- "KSS.model.test" 
+    class(result)        <- "KSScf" 
     return(result)
   }
 
 
 ## Methods ========================================================================================
 
-KSS.model.test <- function(x,...) UseMethod("KSS.model.test")
+KSScf <- function(formula, g.function, level = 0.05) UseMethod("KSScf")
 
-print.KSS.model.test <- function(x,...){
+print.KSScf <- function(x,...){
   cat("----------------------------------------------\n")
   cat("Test for pre-specified factor model\n")
   cat("----------------------------------------------\n")
@@ -232,7 +229,6 @@ print.KSS.model.test <- function(x,...){
 ## ## TEST: ==========================================================================================
 ## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/OptDim.R")
 ## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/pca.fit.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fAFactMod.R")
 ## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.Pformula.R")
 ## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.add.eff.R")
 ## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fpca.fit.R")
@@ -282,22 +278,19 @@ print.KSS.model.test <- function(x,...){
 
 ## ## 1) TRUE: Individual Effects:
 ## Y            <- I.scl + add.ind + 5 * X1 - 5 * X2 + matrix(rnorm(T*N),T,N)
-## KSS.model.test(formula=Y ~ X1 + X2, g.function=NULL)
-## KSS.model.test(formula=Y ~ X1 + X2)
+## KSScf(formula=Y ~ X1 + X2, g.function=NULL)
+## KSScf(formula=Y ~ X1 + X2)
 ## ## wrong factros:
 ## gf <- FS.obj[[3]][,1]
-## KSS.model.test(formula=Y ~ X1 + X2, g.function=gf)
+## KSScf(formula=Y ~ X1 + X2, g.function=gf)
 
 ## ## 2) TRUE: Individual + Time Effects:
 ## Y            <- I.scl +add.tim.fun + add.ind + 5 * X1 - 5 * X2 + matrix(rnorm(T*N),T,N)
-## KSS.model.test(formula=Y ~ X1 + X2, g.function=NULL)
-## KSS.model.test(formula=Y ~ X1 + X2)
+## KSScf(formula=Y ~ X1 + X2, g.function=NULL)
+## KSScf(formula=Y ~ X1 + X2)
 ## ## wrong factros:
 ## gf <- FS.obj[[3]][,1]
-## KSS.model.test(formula=Y ~ X1 + X2, g.function=gf)
-
-
-
+## KSScf(formula=Y ~ X1 + X2, g.function=gf)
 
 ## ## 2) TRUE: 6-dimensional FS:
 ## Y            <- I.scl + 5 * X1 - 5 * X2 + FS.obs
@@ -310,13 +303,13 @@ print.KSS.model.test <- function(x,...){
 ## g.fun6 <- FS.obj[[3]][,6]
 
 ## gf     <- cbind(g.fun1,g.fun2,g.fun3,g.fun4,g.fun5,g.fun6)
-## KSS.model.test(formula=Y ~ X1 + X2, g.function=gf)
+## KSScf(formula=Y ~ X1 + X2, g.function=gf)
 
 ## gf     <- cbind(g.fun1,g.fun2,g.fun3,g.fun4,g.fun5)
-## KSS.model.test(formula=Y ~ X1 + X2, g.function=gf)
+## KSScf(formula=Y ~ X1 + X2, g.function=gf)
 
 ## gf     <- cbind(g.fun1,g.fun2,g.fun3,g.fun4)
-## KSS.model.test(formula=Y ~ X1 + X2, g.function=gf)
+## KSScf(formula=Y ~ X1 + X2, g.function=gf)
 ## ##
 
 
