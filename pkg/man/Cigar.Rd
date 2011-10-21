@@ -3,7 +3,7 @@
 \alias{Cigar}
 \title{Cigarette Consumption }
 \description{
-  a panel of 46 observations  from 1963  to 1992
+  a panel of N=46 observations each with time-dimension T=30 from 1963 to 1992
 
  \emph{total number of observations} :  1380
 
@@ -30,7 +30,6 @@
 
 \source{
 Online complements to Baltagi (2001).
-
  \url{http://www.wiley.com/legacy/wileychi/baltagi/}.
 }
 
@@ -43,3 +42,37 @@ Online complements to Baltagi (2001).
 }
 
 \keyword{datasets}
+\examples{
+data(Cigar)
+N <- 46
+T <- 30
+
+## Dependent variable:
+  ## Cigarette-Sales per Capita
+sales    <- matrix(Cigar$sales, T,N)     
+
+## Independent variables:
+  ## Consumer Price Index
+  cpi      <- matrix(Cigar$cpi, T,N)
+
+  ## Real Disposable Income per Capita  
+  r.ndi    <- matrix(Cigar$ndi,   T,N)/cpi
+
+  ## Real Price per Pack of Cigarettes 
+  r.price  <- matrix(Cigar$price, T,N)/cpi
+
+  ## Real Min-Price per Pack of Cigarettes in Neighboring States
+  r.pimin  <- matrix(Cigar$pimin, T,N)/cpi 
+
+########################################
+## Take a look at the data set Cigar: ##
+########################################
+par(mfrow=c(2,2))
+## Dependent variable
+matplot(sales,main="Cigaret-Sales per Capita",type="l",xlab="Time",ylab="")
+## Independent variables
+matplot(r.ndi,main="Real Disposable Income per Capita",type="l",xlab="Time",ylab="")
+matplot(r.price,main="Real Price of Cigarets per Pack",type="l",xlab="Time",ylab="")
+matplot(r.pimin,main="Real Minimum-Price of Cigarets\n per Pack in Neighbouring States",type="l",xlab="Time",ylab="")
+par(mfrow=c(1,1))
+}

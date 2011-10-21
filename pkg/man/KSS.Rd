@@ -9,18 +9,22 @@ KSS-Routine
 Estimation of Panel Data Models with Heterogeneous Time Trends
 }
 \usage{
-KSS(formula,\dots)
-\method{KSS}{default}(formula,
-consult.dim.crit = FALSE,
-additive.effects = c("none","individual","time", "twoways"),
-level = 0.01, factor.dim=NULL, d.max=NULL, sig2.hat = NULL,
-restrict.mode= c("restrict.factors","restrict.loadings"), ...)
+KSS(formula,
+    consult.dim.crit = FALSE,
+    additive.effects = c("none","individual","time", "twoways"),
+    level            = 0.01,
+    factor.dim       = NULL,
+    d.max            = NULL,
+    sig2.hat         = NULL,
+    restrict.mode    = c("restrict.factors","restrict.loadings"), ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{formula}{An object of class "formula".}
-  \item{consult.dim.crit}{logical, if TRUE all implemented
-    dimensionality criteria are computed, if FALSE only the
+  \item{consult.dim.crit}{logical. If consult.dim.crit is TRUE and
+    factor.dim is NULL: All implemented dimensionality criteria are
+    computed and the user has to choose a dimension via a GUI.
+    If consult.dim.crit is FALSE and factor.dim is NULL: Only the
     dimensionality criterion of Kneip, Sickles & Song 2011 is used.}
   \item{additive.effects}{
     Type of Data Transformations:
@@ -35,7 +39,7 @@ restrict.mode= c("restrict.factors","restrict.loadings"), ...)
   \item{factor.dim}{Dimension of Factor-Structure, chosen by the
     user. The default (factor.dim=NULL) yields to an internal
     estimation.}
-  \item{d.max}{Maximal Dimension for Dimensionalty-Estimation of Bai
+  \item{d.max}{Maximal Dimension for Dimensionality-Estimation of Bai
     (2009). The default (d.max=NULL) yields to an internal selection of
     d.max.}
   \item{sig2.hat}{Standard deviation of the error-term, chosen by
@@ -114,24 +118,42 @@ restrict.mode= c("restrict.factors","restrict.loadings"), ...)
       }
     }
     \value{
- \item{mu}{Intercept-Parameter as T-vector, where each element of the
-   T-vector is equal to the scalar 'alpha'.}
- \item{tau}{N-vector that contains the time-constant individual effects,
-   tau_i.}
- \item{beta.0}{T-vector that contains the individual-common time
-   effects, beta_0(t).}
- \item{sig2.hat}{Estimated variance of the error term epsilon_{it}}
- \item{beta.V}{Var- covariance matrix of the beta-parameters.}
- \item{fitted.values}{The fitted values as TxN-matrix}
- \item{Orig.Y}{Original dependent observations, y_{ti}, as TxN-matrix}
- \item{beta}{Estimated beta-parameters}
- \item{effect}{The chosen effect-type.}
- \item{fAFactMod}{Object of the class 'fAFactMod'.}
+      'KSS' returns an object of 'class' '"KSS"'.
+
+      An object of class '"lm"' is a list containing at least the
+      following components:
+      \itemize{
+	\item{dat.matrix: }{Whole data set stored within a
+	  (N*T)x(p+1)-Matrix, where P is the number of independent
+	  variables without the intercept.}
+	\item{dat.dim: }{Vector of length 3: c(T,N,p)}
+	\item{slope.para: }{Beta-parameters}
+	\item{beta.V: }{Covariance matrix of the beta-parameters.}
+	\item{names: }{Names of the dependent and independent variables.}
+	\item{is.intercept: }{Used an intercept in the formula?: TRUE or FALSE}
+	\item{additive.effects: }{Additive effect type. One of: "none","individual","time", "twoways".}
+	\item{Intercept: }{Intercept-parameter}
+	\item{Add.Ind.Eff: }{Estimated values of additive individual effects.}
+	\item{Add.Tim.Eff: }{Estimated values of additive time effects.}
+	\item{unob.factors: }{TxL-matrix of estimated unobserved common
+	  factors, where 'L' is the number of used factors.} 
+	\item{ind.loadings: }{NxL-matrix of loadings parameters.}
+	\item{unob.fact.stru: }{TxN-matrix of the estimated factor
+      structure. Each column represents an estimated individual unobserved time trend.}
+	\item{used.dim: }{Used dimensionality of the factor structure.}
+	\item{optimal.dim: }{List of proposed dimensionalities.}
+	\item{fitted.values: }{Fitted values}
+	\item{orig.Y: }{Original values of the dependent variable.}       
+	\item{residuals: }{Residuals}    
+	\item{sig2.hat: }{Estimated variance of the error term.}     
+	\item{degrees.of.freedom: }{Degrees of freedom}
+	\item{call}
+      }
 }
 \references{
   \itemize{
     \item Kneip, A., Sickles, R. C., Song, W., 2011 \dQuote{A New Panel Data
-      Treatment for Heterogneity in Time Trends}, \emph{Forthcoming in
+      Treatment for Heterogeneity in Time Trends}, \emph{Forthcoming in
       Econometric Theory}
     \item Bai, J., 2009 \dQuote{Panel data models with interactive fixed
       effects}, \emph{Econometrica}
@@ -146,13 +168,69 @@ restrict.mode= c("restrict.factors","restrict.loadings"), ...)
 % %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-fAFactMod  
+KSScf
 }
-% \examples{
-% ##---- Should be DIRECTLY executable !! ----
-% ##-- ==>  Define data, use random,
-% ##--	or do  help(data=index)  for the standard data sets.
-% }
+\examples{
+## See the example in 'help(Cigar)' in order to take a look at the
+## data set Cigar
+
+##########
+## DATA ##
+##########
+
+data(Cigar)
+N <- 46
+T <- 30
+
+## Dependent variable:
+  ## Cigarette-Sales per Capita
+sales    <- matrix(Cigar$sales, T,N)     
+
+## Independent variables:
+  ## Consumer Price Index
+  cpi      <- matrix(Cigar$cpi, T,N)
+
+  ## Real Disposable Income per Capita  
+  r.ndi    <- matrix(Cigar$ndi,   T,N)/cpi
+
+  ## Real Price per Pack of Cigarettes 
+  r.price  <- matrix(Cigar$price, T,N)/cpi
+
+  ## Real Min-Price per Pack of Cigarettes in Neighboring States
+  r.pimin  <- matrix(Cigar$pimin, T,N)/cpi 
+
+################
+## ESTIMATION ##
+################
+
+## No additive effects: =================================================
+  Cigar.none <- KSS(formula          = sales ~ r.ndi + r.price + r.pimin,
+                    consult.dim.crit = FALSE,
+                    additive.effects = "none",
+                    factor.dim       = 7)
+  ## (Try also to set consult.dim.crit = TRUE and factor.dim = NULL)
+
+  ## Summary-Table
+  (Cigar.none.summary <- summary(Cigar.none))
+
+  ## Plot estimated common factors and individual time-trends
+  plot(Cigar.none.summary)
+## ======================================================================
+
+## With additive time effects: ==========================================
+  Cigar.time <- KSS(formula          = sales ~ r.ndi + r.price + r.pimin,
+                    consult.dim.crit = FALSE,
+                    additive.effects = "time",
+                    factor.dim       = 7)
+  ## (Try also to set consult.dim.crit = TRUE and factor.dim = NULL)
+
+  ## Summary-Table
+  (Cigar.time.summary <- summary(Cigar.time))
+
+  ## Plot estimated common factors and individual time-trends
+  plot(Cigar.time.summary)
+## ======================================================================
+}
 % % Add one or more standard keywords, see file 'KEYWORDS' in the
 % % R documentation directory.
 % \keyword{ ~kwd1 }

@@ -23,6 +23,10 @@ data(DGP2)
     \item{Y}{dependent variable as N*T-vector}
     \item{X1}{first regressor as N*T-vector}
     \item{X2}{second regressor as N*T-vector}
+    \item{CF.1}{first (unobserved) common factor \eqn{$1$}{1}}
+    \item{CF.2}{second (unobserved) common factor
+      \eqn{$\frac{t}{T}$}{(t/T)}}
+    \item{CF.3}{thrid (unobserved) common factor \eqn{$\left(\frac{t}{T}\right)^2$}{(t/T)^2}}
     
     The time-index t is running "faster" than the individual-index i
     such that e.g. Y_{it} is ordered as:
@@ -75,3 +79,32 @@ data(DGP2)
   Dominik Liebl
 }
 \keyword{datasets}
+\examples{
+data(DGP2)
+
+## Dimensions
+N    <- 100
+T    <-  30
+
+## Observed Variables
+Y    <- matrix(DGP2$Y,  nrow=T,ncol=N)
+X1   <- matrix(DGP2$X1, nrow=T,ncol=N)
+X2   <- matrix(DGP2$X2, nrow=T,ncol=N)
+
+## Unobserved common factors
+CF.1 <- DGP2$CF.1[1:T]
+CF.2 <- DGP2$CF.2[1:T]
+CF.3 <- DGP2$CF.3[1:T]
+
+## Take a look at the simulated data set DGP2:
+par(mfrow=c(2,2))
+matplot(Y,  type="l", xlab="Time", ylab="", main="Depend Variable")
+matplot(X1, type="l", xlab="Time", ylab="", main="First Regressor")
+matplot(X2, type="l", xlab="Time", ylab="", main="Second Regressor")
+## Usually unobserved common factors:
+matplot(matrix(c(CF.1,
+                 CF.2,
+                 CF.3), nrow=T,ncol=3),
+        type="l", xlab="Time", ylab="", main="Unobserved Common Factors")
+par(mfrow=c(1,1))
+}

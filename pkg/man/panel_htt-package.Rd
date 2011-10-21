@@ -20,20 +20,20 @@ Panel Data Models for HTT
     Version: \tab 1.0\cr
     Date: \tab 2010-03-31\cr
     License: \tab GPL-2\cr
-    LazyLoad: \tab yes\cr
+    LazyLoad: \tab yes \cr
   }
 }
 \author{
-  Oualid Bada
+  Oualid Bada, 
   Dominik Liebl
 }
 \references{
   \itemize{
-    \item Bai, J., (2009) \dQuote{Panel Data Models with Interactive
-      Fixed Effects}, \emph{Econometrica}, \bold{4}, 1229-1279
-    \item Kneip, A., Sickles, R. C., Wonho, S., 2011 \dQuote{A New Panel Data
-      Treatment for Heterogneity in Time Trends}, \emph{Forthcoming in
+    \item Kneip, A., Sickles, R. C., Song, W., 2011 \dQuote{A New Panel Data
+      Treatment for Heterogeneity in Time Trends}, \emph{Forthcoming in
       Econometric Theory}
+    \item Bai, J., 2009 \dQuote{Panel data models with interactive fixed
+      effects}, \emph{Econometrica}
 }
 }
 %~~ Optionally other standard keywords, one per line, from file KEYWORDS in ~~

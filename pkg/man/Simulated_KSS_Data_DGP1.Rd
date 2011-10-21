@@ -79,21 +79,30 @@ data(DGP1)
 \keyword{datasets}
 \examples{
 data(DGP1)
-N <- 100
-T <-  30
+
+## Dimensions
+N    <- 100
+T    <-  30
+
+## Observed Variables
+Y    <- matrix(DGP1$Y,  nrow=T,ncol=N)
+X1   <- matrix(DGP1$X1, nrow=T,ncol=N)
+X2   <- matrix(DGP1$X2, nrow=T,ncol=N)
+
+## Unobserved common factors
+CF.1 <- DGP1$CF.1[1:T]
+CF.2 <- DGP1$CF.2[1:T]
+CF.3 <- DGP1$CF.3[1:T]
 
 ## Take a look at the simulated data set DGP1:
 par(mfrow=c(2,2))
-matplot(matrix(DGP1$Y,  nrow=T,ncol=N),
-        type="l", xlab="Time", ylab="", main="Depend Variable")
-matplot(matrix(DGP1$X1, nrow=T,ncol=N),
-        type="l", xlab="Time", ylab="", main="First Regressor")
-matplot(matrix(DGP1$X2, nrow=T,ncol=N),
-        type="l", xlab="Time", ylab="", main="Second Regressor")
+matplot(Y,  type="l", xlab="Time", ylab="", main="Depend Variable")
+matplot(X1, type="l", xlab="Time", ylab="", main="First Regressor")
+matplot(X2, type="l", xlab="Time", ylab="", main="Second Regressor")
 ## Usually unobserved common factors:
-matplot(matrix(c(DGP1$CF.1[1:T],
-                 DGP1$CF.2[1:T],
-                 DGP1$CF.3[1:T]), nrow=T,ncol=3),
+matplot(matrix(c(CF.1,
+                 CF.2,
+                 CF.3), nrow=T,ncol=3),
         type="l", xlab="Time", ylab="", main="Unobserved Common Factors")
 par(mfrow=c(1,1))
 }
