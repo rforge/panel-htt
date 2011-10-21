@@ -112,20 +112,25 @@ KSS.default <- function(formula, consult.dim.crit = FALSE,
 	else used.dim <- c(as.numeric(Opt.dim.Output[10,1]))
 	}
     
-    
-    factors       <- fpca.fit.obj$factors[,  1:used.dim, drop= FALSE]
-    loadings      <- fpca.fit.obj$loadings[, 1:used.dim, drop= FALSE]
+    if(used.dim>=1){
+      factors       <- fpca.fit.obj$factors[,  1:used.dim, drop= FALSE]
+      loadings      <- fpca.fit.obj$loadings[, 1:used.dim, drop= FALSE]
   
-    ##==========================================================================
+      ##==========================================================================
    
-    ## re-estimate beta=========================================================
-    factor.stract <- tcrossprod(factors, loadings)
-    NEW.TR.Y.mat  <- TR.Y.mat - factor.stract
-    NEW.TR.Y      <- as.vector(NEW.TR.Y.mat)
-    beta          <- qr.solve(TR.X, NEW.TR.Y)
-    beta          <- matrix(beta, P,1)
-    ##===========================================================================================
-
+      ## re-estimate beta=========================================================
+      factor.stract <- tcrossprod(factors, loadings)
+      NEW.TR.Y.mat  <- TR.Y.mat - factor.stract
+      NEW.TR.Y      <- as.vector(NEW.TR.Y.mat)
+      beta          <- qr.solve(TR.X, NEW.TR.Y)
+      beta          <- matrix(beta, P,1)
+      ##===========================================================================================
+    }else{
+      factors       <- NULL
+      loadings      <- NULL
+      beta          <- com.slops.0
+      factor.stract <- matrix(0,T,N)
+    }
     ## Built up the return object *est*
     
     FUN.add.eff.obj <- FUN.add.eff(PF.obj        = PF.obj,

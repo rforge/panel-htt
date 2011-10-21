@@ -138,15 +138,69 @@ print.summary.KSS <- function(x, ...){
 
 
 plot.summary.KSS <- function(x,...){
-  if(x$KSS.obj$additive.effects=="time"|x$KSS.obj$additive.effects=="twoways"){
-    par(mfrow=c(1,3))
-    plot.ts(x$KSS.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",...)
-  }else{par(mfrow=c(1,2))}
-  matplot(x$KSS.obj$unob.factors,
-          main=paste("Estimated Factors\n(Used Dimension = ",x$KSS.obj$used.dim,")",sep=""),
-          xlab="Time",ylab="", type="l",...)
-  matplot(x$KSS.obj$unob.fact.stru,
-          main=paste("Estimated Factor-Structure"),
-          xlab="Time",ylab="", type="l",...)
-  par(mfrow=c(1,1))
+  ## if(is.null(x$KSS.obj$unob.factors) & x$KSS.obj$additive.effects=="none"){
+##     stop("Neither an estimated factor structure nor additive effects to plot.")
+##   }
+  if(!is.null(x$KSS.obj$unob.factors)){
+    if(x$KSS.obj$additive.effects=="time"){
+      par(mfrow=c(1,3))
+      plot.ts(x$KSS.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",...)
+      matplot(x$KSS.obj$unob.factors,
+            main=paste("Estimated Factors\n(Used Dimension = ",x$KSS.obj$used.dim,")",sep=""),
+            xlab="Time",ylab="", type="l",...)
+      matplot(x$KSS.obj$unob.fact.stru,
+            main=paste("Estimated Factor-Structure"),
+            xlab="Time",ylab="", type="l",...)
+    par(mfrow=c(1,1))
+    }
+    if(x$KSS.obj$additive.effects=="twoways"){
+      par(mfrow=c(1,4))
+      plot.ts(x$KSS.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",...)
+      matplot(matrix(rep(x$KSS.obj$Add.Ind.Eff,each=x$KSS.obj$dat.dim[1]),
+                     nrow=x$KSS.obj$dat.dim[1],ncol=x$KSS.obj$dat.dim[2]),
+                     main="Additive Individual Effects", ylab="", type="l", ...)
+      matplot(x$KSS.obj$unob.factors,
+            main=paste("Estimated Factors\n(Used Dimension = ",x$KSS.obj$used.dim,")",sep=""),
+            xlab="Time",ylab="", type="l",...)
+      matplot(x$KSS.obj$unob.fact.stru,
+            main=paste("Estimated Factor-Structure"),
+            xlab="Time",ylab="", type="l",...)
+    par(mfrow=c(1,1))
+    }
+    if(x$KSS.obj$additive.effects=="individual"){
+      par(mfrow=c(1,3))
+      matplot(matrix(rep(x$KSS.obj$Add.Ind.Eff,each=x$KSS.obj$dat.dim[1]),
+                     nrow=x$KSS.obj$dat.dim[1],ncol=x$KSS.obj$dat.dim[2]),
+                     main="Additive Individual Effects", ylab="", type="l", ...)
+      matplot(x$KSS.obj$unob.factors,
+            main=paste("Estimated Factors\n(Used Dimension = ",x$KSS.obj$used.dim,")",sep=""),
+            xlab="Time",ylab="", type="l",...)
+      matplot(x$KSS.obj$unob.fact.stru,
+            main=paste("Estimated Factor-Structure"),
+            xlab="Time",ylab="", type="l",...)
+    par(mfrow=c(1,1))
+    }
+  }else{
+    if(x$KSS.obj$additive.effects=="time"){
+      par(mfrow=c(1,1))
+      plot.ts(x$KSS.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",...)
+      par(mfrow=c(1,1))
+    }
+    if(x$KSS.obj$additive.effects=="twoways"){
+      par(mfrow=c(1,2))
+      plot.ts(x$KSS.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",...)
+      matplot(matrix(rep(x$KSS.obj$Add.Ind.Eff,each=x$KSS.obj$dat.dim[1]),
+                     nrow=x$KSS.obj$dat.dim[1],ncol=x$KSS.obj$dat.dim[2]),
+              main="Additive Individual Effects", ylab="", type="l", ...)
+      par(mfrow=c(1,1))
+    }
+    if(x$KSS.obj$additive.effects=="individual"){
+      par(mfrow=c(1,1))
+      matplot(matrix(rep(x$KSS.obj$Add.Ind.Eff,each=x$KSS.obj$dat.dim[1]),
+                     nrow=x$KSS.obj$dat.dim[1],ncol=x$KSS.obj$dat.dim[2]),
+                     main="Additive Individual Effects", ylab="", type="l", ...)
+    par(mfrow=c(1,1))
+    }
+  }
 }
+
