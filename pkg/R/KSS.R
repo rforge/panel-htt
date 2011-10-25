@@ -1,11 +1,14 @@
 ## 
-KSS.default <- function(formula, consult.dim.crit = FALSE,
-                        additive.effects        = c("none", "individual", "time", "twoways"),
-                        level = 0.01,
-                        factor.dim=NULL,
-                        d.max=NULL,
-                        sig2.hat = NULL,
-                        restrict.mode= c("restrict.factors","restrict.loadings"),...)
+KSS.default <- function(formula,
+                        consult.dim.crit = FALSE,
+                        additive.effects = c("none", "individual", "time", "twoways"),
+                        two.step         = FALSE,
+                        level            = 0.01,
+                        factor.dim       = NULL,
+                        d.max            = NULL,
+                        sig2.hat         = NULL,
+                        restrict.mode    = c("restrict.factors","restrict.loadings"),
+                        ...)
   {
     ##===================================================================================
     if(!class(formula)=="formula"){
@@ -95,7 +98,7 @@ KSS.default <- function(formula, consult.dim.crit = FALSE,
     names(Opt.dim.Output.Onatski) <- c(" ED")
     Opt.dim.Output.RH <- c(as.numeric(Opt.dim.Output[13:14,1]))
     names(Opt.dim.Output.RH) <- c(" ER","GR")
-    if(is.null(factor.dim)&& consult.dim.crit){
+    if(is.null(factor.dim) && consult.dim.crit){
       cat("-----------------------------------------------------------\n")
       cat("Results of Dimension-Estimation");cat("\n\n-Bai:\n")
       print(Opt.dim.Output.Bai, quote = FALSE, na.print="");    cat("\n-KSS:\n")
@@ -107,29 +110,33 @@ KSS.default <- function(formula, consult.dim.crit = FALSE,
       used.dim <- scan(n=1)
       cat("Used Dimension of unobs. Factor-Structure is:\n", used.dim, "\n")
       cat("-----------------------------------------------------------\n")
-    }else {
-	if(!is.null(factor.dim)) used.dim <- factor.dim
-	else used.dim <- c(as.numeric(Opt.dim.Output[10,1]))
-	}
-    
-    if(used.dim>=1){
+    }
+    if(!is.null(factor.dim)){
+        used.dim <- factor.dim
+      }
+    if(is.null(factor.dim) && !consult.dim.crit){
+      used.dim <- c(as.numeric(Opt.dim.Output[10,1]))
+    }## now: 'used.dim' is specified 
+    if(used.dim > 0){
       factors       <- fpca.fit.obj$factors[,  1:used.dim, drop= FALSE]
       loadings      <- fpca.fit.obj$loadings[, 1:used.dim, drop= FALSE]
-  
-      ##==========================================================================
-   
-      ## re-estimate beta=========================================================
       factor.stract <- tcrossprod(factors, loadings)
-      NEW.TR.Y.mat  <- TR.Y.mat - factor.stract
-      NEW.TR.Y      <- as.vector(NEW.TR.Y.mat)
-      beta          <- qr.solve(TR.X, NEW.TR.Y)
-      beta          <- matrix(beta, P,1)
-      ##===========================================================================================
-    }else{
+      if(two.step){
+        ## re-estimate beta=========================================================
+        NEW.TR.Y.mat  <- TR.Y.mat - factor.stract
+        NEW.TR.Y      <- as.vector(NEW.TR.Y.mat)
+        beta          <- qr.solve(TR.X, NEW.TR.Y)
+        beta          <- matrix(beta, P,1)
+        ##==========================================================================
+      }else{
+        beta          <- com.slops.0
+      }
+    }
+    if(used.dim == 0){# no fact.-struct
       factors       <- NULL
       loadings      <- NULL
-      beta          <- com.slops.0
       factor.stract <- matrix(0,T,N)
+      beta          <- qr.solve(TR.X, TR.Y) # OLS
     }
     ## Built up the return object *est*
     
@@ -151,15 +158,31 @@ KSS.default <- function(formula, consult.dim.crit = FALSE,
                            N*(effect == "individual"| effect == "twoways") - 
                            T*(effect == "time"      | effect == "twoways"))
     
-    ## estimation of Variances  =================================================================
-    ## estimation of beta-variance beta.V 
-    beta.V <- sig2.hat * solve(bloc1) %*% (t.TR.X.TR.X + t.TR.X.TR.X.smth2 - 2*t.TR.X.TR.X.smth) %*% solve(bloc1)
-    ## estimation of Intercept-variance
-    
-    if(is.intercept){
-      Intercept.V <- (sig2.hat + matrix(colMeans(Or.X),1,P) %*% beta.V %*% t(matrix(colMeans(Or.X),1,P)))/(N*T)
-    }else{Intercept.V <- NULL}
-    
+    ## estimation of Variances ==================================================================
+    if(used.dim > 0){
+      ## estimation of beta-variance beta.V
+      if(!two.step){
+        beta.V <- sig2.hat * solve(bloc1) %*% (t.TR.X.TR.X + t.TR.X.TR.X.smth2 - 2*t.TR.X.TR.X.smth) %*% solve(bloc1)
+      }
+      if(two.step){
+        beta.V <- sig2.hat * solve(crossprod(TR.X))
+      }
+      ## estimation of Intercept-variance    
+      if(is.intercept){
+        Intercept.V <- (sig2.hat + matrix(colMeans(Or.X),1,P) %*% beta.V %*% t(matrix(colMeans(Or.X),1,P)))/(N*T)
+      }else{Intercept.V <- NULL}
+    }
+    if(used.dim == 0){
+      if(!is.intercept){
+        beta.V      <- sig2.hat * solve(t.TR.X.TR.X)
+        Intercept.V <- NULL
+      }else{        
+        alpha.beta.V <- sig2.hat * solve(crossprod(cbind(rep(1,N*T),TR.X)))
+        Intercept.V  <- alpha.beta.V[ 1,1]
+        tmp.beta.V   <- alpha.beta.V[-1,  ,drop=FALSE]
+        beta.V       <- tmp.beta.V[    ,-1,drop=FALSE]
+      }
+    }
     ## Fitted Values =============================================================================
     fitted.values      <- matrix(c(rep(FUN.add.eff.obj$mu, T*N) + rep(FUN.add.eff.obj$beta.0, N) +
                                    rep(FUN.add.eff.obj$tau, each=T) + Or.X %*% beta)

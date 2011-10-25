@@ -12,6 +12,7 @@ Estimation of Panel Data Models with Heterogeneous Time Trends
 KSS(formula,
     consult.dim.crit = FALSE,
     additive.effects = c("none","individual","time", "twoways"),
+    two.step         = FALSE,
     level            = 0.01,
     factor.dim       = NULL,
     d.max            = NULL,
@@ -20,38 +21,50 @@ KSS(formula,
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{formula}{An object of class "formula".}
-  \item{consult.dim.crit}{logical. If consult.dim.crit is TRUE and
-    factor.dim is NULL: All implemented dimensionality criteria are
-    computed and the user has to choose a dimension via a GUI.
-    If consult.dim.crit is FALSE and factor.dim is NULL: Only the
-    dimensionality criterion of Kneip, Sickles & Song 2011 is used.}
+  \item{formula}{An object of class 'formula'.}
+  \item{consult.dim.crit}{logical.
+    \itemize{
+      \item{If \code{consult.dim.crit} is \code{FALSE} (default) and
+	\code{factor.dim} is \code{NULL}:
+	Only the dimensionality criterion of Kneip, Sickles & Song 2011
+	is used.}
+      \item{If \code{consult.dim.crit} is \code{TRUE} and
+	\code{factor.dim} is \code{NULL}:
+	All implemented dimensionality criteria are computed and the user
+	has to select a dimension via a GUI. See also the details.}
+    }
+  }
   \item{additive.effects}{
     Type of Data Transformations:
     \itemize{
-      \item "\code{none}": for no transformation
-      \item "\code{individual}": for within transformation
-      \item "\code{time}": for between transformation
-      \item "\code{twoways}": for twoways transformation
+      \item \code{"none"}: for no transformation
+      \item \code{"individual"}: for within transformation
+      \item \code{"time"}: for between transformation
+      \item \code{"twoways"}: for twoways transformation
   }}
+  \item{two.step}{logical. If \code{two.step} is \code{FALSE} (default)
+    then the original estimation procedure proposed in Kneip,
+    Sickles & Song 2011 is used. If \code{two.step} is \code{TRUE} then
+    the slope-parameters are re-estimated given the estimated factor
+    structure. See also the details.}
   \item{level}{alpha-level for Dimensionality-Criterion of Kneip,
     Sickles & Song 2011}
-  \item{factor.dim}{Dimension of Factor-Structure, chosen by the
-    user. The default (factor.dim=NULL) yields to an internal
+  \item{factor.dim}{Dimension of Factor-Structure, pre-specified
+    by the user. The default (\code{factor.dim=NULL}) yields to an internal
     estimation.}
   \item{d.max}{Maximal Dimension for Dimensionality-Estimation of Bai
-    (2009). The default (d.max=NULL) yields to an internal selection of
+    (2009). The default (\code{d.max=NULL}) yields to an internal selection of
     d.max.}
   \item{sig2.hat}{Standard deviation of the error-term, chosen by
-    the user. The default (sig2.hat=NULL) yields to an internal
+    the user. The default (\code{sig2.hat=NULL}) yields to an internal
     estimation.}
   \item{restrict.mode}{
     Type of Restriction on the Factor-Structure:
     \itemize{
-      \item "restrict.factors": Factors are restricted to have an
+      \item \code{"restrict.factors"}: Factors are restricted to have an
       euclidean norm of 1.
-      \item "restrict.loadings": Factor-Loadings are restricted to have an
-      euclidean norm of 1.
+      \item \code{"restrict.loadings"}: Factor-Loadings are restricted
+      to have an euclidean norm of 1.
     }
   }
   \item{...}{Additional arguments to be passed to the low level functions.}
@@ -73,14 +86,32 @@ KSS(formula,
 	 \theta_{ir}\in R,  g_r\in
 	L^2[0,T].}
       The unobserved functions v_i(t) can be interpreted as smooth
-      functions for a continuous argument t, as well as stochastic processes for discrete argument t.
+      functions for a continuous argument t, as well as stochastic
+      processes for discrete argument t.
       \itemize{
 	\item{\code{formula}: }{Usual 'formula'-object. If you wish to
 	  estimate a model without an intercept use '-1' in the
-	  formula-specification. Each Variable has to be given as a TxN-matrix.}
-	\item{\code{effect}}{
+	  formula-specification. Each Variable has to be given as a
+	  TxN-matrix.}
+	\item{consult.dim.crit}{
 	  \itemize{
-	    \item \code{none}: The data is not transformed, except for an
+	    \item{If \code{consult.dim.crit} is \code{FALSE} (default)
+	      only the dimensionality criterion
+	      of Kneip, Sickles & Song 2011 is used -- except for the
+	      case if the user pre-specifies a dimension via the
+	      argument \code{factor.dim}. If the latter is the case,
+	      there is no estimation of the dimensionality of the factor
+	      structure.}
+	    \item{If \code{consult.dim.crit} is \code{TRUE} the user is
+	      asked to select a dimension on basis of several
+	      dimensionality criteria. The GUI prints the results of the
+	      dimensionality criteria of Bai (???), Kneip, Sickles &
+	      Song (2010), Onatski (???), and (???).}
+	  }
+	}
+	\item{\code{additive.effects}}{
+	  \itemize{
+	    \item \code{"none"}: The data is not transformed, except for an
 	    eventually subtraction of the overall mean, if the model is
 	    estimated with an intercept. The assumed model can be written as
 	    \eqn{$Y_{it}=\alpha+\sum_{j=1}^p\beta_{j}
@@ -88,7 +119,7 @@ KSS(formula,
               Y_{it}=\alpha+\sum_{j=1}^p\beta_{j}
 	      X_{itj}+v_i(t)+\epsilon_{it}, i=1,...,n, t=1,...,T.}
 	    The parameter 'alpha' is set to zero if '-1' is used in \code{formula}.
-	    \item \code{individual}: This is the "within"-model
+	    \item \code{"individual"}: This is the "within"-model
 	    assuming that there are time-constant individual effects,
 	    tau_i, besides the individual time trends v_i(t). The assumed model can be written as
 	    \eqn{$Y_{it}=\alpha+\sum_{j=1}^p\beta_{j}
@@ -96,16 +127,15 @@ KSS(formula,
               Y_{it}=\beta_0(t)+\sum_{j=1}^p\beta_{j}
 	      X_{itj}+v_i(t)+\tau_{i}+\epsilon_{it}, i=1,...,n, t=1,...,T.}
 	    The parameter 'alpha' is set to zero if '-1' is used in \code{formula}.
-	    \item \code{time}: This is the "between"-model assuming
+	    \item \code{"time"}: This is the "between"-model assuming
 	    that there is a common (for all individuals) time trend, beta_0(t). The
 	    assumed model can be written as
 	    \eqn{$Y_{it}=\alpha+\beta_{0}(t)+\sum_{j=1}^p\beta_{j}
 	      X_{itj}+v_i(t)+\epsilon_{it}\quad i=1,\dots,n, t=1,\dots,T.$}{
               Y_{it}=\beta_0(t)+\sum_{j=1}^p\beta_{j}
 	      X_{itj}+v_i(t)+\epsilon_{it}, i=1,...,n, t=1,...,T.}
-	    The parameter 'alpha' is set to zero if '-1' is used in
-	    \code{formula}.
-	    \item \code{twoways}: This is the usual twoways-model (within &
+	    The parameter 'alpha' is set to zero if '-1' is used in \code{formula}.
+	    \item \code{"twoways"}: This is the usual twoways-model (within &
 	    between) assuming that there are time-constant individual effects, tau_i, and a common (for
 	    all individuals) time trend, beta_0(t). The assumed model can be written as
 	    \eqn{$Y_{it}=\alpha+\beta_{0}(t)+\sum_{j=1}^p\beta_{j}
@@ -113,6 +143,29 @@ KSS(formula,
               Y_{it}=\beta_0(t)+\sum_{j=1}^p\beta_{j}
 	      X_{itj}+\tau_i+v_i(t)+\epsilon_{it}, i=1,...,n, t=1,...,T.}
 	    The parameter 'alpha' is set to zero if '-1' is used in \code{formula}.
+	  }
+	  \item{\code{two.step}: }{
+	    \itemize{
+	      \item{If \code{two.step} is \code{FALSE} (default)
+		then the original estimation procedure proposed in Kneip,
+		Sickles & Song 2011 is used. This procedure is allways
+		consistent and shall be preferred unless the user knows
+		the true dimension of the factor structure. In the
+		latter case the user shall choose \code{two.step=TRUE}
+		and set \code{factor.dim} equal to the known factor
+		dimension.}
+	      \item{If \code{two.step} is \code{TRUE} then the
+		slope-parameters are re-estimated given the estimated factor
+		structure. This procedure has the advantage that, if the
+		selected dimension of the factor structure is true, the
+		estimates of the slope-parameters are more
+		efficient than those proposed in Kneip, Sickles & Song
+		(2011). But, if the selected dimension of the factor
+		structure is smaller than the true dimension and if the
+		factor structure correlates with at least one of the
+		regressors then the estimates of the slope-parameters
+		suffer from an unobserved variable bias.}
+	    }
 	  }
 	}
       }
@@ -168,7 +221,7 @@ KSS(formula,
 % %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-KSScf
+KSScf, eup
 }
 \examples{
 ## See the example in 'help(Cigar)' in order to take a look at the

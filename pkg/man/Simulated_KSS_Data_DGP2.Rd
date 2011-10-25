@@ -23,14 +23,12 @@ data(DGP2)
     \item{Y}{dependent variable as N*T-vector}
     \item{X1}{first regressor as N*T-vector}
     \item{X2}{second regressor as N*T-vector}
-    \item{CF.1}{first (unobserved) common factor \eqn{$1$}{1}}
-    \item{CF.2}{second (unobserved) common factor
-      \eqn{$\frac{t}{T}$}{(t/T)}}
-    \item{CF.3}{thrid (unobserved) common factor \eqn{$\left(\frac{t}{T}\right)^2$}{(t/T)^2}}
-    
-    The time-index t is running "faster" than the individual-index i
-    such that e.g. Y_{it} is ordered as:
-    Y_{11},Y_{12},\ldots,Y_{1T},Y_{21},Y_{22},\ldots
+    \item{CF.1}{first (unobserved) common factor: \eqn{$CF.1(t)=1$}{CF.1(t)=1}}
+    \item{CF.2}{second (unobserved) common factor: \eqn{$CF.2(t)=\frac{t}{T}$}{CF.2(t)=(t/T)}}
+    \item{CF.3}{thrid (unobserved) common factor: \eqn{$CF.3(t)=\left(\frac{t}{T}\right)^2$}{CF.3(t)=(t/T)^2}}    
+    \item{}{Remark: The time-index t is running "faster" than the
+    individual-index i such that e.g. Y_{it} is ordered as:
+    \eqn{$Y_{11},Y_{12},\ldots,Y_{1T},Y_{21},Y_{22},\ldots$}{Y_{11},Y_{12},\ldots,Y_{1T},Y_{21},Y_{22},\ldots}}
   }
 }
 

@@ -3,11 +3,12 @@
 KSS <- function(formula,
                 consult.dim.crit = FALSE,
                 additive.effects = c("none", "individual", "time", "twoways"),
-                level = 0.01,
-                factor.dim = NULL,
-                d.max = NULL,
-                sig2.hat =NULL,
-                restrict.mode = c("restrict.factors","restrict.loadings"),
+                two.step         = FALSE,
+                level            = 0.01,
+                factor.dim       = NULL,
+                d.max            = NULL,
+                sig2.hat         = NULL,
+                restrict.mode    = c("restrict.factors","restrict.loadings"),
                 ...){
   UseMethod("KSS")
 }
@@ -138,10 +139,20 @@ print.summary.KSS <- function(x, ...){
 
 
 plot.summary.KSS <- function(x,...){
-  ## if(is.null(x$KSS.obj$unob.factors) & x$KSS.obj$additive.effects=="none"){
-##     stop("Neither an estimated factor structure nor additive effects to plot.")
-##   }
+  if(is.null(x$KSS.obj$unob.factors) & x$KSS.obj$additive.effects=="none"){
+    stop("Neither an estimated factor structure nor additive effects to plot.")
+  }
   if(!is.null(x$KSS.obj$unob.factors)){
+    if(x$KSS.obj$additive.effects=="none"){
+      par(mfrow=c(1,2))
+      matplot(x$KSS.obj$unob.factors,
+            main=paste("Estimated Factors\n(Used Dimension = ",x$KSS.obj$used.dim,")",sep=""),
+            xlab="Time",ylab="", type="l",...)
+      matplot(x$KSS.obj$unob.fact.stru,
+            main=paste("Estimated Factor-Structure"),
+            xlab="Time",ylab="", type="l",...)
+    par(mfrow=c(1,1))
+    }
     if(x$KSS.obj$additive.effects=="time"){
       par(mfrow=c(1,3))
       plot.ts(x$KSS.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",...)
