@@ -8,17 +8,14 @@ Panel Data Models for HTT
 }
 \description{
   The Package implements a new class of panel data models. This class
-  allows for unobserved heterogeneity in time trends as suggested in .
-  The package comes with diverse recently
-  developed tests on dimensionality as well as with a routine
-  for (functional) principal component analysis.  
+  allows for unobserved heterogeneous individual time trends. 
 }
 \details{
   \tabular{ll}{
     Package: \tab phtt\cr
     Type: \tab Package\cr
     Version: \tab 1.0\cr
-    Date: \tab 2010-03-31\cr
+    Date: \tab 2011-10-25\cr
     License: \tab GPL-2\cr
     LazyLoad: \tab yes \cr
   }
