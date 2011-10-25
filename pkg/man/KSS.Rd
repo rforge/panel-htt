@@ -256,33 +256,18 @@ sales    <- matrix(Cigar$sales, T,N)
 ## ESTIMATION ##
 ################
 
-## No additive effects: =================================================
-  Cigar.none <- KSS(formula          = sales ~ r.ndi + r.price + r.pimin,
-                    consult.dim.crit = FALSE,
-                    additive.effects = "none",
-                    factor.dim       = 7)
-  ## (Try also to set consult.dim.crit = TRUE and factor.dim = NULL)
-
-  ## Summary-Table
-  (Cigar.none.summary <- summary(Cigar.none))
-
-  ## Plot estimated common factors and individual time-trends
-  plot(Cigar.none.summary)
-## ======================================================================
-
-## With additive time effects: ==========================================
+## With additive time effects and 3-dimensional factor structure:
   Cigar.time <- KSS(formula          = sales ~ r.ndi + r.price + r.pimin,
                     consult.dim.crit = FALSE,
                     additive.effects = "time",
-                    factor.dim       = 7)
-  ## (Try also to set consult.dim.crit = TRUE and factor.dim = NULL)
+                    factor.dim       = 3)
+  ## (Try also to set 'consult.dim.crit = TRUE' and 'factor.dim = NULL')
 
   ## Summary-Table
   (Cigar.time.summary <- summary(Cigar.time))
 
   ## Plot estimated common factors and individual time-trends
   plot(Cigar.time.summary)
-## ======================================================================
 }
 % % Add one or more standard keywords, see file 'KEYWORDS' in the
 % % R documentation directory.
