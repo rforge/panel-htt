@@ -263,7 +263,7 @@ Eup.default <- function(formula
 	nc 		<- ncol(PF.obj[[1]]$ODM)
 	nr 		<- nrow(PF.obj[[1]]$ODM)
 	P  		<- length(PF.obj) - 1
-  intercept <- PF.obj[[1]]$I
+  	intercept <- PF.obj[[1]]$I
 
   # prepare for FUN.default (give the data in a large matrix: (y, x1, ...xP) where y, xp are  NT x1 Vectors  )
 
