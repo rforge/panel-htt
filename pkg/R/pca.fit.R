@@ -113,7 +113,7 @@ svd.pca <- function(Q
 	L      <- Evec[, 0:max.rk , drop= FALSE]
 	if(!neglect.neg.ev) sqr.E <- c(sqrt(Eval[Eval > 0])
 						,rep(0, (max.rk - nbr.pos.ev)))
-	else sqr.E	 <- sqrt(Eval[1:max.rk ])
+	else sqr.E	 <- sqrt(Eval[0:max.rk ])
 
 	if(calcul.loadings){
 		S <- crossprod(Q, L)[, 0:max.rk , drop= FALSE]
@@ -259,7 +259,8 @@ pca.fit <- function(dat, given.d=NULL
 	svd.pca.obj  <- svd.pca(dat, given.d = given.d
 				, allow.dual= allow.dual
 				, neglect.neg.ev = neglect.neg.ev)
-	result <- restrict.pca(svd.pca.obj)
+	restrict.mode <-match.arg(restrict.mode)
+	result <- restrict.pca(svd.pca.obj, restrict.mode= restrict.mode)
 	structure(result, class = "pca.fit")
 	}
 ############################################################################

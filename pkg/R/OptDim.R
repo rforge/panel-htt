@@ -453,13 +453,13 @@ OptDim.default <- function(Obj, criteria.of = c("Bai", "KSS", "Onatski", "RH")
 	criteria.of <- match.arg(criteria.of, several.ok = TRUE)
 	FUN.crit <- function(criteria.of, d.max, sig2.hat, level) {
 		switch(criteria.of,
-		Bai = { B.OptDim(Obj = Obj, d.max = d.max, sig2.hat=NULL)
+		Bai = { try(B.OptDim(Obj = Obj, d.max = d.max, sig2.hat=NULL))
 			},
-		KSS = { KSS.OptDim(Obj = Obj, sig2.hat = sig2.hat, alpha = level)[[1]]
+		KSS = { try(KSS.OptDim(Obj = Obj, sig2.hat = sig2.hat, alpha = level)[[1]])
 			},
-		Onatski = {O.OptDim(Obj = Obj, d.max  = d.max)
+		Onatski = {try(O.OptDim(Obj = Obj, d.max  = d.max))
 			},
-		RH = { RH.OptDim(Obj = Obj, d.max = d.max)
+		RH = { try(RH.OptDim(Obj = Obj, d.max = d.max))
 			})
 		}
 
