@@ -376,4 +376,4 @@ Eup.default <- function(formula
 		, Nbr.iteration= Nbr.iteration)
   class(final.result) <- "Eup"
   return(final.result)  
-  }
+      }

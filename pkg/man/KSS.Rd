@@ -237,27 +237,27 @@ T <- 30
 
 ## Dependent variable:
   ## Cigarette-Sales per Capita
-sales    <- matrix(Cigar$sales, T,N)     
+l.sales    <- log(matrix(Cigar$sales, T,N))
 
 ## Independent variables:
   ## Consumer Price Index
   cpi      <- matrix(Cigar$cpi, T,N)
 
   ## Real Disposable Income per Capita  
-  r.ndi    <- matrix(Cigar$ndi,   T,N)/cpi
+  l.r.ndi    <- log(matrix(Cigar$ndi,   T,N)/cpi)
 
   ## Real Price per Pack of Cigarettes 
-  r.price  <- matrix(Cigar$price, T,N)/cpi
+  l.r.price  <- log(matrix(Cigar$price, T,N)/cpi)
 
   ## Real Min-Price per Pack of Cigarettes in Neighboring States
-  r.pimin  <- matrix(Cigar$pimin, T,N)/cpi 
+  l.r.pimin  <- log(matrix(Cigar$pimin, T,N)/cpi)
 
 ################
 ## ESTIMATION ##
 ################
 
 ## With additive time effects and 3-dimensional factor structure:
-  Cigar.time <- KSS(formula          = sales ~ r.ndi + r.price + r.pimin,
+  Cigar.time <- KSS(formula          = l.sales ~ l.r.ndi + l.r.price + l.r.pimin,
                     consult.dim.crit = FALSE,
                     additive.effects = "time",
                     factor.dim       = 3)

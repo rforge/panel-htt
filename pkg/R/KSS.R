@@ -89,7 +89,9 @@ KSS.default <- function(formula,
     ## Estimation of Dimension
     Opt.dim.Output <- as.matrix(sapply(dim.criterion, function(dim.criterion){
                                   EstDim(dim.criterion, Obj=Residu.mat, d.max=d.max, factor.dim=factor.dim,
-                                         sig2.hat=sig2.hat, level=level)[2]}))
+                                         sig2.hat=sig2.hat, level=level)[2]}
+                                       ))
+    
     Opt.dim.Output.Bai <- c(as.numeric(Opt.dim.Output[1:9,1]))
     names(Opt.dim.Output.Bai) <- c("PC1","PC2","PC3","IC1","IC2","IC3","IPC3","IPC2","IPC3")
     Opt.dim.Output.KSS <- c(as.numeric(Opt.dim.Output[10:11,1]))
@@ -116,7 +118,8 @@ KSS.default <- function(formula,
       }
     if(is.null(factor.dim) && !consult.dim.crit){
       used.dim <- c(as.numeric(Opt.dim.Output[10,1]))
-    }## now: 'used.dim' is specified 
+    }
+    ## now: 'used.dim' is specified 
     if(used.dim > 0){
       factors       <- fpca.fit.obj$factors[,  1:used.dim, drop= FALSE]
       loadings      <- fpca.fit.obj$loadings[, 1:used.dim, drop= FALSE]

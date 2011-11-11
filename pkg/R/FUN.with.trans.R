@@ -1,21 +1,19 @@
-#### Änderungen:
-# 1: eine cover-Funktion geschrieben 'WithTrans'
-# 2: logische Umfrage 'if(!is.intercept & mean(z)!=0)' eliminiert "intercep kann in einem 
-#    dummy design matrix eingegeben. Sonst werden die Konstante Effecte in der Factorstructure 
-#    erscheinen" 
-# 3: OVm ist jetzt unter TRm
-# 4: Trm ist immer eine Liste für alle Effekte
-# 5: für 'Twoways' ein Intercept muss immer im model sein sonst braucht man zusätiche
-#    Restriktionen für die Identifikation.
-#    Also für 'Twoways' das argument 'is.intercept will be ingonred'
+## Änderungen:
+## 1: eine cover-Funktion geschrieben 'WithTrans'
+## 2: logische Umfrage 'if(!is.intercept & mean(z)!=0)' eliminiert "intercep kann in einem 
+##    dummy design matrix eingegeben. Sonst werden die Konstante Effecte in der Factorstructure 
+##    erscheinen" 
+## 3: OVm ist jetzt unter TRm
+## 4: Trm ist immer eine Liste für alle Effekte
+## 5: für 'Twoways' ein Intercept muss immer im model sein sonst braucht man zusätiche
+##    Restriktionen für die Identifikation.
+##    Also für 'Twoways' das argument 'is.intercept will be ingonred'
 
-# To Do: Evtl sollte man Einige listen-Componenten mit "drop=FALSE" ausstatten,
-# da z.B. ODM bei P=1 ein vector ist und keine matrix! 
+## To Do: Evtl sollte man Einige listen-Componenten mit "drop=FALSE" ausstatten,
+## da z.B. ODM bei P=1 ein vector ist und keine matrix! 
 
 
-FUN.with.trans <- function(z, N, T, is.intercept,
-                           effect = c("none", "individual", "time", "twoways")) 
-  {
+FUN.with.trans <- function(z, N, T, is.intercept, effect = c("none", "individual", "time", "twoways")){
 	with.trans <- match.arg(effect)
         const <- ifelse(is.intercept, mean(z), 0)
         
