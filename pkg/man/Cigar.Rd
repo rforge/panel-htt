@@ -48,31 +48,38 @@ N <- 46
 T <- 30
 
 ## Dependent variable:
+
   ## Cigarette-Sales per Capita
-sales    <- matrix(Cigar$sales, T,N)     
+  l.sales    <- log(matrix(Cigar$sales, T,N))
 
 ## Independent variables:
+
   ## Consumer Price Index
-  cpi      <- matrix(Cigar$cpi, T,N)
+  cpi        <- matrix(Cigar$cpi, T,N)
 
   ## Real Disposable Income per Capita  
-  r.ndi    <- matrix(Cigar$ndi,   T,N)/cpi
+  l.r.ndi    <- log(matrix(Cigar$ndi,   T,N)/cpi)
 
   ## Real Price per Pack of Cigarettes 
-  r.price  <- matrix(Cigar$price, T,N)/cpi
+  l.r.price  <- log(matrix(Cigar$price, T,N)/cpi)
 
   ## Real Min-Price per Pack of Cigarettes in Neighboring States
-  r.pimin  <- matrix(Cigar$pimin, T,N)/cpi 
+  l.r.pimin  <- log(matrix(Cigar$pimin, T,N)/cpi) 
 
-########################################
-## Take a look at the data set Cigar: ##
-########################################
+##############################
+## Plot the data set Cigar: ##
+##############################
+
 par(mfrow=c(2,2))
 ## Dependent variable
-matplot(sales,main="Cigaret-Sales per Capita",type="l",xlab="Time",ylab="")
+matplot(l.sales,main="Log's of Cigaret-Sales\nper Capita",
+        type="l",xlab="Time",ylab="")
 ## Independent variables
-matplot(r.ndi,main="Real Disposable Income per Capita",type="l",xlab="Time",ylab="")
-matplot(r.price,main="Real Price of Cigarets per Pack",type="l",xlab="Time",ylab="")
-matplot(r.pimin,main="Real Minimum-Price of Cigarets\n per Pack in Neighbouring States",type="l",xlab="Time",ylab="")
+matplot(l.r.price,main="Log's of Real-Prices of\nCigarets per Pack",
+        type="l",xlab="Time",ylab="")
+matplot(l.r.ndi,main="Log's of Real Disposable Income\nper Capita",
+        type="l",xlab="Time",ylab="")
+matplot(l.r.pimin,main="Log's of Real Minimum-Price of\nCigarets per Pack\nin Neighbouring States",
+        type="l",xlab="Time",ylab="")
 par(mfrow=c(1,1))
 }

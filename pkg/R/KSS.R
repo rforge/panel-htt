@@ -106,11 +106,13 @@ KSS.default <- function(formula,
       print(Opt.dim.Output.Bai, quote = FALSE, na.print="");    cat("\n-KSS:\n")
       print(Opt.dim.Output.KSS, quote = FALSE, na.print="");    cat("\n-Onatski:\n")
       print(Opt.dim.Output.Onatski, quote = FALSE, na.print="");cat("\n-RH:\n")
-      print(Opt.dim.Output.RH, quote = FALSE, na.print="");     cat("\n")
+      print(Opt.dim.Output.RH, quote = FALSE, na.print="");     cat("\n-Summary:\n")
+      otp <- as.numeric(c(Opt.dim.Output.Bai,Opt.dim.Output.KSS,Opt.dim.Output.Onatski,Opt.dim.Output.RH))
+      print(summary(otp), quote = FALSE, na.print="");cat("\n")
       cat("-----------------------------------------------------------\n")
       cat("Please, Enter a Dimension:", "\n")
       used.dim <- scan(n=1)
-      cat("Used Dimension of unobs. Factor-Structure is:\n", used.dim, "\n")
+      cat("Used Dimension of unobs. Factor-Structure is:\n", used.dim,"\n")
       cat("-----------------------------------------------------------\n")
     }
     if(!is.null(factor.dim)){

@@ -236,12 +236,14 @@ N <- 46
 T <- 30
 
 ## Dependent variable:
+
   ## Cigarette-Sales per Capita
-l.sales    <- log(matrix(Cigar$sales, T,N))
+  l.sales    <- log(matrix(Cigar$sales, T,N))
 
 ## Independent variables:
+
   ## Consumer Price Index
-  cpi      <- matrix(Cigar$cpi, T,N)
+  cpi        <- matrix(Cigar$cpi, T,N)
 
   ## Real Disposable Income per Capita  
   l.r.ndi    <- log(matrix(Cigar$ndi,   T,N)/cpi)
@@ -250,24 +252,10 @@ l.sales    <- log(matrix(Cigar$sales, T,N))
   l.r.price  <- log(matrix(Cigar$price, T,N)/cpi)
 
   ## Real Min-Price per Pack of Cigarettes in Neighboring States
-  l.r.pimin  <- log(matrix(Cigar$pimin, T,N)/cpi)
+  l.r.pimin  <- log(matrix(Cigar$pimin, T,N)/cpi) 
 
-################
-## ESTIMATION ##
-################
 
-## With additive time effects and 3-dimensional factor structure:
-  Cigar.time <- KSS(formula          = l.sales ~ l.r.ndi + l.r.price + l.r.pimin,
-                    consult.dim.crit = FALSE,
-                    additive.effects = "time",
-                    factor.dim       = 3)
-  ## (Try also to set 'consult.dim.crit = TRUE' and 'factor.dim = NULL')
 
-  ## Summary-Table
-  (Cigar.time.summary <- summary(Cigar.time))
-
-  ## Plot estimated common factors and individual time-trends
-  plot(Cigar.time.summary)
 }
 % % Add one or more standard keywords, see file 'KEYWORDS' in the
 % % R documentation directory.
