@@ -15,22 +15,26 @@
 
 ## rm(list=ls())
 
-KSScf.default <- function(formula, g.function, level = 0.05)
+KSScf.default <- function(formula,
+                          g.function,
+                          additive.effects = c("none", "individual", "time", "twoways"),
+                          level = 0.05)
   {
-    ## ==================================================================================
-    ## effect-only "time"
-    effect  <- "time"
-    
     ##===================================================================================
-    ## check argument formula
+    ## check arguments
     if(!class(formula)=="formula"){
       stop("\n Argument >>formula<< needs a formula-object like y~x1+...")
+    }
+    if(!any(additive.effects==c("none", "individual", "time", "twoways"))){
+      stop("\n Argument >>effect<< must be one of: \n none, individual, time, twoways")
     }
     if(!is.numeric(level)){
       stop("\n Argument >>level<< has to be numeric.")
     }
-    
-    ##====================================================================================
+    ## ==================================================================================
+    ## effects
+    effect        <- match.arg(additive.effects)
+    ##===================================================================================
     ## extract data from formula
     names        <- names(model.frame(formula))
     PF.obj       <- FUN.Pformula(formula = formula, effect = effect)
@@ -40,7 +44,6 @@ KSScf.default <- function(formula, g.function, level = 0.05)
     N            <- ncol(PF.obj[[1]]$ODM) # Individual-Dimension
     T            <- nrow(PF.obj[[1]]$ODM) # Time-Dimension
     P            <- length(PF.obj)-1      # Number of Regressors (without intercept-term)
-
     ##====================================================================================
     ## check and evaluate argument >>g.function<<
     if(missing(g.function)){
@@ -90,6 +93,12 @@ KSScf.default <- function(formula, g.function, level = 0.05)
           }
         }
       }
+    if(N*L>195){
+      cat("-----------------------------------------------------------\n")
+      cat("Computation will be very slowly. Do you want to continue (y/n)?", "\n")
+      yn <- scan(n=1, what="character")
+      if(yn=="n"){return("Computation stopped!")}
+    }
     ## ==================================================================================
     ## design-matrix and -list (each column of the design.mat (NT x NL) is one list-component)
     design.mat  <- kronecker(diag(N), g.fun)                                    # (NT x NL)
@@ -206,7 +215,12 @@ KSScf.default <- function(formula, g.function, level = 0.05)
 
 ## Methods ========================================================================================
 
-KSScf <- function(formula, g.function, level = 0.05) UseMethod("KSScf")
+KSScf <- function(formula,
+                  g.function,
+                  additive.effects = c("none", "individual", "time", "twoways"),
+                  level = 0.05){
+  UseMethod("KSScf")
+}
 
 print.KSScf <- function(x,...){
   cat("----------------------------------------------\n")

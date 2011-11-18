@@ -8,7 +8,7 @@
   
   \emph{time-index} : t=1,\ldots,T=30
 
-  \emph{individual-index} : i=1,\ldots,N=100
+  \emph{individual-index} : i=1,\ldots,N=60
 
   This panel-data set has a polynomial factor structure (3 common
   factors) and \emph{exogenous} regressors.
@@ -79,8 +79,8 @@ data(DGP1)
 data(DGP1)
 
 ## Dimensions
-N    <- 100
-T    <-  30
+N    <- 60
+T    <- 30
 
 ## Observed Variables
 Y    <- matrix(DGP1$Y,  nrow=T,ncol=N)
