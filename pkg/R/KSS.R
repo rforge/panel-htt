@@ -148,6 +148,12 @@ KSS.default <- function(formula,
     FUN.add.eff.obj <- FUN.add.eff(PF.obj        = PF.obj,
                                    fpca.fit.obj  = fpca.fit.obj,
                                    beta.hat      = beta)
+
+    ## degrees.of.freedom =======================================================================
+    degrees.of.freedom <- (T*N - N*used.dim - P - 
+                           is.intercept -
+                           N*(effect == "individual" | effect == "twoways") - 
+                           T*(effect == "time"       | effect == "twoways"))
     
     ## re-estimation of sig2.hat (Paper KSS Section 3.4)==========================================
     YOVc            <- PF.obj[[1]]$TRm$OVc
@@ -155,13 +161,9 @@ KSS.default <- function(formula,
     Or.Y_minus_YOVc <- Or.Y - YOVc
     Or.X_minus_XOVc <- Or.X - matrix(rep(XOVc, each=(N*T)), N*T, P)
     
-    sig2.hat        <- 1/((N-1)*T) * sum((Or.Y_minus_YOVc - Or.X_minus_XOVc %*% beta - matrix(factor.stract, N*T, 1))^2)
-
-    ## degrees.of.freedom =======================================================================
-    degrees.of.freedom <- (T*N - (T+N)*used.dim - P - 
-                           is.intercept -
-                           N*(effect == "individual"| effect == "twoways") - 
-                           T*(effect == "time"      | effect == "twoways"))
+    sig2.hat        <- sum((TR.Y - TR.X %*% beta - matrix(factor.stract, N*T, 1))^2)/degrees.of.freedom
+    
+    
     
     ## estimation of Variances ==================================================================
     if(used.dim > 0){

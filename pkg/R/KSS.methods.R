@@ -133,7 +133,7 @@ print.summary.KSS <- function(x, ...){
   cat("\nUsed Dimension of the Unobserved Factors:", x$KSS.obj$used.dim)
 #  cat("\nOptimized Factor Dimension:              ", x$KSS.obj$optimal.dim," \n") 
   cat("\nResidual standard error:",             signif(x$KSS.obj$sig2.hat, digits=3), "on", 
-                                                signif(x$KSS.obj$degrees.of.freedom,digits=3), "degrees of freedom \n")
+                                                x$KSS.obj$degrees.of.freedom, "degrees of freedom \n")
   cat("Multiple R-squared:",                    signif(x$R2,digits=3),"\n")
 }
 
