@@ -503,35 +503,35 @@ EstDim <- function(Obj,
 	 criteria <- match.arg(dim.criterion)
          
  	 est.dim       <- switch(criteria,
-                          PC1  = B.OptDim(Obj, criteria = c("PC1")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          PC2  = B.OptDim(Obj, criteria = c("PC2")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          PC3  = B.OptDim(Obj, criteria = c("PC3")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          IC1  = B.OptDim(Obj, criteria = c("IC1")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          IC2  = B.OptDim(Obj, criteria = c("IC2")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          IC3  = B.OptDim(Obj, criteria = c("IC3")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          IPC1 = B.OptDim(Obj, criteria = c("IPC1")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          IPC2 = B.OptDim(Obj, criteria = c("IPC2")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          IPC3 = B.OptDim(Obj, criteria = c("IPC3")
-                            , d.max = d.max, sig2.hat = sig2.hat),
-                          ED   = O.OptDim(Obj, d.max = d.max),				
-                          ER   = RH.OptDim(Obj, criteria = c("ER")
-                            , d.max = d.max),
-                          GR   = RH.OptDim(Obj, criteria = c("GR")
-                            , d.max = d.max),
-                          KSS.C1  = KSS.OptDim(Obj, criteria = c("KSS.C1")
+                          PC1  = try(B.OptDim(Obj, criteria = c("PC1")
+                            , d.max = d.max, sig2.hat = sig2.hat)),
+                          PC2  = try(B.OptDim(Obj, criteria = c("PC2")
+                            , d.max = d.max, sig2.hat = sig2.hat)),
+                          PC3  = try(B.OptDim(Obj, criteria = c("PC3")
+                            , d.max = d.max, sig2.hat = sig2.hat)),
+                          IC1  = try(B.OptDim(Obj, criteria = c("IC1")
+                            , d.max = d.max, sig2.hat = sig2.hat)),
+                          IC2  = try(B.OptDim(Obj, criteria = c("IC2")
+                            , d.max = d.max, sig2.hat = sig2.hat)),
+                          IC3  = try(B.OptDim(Obj, criteria = c("IC3")
+                            , d.max = d.max, sig2.hat = sig2.hat)),
+                          IPC1 = try(B.OptDim(Obj, criteria = c("IPC1")
+                            , d.max = d.max, sig2.hat = sig2.hat)),
+                          IPC2 = try(B.OptDim(Obj, criteria = c("IPC2")
+                            , d.max = d.max, sig2.hat = sig2.hat)),
+                          IPC3 = try(B.OptDim(Obj, criteria = c("IPC3")
+                            , d.max = d.max, sig2.hat = sig2.hat)),
+                          ED   = try(O.OptDim(Obj, d.max = d.max)),				
+                          ER   = try(RH.OptDim(Obj, criteria = c("ER")
+                            , d.max = d.max)),
+                          GR   = try(RH.OptDim(Obj, criteria = c("GR")
+                            , d.max = d.max)),
+                          KSS.C1  = try(KSS.OptDim(Obj, criteria = c("KSS.C1")
 				    , sig2.hat = sig2.hat, alpha=level
-                                    , factor.dim=factor.dim, d.max=d.max)[[1]],
-                          KSS.C2  = KSS.OptDim(Obj, criteria = c("KSS.C2")
+                                    , factor.dim=factor.dim, d.max=d.max)[[1]]),
+                          KSS.C2  = try(KSS.OptDim(Obj, criteria = c("KSS.C2")
 				    , sig2.hat = sig2.hat, alpha=level
-                                    , factor.dim=factor.dim, d.max=d.max)[[1]]
+                                    , factor.dim=factor.dim, d.max=d.max)[[1]])
                           )
 	est.dim
        }
