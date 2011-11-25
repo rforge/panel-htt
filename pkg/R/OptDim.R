@@ -455,7 +455,7 @@ OptDim.default <- function(Obj, criteria.of = c("Bai", "KSS", "Onatski", "RH")
 		switch(criteria.of,
 		Bai = { try(B.OptDim(Obj = Obj, d.max = d.max, sig2.hat=NULL))
 			},
-		KSS = { try(KSS.OptDim(Obj = Obj, sig2.hat = sig2.hat, alpha = level)[[1]])
+		KSS = { try(KSS.OptDim(Obj = Obj, sig2.hat = sig2.hat, alpha = level)[[1]][1,,drop=FALSE])
 			},
 		Onatski = {try(O.OptDim(Obj = Obj, d.max  = d.max))
 			},
@@ -486,7 +486,7 @@ EstDim <- function(Obj,
                    dim.criterion = c("PC1", "PC2", "PC3",
                      "IC1", "IC2", "IC3",
                      "IPC1","IPC2", "IPC3",
-                     "KSS.C1", "KSS.C2",
+                     "KSS.C",
                      "ED",  "ER",  "GR"),
                    d.max,
                    factor.dim,
@@ -526,12 +526,12 @@ EstDim <- function(Obj,
                             , d.max = d.max)),
                           GR   = try(RH.OptDim(Obj, criteria = c("GR")
                             , d.max = d.max)),
-                          KSS.C1  = try(KSS.OptDim(Obj, criteria = c("KSS.C1")
+                          KSS.C  = try(KSS.OptDim(Obj, criteria = c("KSS.C1")
 				    , sig2.hat = sig2.hat, alpha=level
-                                    , factor.dim=factor.dim, d.max=d.max)[[1]]),
-                          KSS.C2  = try(KSS.OptDim(Obj, criteria = c("KSS.C2")
-				    , sig2.hat = sig2.hat, alpha=level
-                                    , factor.dim=factor.dim, d.max=d.max)[[1]])
+                                    , factor.dim=factor.dim, d.max=d.max)[[1]])#,
+##                           KSS.C2  = try(KSS.OptDim(Obj, criteria = c("KSS.C2")
+## 				    , sig2.hat = sig2.hat, alpha=level
+##                                     , factor.dim=factor.dim, d.max=d.max)[[1]])
                           )
 	est.dim
        }
