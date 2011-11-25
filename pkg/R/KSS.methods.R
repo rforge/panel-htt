@@ -155,7 +155,7 @@ plot.summary.KSS <- function(x,...){
     }
     if(x$KSS.obj$additive.effects=="time"){
       par(mfrow=c(1,3))
-      plot.ts(x$KSS.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",...)
+      plot.ts(x$KSS.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",xlab="Time",...)
       matplot(x$KSS.obj$unob.factors,
             main=paste("Estimated Factors\n(Used Dimension = ",x$KSS.obj$used.dim,")",sep=""),
             xlab="Time",ylab="", type="l",...)
@@ -166,10 +166,10 @@ plot.summary.KSS <- function(x,...){
     }
     if(x$KSS.obj$additive.effects=="twoways"){
       par(mfrow=c(1,4))
-      plot.ts(x$KSS.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",...)
+      plot.ts(x$KSS.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",xlab="Time",...)
       matplot(matrix(rep(x$KSS.obj$Add.Ind.Eff,each=x$KSS.obj$dat.dim[1]),
                      nrow=x$KSS.obj$dat.dim[1],ncol=x$KSS.obj$dat.dim[2]),
-                     main="Additive Individual Effects", ylab="", type="l", ...)
+                     main="Additive Individual Effects", ylab="",xlab="Time", type="l", ...)
       matplot(x$KSS.obj$unob.factors,
             main=paste("Estimated Factors\n(Used Dimension = ",x$KSS.obj$used.dim,")",sep=""),
             xlab="Time",ylab="", type="l",...)
@@ -182,7 +182,7 @@ plot.summary.KSS <- function(x,...){
       par(mfrow=c(1,3))
       matplot(matrix(rep(x$KSS.obj$Add.Ind.Eff,each=x$KSS.obj$dat.dim[1]),
                      nrow=x$KSS.obj$dat.dim[1],ncol=x$KSS.obj$dat.dim[2]),
-                     main="Additive Individual Effects", ylab="", type="l", ...)
+                     main="Additive Individual Effects", ylab="",xlab="Time", type="l", ...)
       matplot(x$KSS.obj$unob.factors,
             main=paste("Estimated Factors\n(Used Dimension = ",x$KSS.obj$used.dim,")",sep=""),
             xlab="Time",ylab="", type="l",...)
@@ -194,22 +194,22 @@ plot.summary.KSS <- function(x,...){
   }else{
     if(x$KSS.obj$additive.effects=="time"){
       par(mfrow=c(1,1))
-      plot.ts(x$KSS.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",...)
+      plot.ts(x$KSS.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",xlab="Time",...)
       par(mfrow=c(1,1))
     }
     if(x$KSS.obj$additive.effects=="twoways"){
       par(mfrow=c(1,2))
-      plot.ts(x$KSS.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",...)
+      plot.ts(x$KSS.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",xlab="Time",...)
       matplot(matrix(rep(x$KSS.obj$Add.Ind.Eff,each=x$KSS.obj$dat.dim[1]),
                      nrow=x$KSS.obj$dat.dim[1],ncol=x$KSS.obj$dat.dim[2]),
-              main="Additive Individual Effects", ylab="", type="l", ...)
+              main="Additive Individual Effects", ylab="",xlab="Time", type="l", ...)
       par(mfrow=c(1,1))
     }
     if(x$KSS.obj$additive.effects=="individual"){
       par(mfrow=c(1,1))
       matplot(matrix(rep(x$KSS.obj$Add.Ind.Eff,each=x$KSS.obj$dat.dim[1]),
                      nrow=x$KSS.obj$dat.dim[1],ncol=x$KSS.obj$dat.dim[2]),
-                     main="Additive Individual Effects", ylab="", type="l", ...)
+                     main="Additive Individual Effects", ylab="",xlab="Time", type="l", ...)
     par(mfrow=c(1,1))
     }
   }
