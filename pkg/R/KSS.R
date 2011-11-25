@@ -24,9 +24,7 @@ KSS.default <- function(formula,
     
     ## check "effect" and "dim.crit"
     effect        <- match.arg(additive.effects)
-    dim.criterion <- c("PC1", "PC2", "PC3", "IC1", "IC2" , "IC3",
-                        "IPC1", "IPC2", "IPC3" , "KSS.C", "ED", "ER", "GR")
-    
+        
     ## extract data from formula
     names  <- names(model.frame(formula))
     PF.obj <- FUN.Pformula(formula = formula, effect = effect)
@@ -87,11 +85,14 @@ KSS.default <- function(formula,
     fpca.fit.obj  <- fpca.fit(Residu.mat)
 
     ## Estimation of Dimension
+    dim.criterion <- c("PC1",  "PC2",  "PC3",   "IC1",   "IC2", "IC3",
+                       "IPC1", "IPC2", "IPC3" , "KSS.C", "ED",  "ER", "GR")
     Opt.dim.Output <- as.matrix(sapply(dim.criterion, function(dim.criterion){
                                   EstDim(dim.criterion, Obj=Residu.mat, d.max=d.max, factor.dim=factor.dim,
                                          sig2.hat=sig2.hat, level=level)[2]}
                                        ))
-    
+
+    ## User-Interface 
     Opt.dim.Output.Bai <- c(as.numeric(Opt.dim.Output[1:9,1]))
     names(Opt.dim.Output.Bai) <- c("PC1","PC2","PC3","IC1","IC2","IC3","IPC3","IPC2","IPC3")
     Opt.dim.Output.KSS <- c(as.numeric(Opt.dim.Output[10,1]))
