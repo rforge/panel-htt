@@ -471,6 +471,8 @@ OptDim.default <- function(Obj, criteria.of = c("Bai", "KSS", "Onatski", "RH")
 
 OptDim <- function(x,...) UseMethod("OptDim")
 
+#print.OptDim <- function(x, ...) return(x)
+
 summary.OptDim <- function(x, ...)
 	{
 	CritNames <- c(x$Bai[,1], x$KSS[, 1], x$Onatski[,1], x$RH[, 1])
