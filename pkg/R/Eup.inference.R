@@ -26,7 +26,7 @@ Eup.inference <- function(Eup.Obj){
 	nr  <- Eup.Obj$dat.dim[1]
 	nc	<- Eup.Obj$dat.dim[2]
 	P	 <- Eup.Obj$dat.dim[3]
-  d   <- Eup.Obj$used.dim
+  	d   <- Eup.Obj$used.dim
 	slope <- Eup.Obj$slope.para
   Intercept <- matrix(Eup.Obj$Intercept, 1, 1)
   is.intercept <- Eup.Obj$is.intercept
@@ -78,7 +78,7 @@ Eup.inference <- function(Eup.Obj){
   colnames(Intercept) <- " "
   slope <- rbind(Intercept, slope)
   asy.var.inter <- sig2.hat/(nc*nr) + 
-          matrix(OvMeans[-1], 1, 3, byrow = TRUE)%*%asy.var%*%matrix(OvMeans[-1], 3, 1)
+          matrix(OvMeans[-1], 1, P, byrow = TRUE)%*%asy.var%*%matrix(OvMeans[-1], P, 1)
   mpp11 <-  sqrt(c(asy.var.inter))
   mpp <- c(mpp11, mpp)
   }
