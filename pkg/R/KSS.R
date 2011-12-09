@@ -177,7 +177,7 @@ KSS.default <- function(formula,
       }
       ## estimation of Intercept-variance    
       if(is.intercept){
-        Intercept.V <- (sig2.hat + matrix(colMeans(Or.X),1,P) %*% beta.V %*% t(matrix(colMeans(Or.X),1,P)))#/(N*T)
+        Intercept.V <- (sig2.hat + matrix(colMeans(Or.X),1,P) %*% beta.V %*% t(matrix(colMeans(Or.X),1,P)))
       }else{Intercept.V <- NULL}
     }
     if(used.dim == 0){
@@ -185,10 +185,9 @@ KSS.default <- function(formula,
         beta.V      <- sig2.hat * solve(t.TR.X.TR.X)
         Intercept.V <- NULL
       }else{        
-        alpha.beta.V <- sig2.hat * solve(crossprod(cbind(rep(1,N*T),TR.X)))
-        Intercept.V  <- alpha.beta.V[ 1,1]
-        tmp.beta.V   <- alpha.beta.V[-1,  ,drop=FALSE]
-        beta.V       <- tmp.beta.V[    ,-1,drop=FALSE]
+        beta.V       <- sig2.hat * solve(crossprod(TR.X))
+        Intercept.V  <- (sig2.hat + matrix(colMeans(Or.X),1,P) %*% beta.V %*% t(matrix(colMeans(Or.X),1,P)))
+
       }
     }
     ## Fitted Values =============================================================================
