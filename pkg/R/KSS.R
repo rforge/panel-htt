@@ -177,7 +177,7 @@ KSS.default <- function(formula,
       }
       ## estimation of Intercept-variance    
       if(is.intercept){
-        Intercept.V <- (sig2.hat + matrix(colMeans(Or.X),1,P) %*% beta.V %*% t(matrix(colMeans(Or.X),1,P)))/(N*T)
+        Intercept.V <- (sig2.hat + matrix(colMeans(Or.X),1,P) %*% beta.V %*% t(matrix(colMeans(Or.X),1,P)))#/(N*T)
       }else{Intercept.V <- NULL}
     }
     if(used.dim == 0){
