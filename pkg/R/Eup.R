@@ -60,7 +60,7 @@ FUN.Eup <- function(dat.matrix, dat.dim
 		try   <- tryxm[, 1, drop = FALSE]
 		trx   <- tryxm[, -1, drop = FALSE]
 		beta.0 <- coef(lm(try ~ trx - 1))
-print(beta.0 )
+print(beta.0)
 		}
 
 #### calculate the inverse once in order to reduce computations of the 
