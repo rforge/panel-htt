@@ -45,9 +45,23 @@ FUN.Eup <- function(dat.matrix, dat.dim
 	nc	<- dat.dim[2]
 	P	<- dat.dim[3]# or ncol(x)
 
+#### if  d.max not given then d.max will be setted to sqrt(min(N, T))
+	if(is.null(d.max)) d.max <- round(sqrt(min(nr, nc)))
+
 #### start value #####
 	beta.0 <- start.beta
-	if(is.null(beta.0)) beta.0 <- coef(lm(y~x-1))
+	if(is.null(beta.0)) 
+		{
+		ymats <- matrix(y, nr, nc)
+		xmats <- matrix(x, nr, (nc*nr))
+		zmats <- cbind(ymats, xmats)
+		trzma <- zmats - svd.pca(zmats, given.d = d.max )$Q.fit
+		tryxm <- matrix(trzma, (nr*nc), (P+1))
+		try   <- tryxm[, 1, drop = FALSE]
+		trx   <- tryxm[, -1, drop = FALSE]
+		beta.0 <- coef(lm(try ~ trx - 1))
+print(beta.0 )
+		}
 
 #### calculate the inverse once in order to reduce computations of the 
 #### iterated slope estimator
@@ -58,8 +72,6 @@ FUN.Eup <- function(dat.matrix, dat.dim
 	inv.xx   <- solve(xx)
 	inv.xx.x  <- inv.xx%*%t(x)
 
-#### if  d.max not given then d.max will be setted to sqrt(min(N, T))
-	if(is.null(d.max)) d.max <- round(sqrt(min(nr, nc)))
 
 #### define given.d = factor.dim and set factor.dim= d.max if it is null
 	given.d <- factor.dim
@@ -102,10 +114,11 @@ FUN.Eup <- function(dat.matrix, dat.dim
 		beta.1 <- FUN.ols.beta(y.updated.1, x, inv.xx.x) 
 
   	# convergence condition
-		if(isTRUE(all.equal(beta.0, beta.1, check.attributes = FALSE
-			, check.names = FALSE))| i ==150){
-			if(i==150) warning(expression("the maximal number of 
-			iterations is achieved (150)"))
+		#if(isTRUE(all.equal(beta.0, beta.1, check.attributes = FALSE
+		#	, check.names = FALSE))| i ==500)
+		if(all( abs((beta.0 - beta.1)) < 1e-6)| i ==500){
+			if(i==500) warning(expression("the maximal number of 
+			iterations is achieved (500)"))
 			Result <- list(PCA=PCA.0, beta=beta.1
 			, factor.dim=factor.dim, Nbr.Iterations = i)
 			Result
