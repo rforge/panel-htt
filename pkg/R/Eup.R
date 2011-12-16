@@ -53,7 +53,7 @@ FUN.Eup <- function(dat.matrix, dat.dim
 	if(is.null(beta.0)) 
 		{
 		ymats <- matrix(y, nr, nc)
-		xmats <- matrix(x, nr, (nc*nr))
+		xmats <- matrix(x, nr, (nc*P))
 		zmats <- cbind(ymats, xmats)
 		trzma <- zmats - svd.pca(zmats, given.d = d.max )$Q.fit
 		tryxm <- matrix(trzma, (nr*nc), (P+1))
