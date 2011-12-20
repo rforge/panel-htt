@@ -20,3 +20,8 @@ Baltagi, B.H. and  D. Levin (1992) \dQuote{Cigarette taxation: Raising revenues 
 }
 
 \keyword{datasets}
+\examples{
+data(W)
+W.mat <- matrix(W, nrow=46, ncol=46)
+W.mat
+}
