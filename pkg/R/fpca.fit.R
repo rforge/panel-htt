@@ -15,9 +15,9 @@ fsvd.pca <- function(Q,
   Q.non.smth <- Q 
 
   ## smoothing Q (small degree of undersmoothing) ===============================================#
-  spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar=0.01, method = 4       )$spar  * 0.99    #
+  spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, method = 4       )$spar  * 0.75    #
                                                                                                  #
-  Q          <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar   = spar.low)$ysmth         #
+  Q        <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar   = spar.low)$ysmth           #
   ##=============================================================================================#
   
   ## data informations

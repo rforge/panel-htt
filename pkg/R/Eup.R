@@ -59,7 +59,7 @@ FUN.Eup <- function(dat.matrix, dat.dim
 		tryxm <- matrix(trzma, (nr*nc), (P+1))
 		try   <- tryxm[, 1, drop = FALSE]
 		trx   <- tryxm[, -1, drop = FALSE]
-		beta.0 <- coef(lm(try ~ trx - 1))
+		beta.0 <- coef(lm(try ~ -1 + trx ))
 print(beta.0)
 		}
 

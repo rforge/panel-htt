@@ -52,9 +52,22 @@ KSS.default <- function(formula,
 
     
     ## smooth.splines with undersmoothing
-    ## undersmoothing: 0.8 * GCV-value
-
-    spar.low       <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat, spar=0.01, method = 4       )$spar * 0.99
+    ## undersmoothing: 0.75 * GCV-value
+    
+    ## Consistent Pre-Estimation of Slope-Parameters
+    ymats     <- matrix(TR.Y, T,  N   )
+    xmats     <- matrix(TR.X, T, (N*P))
+    zmats     <- cbind(ymats, xmats)
+    trzma     <- zmats - svd.pca(zmats, given.d = round(sqrt(min(N, T))))$Q.fit
+    tryxm     <- matrix(trzma, (N*T), (P+1))
+    try       <- tryxm[, 1, drop = FALSE]
+    trx       <- tryxm[, -1, drop = FALSE]
+    pre.beta  <- coef(lm(try ~ -1 + trx))
+    print(pre.beta)
+    pre.residu.mat    <- matrix((TR.Y - (TR.X %*% pre.beta)), T, N)    
+    ################################################
+    spar.low       <- smooth.Pspline(x = seq.int(1,T), y = pre.residu.mat, method = 4       )$spar * 0.75
+    ## spar.low       <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat, spar=0.01, method = 4       )$spar * 0.99
     
     TR.Y.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat,      spar   = spar.low)$ysmth       #(T x N)    
     TR.X.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat,      spar   = spar.low)$ysmth       #(T x NP)
@@ -77,30 +90,29 @@ KSS.default <- function(formula,
     bloc2            <- t.TR.X.TR.Y - t.TR.X.TR.Y.smth     	               # (Px1)
     ## common-Slope.Coefficients:
     com.slops.0      <- solve(bloc1)%*%bloc2				       # (Px1)
-
+    print(com.slops.0)
     ## calculate first step residuals and estimate dimension of factor-structure
-    Residu.mat    <- matrix((TR.Y - (TR.X %*% com.slops.0)), T, N)
+    Residu.mat       <- matrix((TR.Y - (TR.X %*% com.slops.0)), T, N)
 
     ## functional pca
-    fpca.fit.obj  <- fpca.fit(Residu.mat)
+    fpca.fit.obj     <- fpca.fit(Residu.mat)
 
     ## Estimation of Dimension
-    dim.criterion <- c("PC1",  "PC2",  "PC3",   "IC1",   "IC2", "IC3",
-                       "IPC1", "IPC2", "IPC3" , "KSS.C", "ED",  "ER", "GR")
-    Opt.dim.Output <- as.matrix(sapply(dim.criterion, function(dim.criterion){
-                                  EstDim(dim.criterion, Obj=Residu.mat, d.max=d.max, factor.dim=factor.dim,
-                                         sig2.hat=sig2.hat, level=level)[2]}
-                                       ))
+    dim.criterion    <- c("PC1",  "PC2",  "PC3",   "IC1",   "IC2", "IC3",
+                          "IPC1", "IPC2", "IPC3" , "KSS.C", "ED",  "ER", "GR")
+    Opt.dim.Output   <- as.matrix(sapply(dim.criterion, function(dim.criterion){
+      EstDim(dim.criterion, Obj=Residu.mat, d.max=d.max, factor.dim=factor.dim,
+             sig2.hat=sig2.hat, level=level)[2]}))
 
     ## User-Interface 
-    Opt.dim.Output.Bai <- c(as.numeric(Opt.dim.Output[1:9,1]))
-    names(Opt.dim.Output.Bai) <- c("PC1","PC2","PC3","IC1","IC2","IC3","IPC3","IPC2","IPC3")
-    Opt.dim.Output.KSS <- c(as.numeric(Opt.dim.Output[10,1]))
-    names(Opt.dim.Output.KSS) <- c(" KSS.C")
-    Opt.dim.Output.Onatski <- c(as.numeric(Opt.dim.Output[11,1]))
+    Opt.dim.Output.Bai            <- c(as.numeric(Opt.dim.Output[1:9,1]))
+    names(Opt.dim.Output.Bai)     <- c("PC1","PC2","PC3","IC1","IC2","IC3","IPC3","IPC2","IPC3")
+    Opt.dim.Output.KSS            <- c(as.numeric(Opt.dim.Output[10,1]))
+    names(Opt.dim.Output.KSS)     <- c(" KSS.C")
+    Opt.dim.Output.Onatski        <- c(as.numeric(Opt.dim.Output[11,1]))
     names(Opt.dim.Output.Onatski) <- c(" ED")
-    Opt.dim.Output.RH <- c(as.numeric(Opt.dim.Output[12:13,1]))
-    names(Opt.dim.Output.RH) <- c(" ER","GR")
+    Opt.dim.Output.RH             <- c(as.numeric(Opt.dim.Output[12:13,1]))
+    names(Opt.dim.Output.RH)      <- c(" ER","GR")
     if(is.null(factor.dim) && consult.dim.crit){
       cat("-----------------------------------------------------------\n")
       cat("Results of Dimension-Estimation");cat("\n\n-Bai:\n")
