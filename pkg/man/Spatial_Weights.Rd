@@ -1,13 +1,13 @@
 \name{Spatial Weights}
 \docType{data}
-\alias{W}
+\alias{Spatial_Weights}
 \title{Spatial Weights for Cigarette Consumtion Data}
 \description{
   A matrix of dimension 46x46, holding the spatial weights for the 46
   States in the Data set of Baltagi, B.H. and  D. Levin (1992). 
 }
 
-\usage{data(W)}
+\usage{data(Spatial_Weights)}
 
 \format{A data frame containing :
   \describe{
@@ -21,7 +21,7 @@ Baltagi, B.H. and  D. Levin (1992) \dQuote{Cigarette taxation: Raising revenues 
 
 \keyword{datasets}
 \examples{
-data(W)
-W.mat <- matrix(W, nrow=46, ncol=46)
-W.mat
+data(Spatial_Weights)
+W.mat <- matrix(Spatial_Weights$W, nrow=46, ncol=46)
+head(W.mat)
 }
