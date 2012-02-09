@@ -12,7 +12,6 @@ Estimation of Panel Data Models with Heterogeneous Time Trends
 KSS(formula,
     consult.dim.crit = FALSE,
     additive.effects = c("none","individual","time", "twoways"),
-    two.step         = FALSE,
     level            = 0.01,
     factor.dim       = NULL,
     d.max            = NULL,
@@ -42,11 +41,6 @@ KSS(formula,
       \item \code{"time"}: for between transformation
       \item \code{"twoways"}: for twoways transformation
   }}
-  \item{two.step}{logical. If \code{two.step} is \code{FALSE} (default)
-    then the original estimation procedure proposed in Kneip,
-    Sickles & Song 2011 is used. If \code{two.step} is \code{TRUE} then
-    the slope-parameters are re-estimated given the estimated factor
-    structure. See also the details.}
   \item{level}{alpha-level for Dimensionality-Criterion of Kneip,
     Sickles & Song 2011}
   \item{factor.dim}{Dimension of Factor-Structure, pre-specified
