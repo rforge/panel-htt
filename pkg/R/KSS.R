@@ -2,7 +2,6 @@
 KSS.default <- function(formula,
                         consult.dim.crit = FALSE,
                         additive.effects = c("none", "individual", "time", "twoways"),
-                        two.step         = FALSE,
                         level            = 0.01,
                         factor.dim       = NULL,
                         d.max            = NULL,
@@ -139,6 +138,10 @@ KSS.default <- function(formula,
       factors       <- fpca.fit.obj$factors[,  1:used.dim, drop= FALSE]
       loadings      <- fpca.fit.obj$loadings[, 1:used.dim, drop= FALSE]
       factor.stract <- tcrossprod(factors, loadings)
+      ## Eventually for later extensions: logical argument two.step in order
+      ## to allow for a conditional estimation of the slope-parameters given
+      ## the estimated dimension d
+      two.step <- FALSE,
       if(two.step){
         ## re-estimate beta=========================================================
         NEW.TR.Y.mat  <- TR.Y.mat - factor.stract
