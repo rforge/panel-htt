@@ -3,7 +3,6 @@
 KSS <- function(formula,
                 consult.dim.crit = FALSE,
                 additive.effects = c("none", "individual", "time", "twoways"),
-                two.step         = FALSE,
                 level            = 0.01,
                 factor.dim       = NULL,
                 d.max            = NULL,
