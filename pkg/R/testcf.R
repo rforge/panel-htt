@@ -15,15 +15,14 @@
 
 ## rm(list=ls())
 
-KSScf.default <- function(formula,
-                          g.function,
-                          additive.effects = c("none", "individual", "time", "twoways"),
-                          level = 0.05)
+ADDvsINT.default <- function(obj,
+                             additive.effects = c("none", "individual", "time", "twoways"),
+                             level = 0.05)
   {
     ##===================================================================================
     ## check arguments
-    if(!class(formula)=="formula"){
-      stop("\n Argument >>formula<< needs a formula-object like y~x1+...")
+    if(!class(obj)=="KSS"|!class(obj)=="Eup"){
+      stop("\n Argument >>obj<< needs a either a KSS-object or an Eup-obj.")
     }
     if(!any(additive.effects==c("none", "individual", "time", "twoways"))){
       stop("\n Argument >>effect<< must be one of: \n none, individual, time, twoways")
@@ -45,73 +44,73 @@ KSScf.default <- function(formula,
     T            <- nrow(PF.obj[[1]]$ODM) # Time-Dimension
     P            <- length(PF.obj)-1      # Number of Regressors (without intercept-term)
     ##====================================================================================
-    ## check and evaluate argument >>g.function<<
-    if(missing(g.function)){
-        ## list-obj with L=1 components
-        g.fun   <-  matrix(rep(1, T), T, 1)
-        L       <- 1
-      }else{
-        if(!is.matrix(g.function) & !is.numeric(g.function) & !is.function(g.function) & !is.list(g.function) &
-           !is.null(g.function)){
-          stop("Wrong argument >>g.function<<. It must be either >>NULL<< (default), a function, a list of functions, a matrix/vector of function-values.")
-        }else{
-          if(is.matrix(g.function)){# if g.function is a matrix-object
-            L     <- dim(g.function)[2]
-            g.fun <- g.function           
-          }
-          if(is.numeric(g.function)&is.null(dim(g.function))){# if g.function is a vector-object
-            L <- 1
-            g.fun <- g.function                
-          }    
-          if(is.function(g.function)){# if g.function is a function-object
-            g.fun <- try(g.function(c(1:T)), silent=TRUE)
-            L     <- 1
-            if(class(g.fun)=="try-error"){# check evaluation
-              stop("Wrong argument >>g.function<<.\n The given g.function cannot be evaluated at the grid: 1,2,...,T.")
-            }
-            if(sum(g.fun^2)!=T){# check the size
-              stop("Wrong argument >>g.function<<.\n The given g.function has to be of euclidean norm equal to T. Such that: sum(g.function(c(1:T))^2)==T")
-            }
-            g.fun <- matrix(g.fun, T, L)
-          }
-          if(is.list(g.function)){
-            L     <- length(g.function)
-            g.fun <- matrix(NA,    T, L)
-            for(l in 1:L){
-              if(!is.function(g.function[[l]])){stop("Wrong argument >>g.function<<:\n The function in list-component number ",l," of g.function is not a R function-object.")}
-              g.fun[,l] <- tmp <- try(g.function[[l]](c(1:T)), silent=TRUE)
-              if(class(tmp)=="try-error"){# check evaluation
-                stop(paste("Wrong argument >>g.function<<:\n The function in list-component number ",l," given to the argument g.function cannot be evaluated at the grid: 1,2,...,T."))
-              }            
-            }
-          }
-          if(is.null(g.function)){
-            warning("No argument >>g.function<< is given. Default factor: g(t)=1 is used.\n This is equivalent to individual (time invariant) effects.")
-            ## list-obj with L=1 components
-            g.fun   <-  matrix(rep(1, T), T, 1)
-            L       <- 1
-          }
-        }
-      }
-    if(N*L>195){
-      cat("-----------------------------------------------------------\n")
-      cat("Computation will be very slowly. Do you want to continue (y/n)?", "\n")
-      yn <- scan(n=1, what="character")
-      if(yn=="n"){return("Computation stopped!")}
-    }
-    ## ==================================================================================
-    ## design-matrix and -list (each column of the design.mat (NT x NL) is one list-component)
-    design.mat  <- kronecker(diag(N), g.fun)                                    # (NT x NL)
-    design.list <- lapply(1:(N*L), function(z, i) matrix(c(z[,i]),T,N), z = design.mat)
+##     ## check and evaluate argument >>g.function<<
+##     if(missing(g.function)){
+##         ## list-obj with L=1 components
+##         g.fun   <-  matrix(rep(1, T), T, 1)
+##         L       <- 1
+##       }else{
+##         if(!is.matrix(g.function) & !is.numeric(g.function) & !is.function(g.function) & !is.list(g.function) &
+##            !is.null(g.function)){
+##           stop("Wrong argument >>g.function<<. It must be either >>NULL<< (default), a function, a list of functions, a matrix/vector of function-values.")
+##         }else{
+##           if(is.matrix(g.function)){# if g.function is a matrix-object
+##             L     <- dim(g.function)[2]
+##             g.fun <- g.function           
+##           }
+##           if(is.numeric(g.function)&is.null(dim(g.function))){# if g.function is a vector-object
+##             L <- 1
+##             g.fun <- g.function                
+##           }    
+##           if(is.function(g.function)){# if g.function is a function-object
+##             g.fun <- try(g.function(c(1:T)), silent=TRUE)
+##             L     <- 1
+##             if(class(g.fun)=="try-error"){# check evaluation
+##               stop("Wrong argument >>g.function<<.\n The given g.function cannot be evaluated at the grid: 1,2,...,T.")
+##             }
+##             if(sum(g.fun^2)!=T){# check the size
+##               stop("Wrong argument >>g.function<<.\n The given g.function has to be of euclidean norm equal to T. Such that: sum(g.function(c(1:T))^2)==T")
+##             }
+##             g.fun <- matrix(g.fun, T, L)
+##           }
+##           if(is.list(g.function)){
+##             L     <- length(g.function)
+##             g.fun <- matrix(NA,    T, L)
+##             for(l in 1:L){
+##               if(!is.function(g.function[[l]])){stop("Wrong argument >>g.function<<:\n The function in list-component number ",l," of g.function is not a R function-object.")}
+##               g.fun[,l] <- tmp <- try(g.function[[l]](c(1:T)), silent=TRUE)
+##               if(class(tmp)=="try-error"){# check evaluation
+##                 stop(paste("Wrong argument >>g.function<<:\n The function in list-component number ",l," given to the argument g.function cannot be evaluated at the grid: 1,2,...,T."))
+##               }            
+##             }
+##           }
+##           if(is.null(g.function)){
+##             warning("No argument >>g.function<< is given. Default factor: g(t)=1 is used.\n This is equivalent to individual (time invariant) effects.")
+##             ## list-obj with L=1 components
+##             g.fun   <-  matrix(rep(1, T), T, 1)
+##             L       <- 1
+##           }
+##         }
+##       }
+##     if(N*L>195){
+##       cat("-----------------------------------------------------------\n")
+##       cat("Computation will be very slowly. Do you want to continue (y/n)?", "\n")
+##       yn <- scan(n=1, what="character")
+##       if(yn=="n"){return("Computation stopped!")}
+##     }
+##     ## ==================================================================================
+##     ## design-matrix and -list (each column of the design.mat (NT x NL) is one list-component)
+##     design.mat  <- kronecker(diag(N), g.fun)                                    # (NT x NL)
+##     design.list <- lapply(1:(N*L), function(z, i) matrix(c(z[,i]),T,N), z = design.mat)
 
-    ## ==================================================================================
-    ## transform design.list
-    g.fun.with.trans.obj  <- sapply(design.list,
-                                    function(z) FUN.with.trans(z,
-                                                               N            = N,
-                                                               T            = T,
-                                                               is.intercept = is.intercept,
-                                                               effect       = effect), simplify=FALSE)
+##     ## ==================================================================================
+##     ## transform design.list
+##     g.fun.with.trans.obj  <- sapply(design.list,
+##                                     function(z) FUN.with.trans(z,
+##                                                                N            = N,
+##                                                                T            = T,
+##                                                                is.intercept = is.intercept,
+##                                                                effect       = effect), simplify=FALSE)
 
     
     ## ==================================================================================    
@@ -123,21 +122,24 @@ KSScf.default <- function(formula,
     OR.Y       <- OR.dat[, 1,       drop = FALSE]					        # (TN x 1)
     OR.X       <- OR.dat[, 2:(P+1), drop = FALSE]				                # (TN x P)
 
-    ## ==================================================================================
-    ## Orthogonal-Projection Matrix for FWL-Theorem-Application
-    M         <- diag(T*N) - (OR.des %*% solve(t(OR.des) %*% OR.des) %*% t(OR.des))         # (TN x TN)
+##     ## ==================================================================================
+##     ## Orthogonal-Projection Matrix for FWL-Theorem-Application
+##     M         <- diag(T*N) - (OR.des %*% solve(t(OR.des) %*% OR.des) %*% t(OR.des))         # (TN x TN)
 
-    ## FWL-TRansformations                                                    
-    M.OR.Y                 <- M %*% OR.Y                                                # (TN x 1)
-    M.OR.X                 <- M %*% OR.X                                                # (TN x P)
+##     ## FWL-TRansformations                                                    
+##     M.OR.Y                 <- M %*% OR.Y                                                # (TN x 1)
+##     M.OR.X                 <- M %*% OR.X                                                # (TN x P)
 
-    M.OR.Y.mat             <- matrix(M.OR.Y, T, N)                                      # (T x N)
-    M.OR.X.mat             <- matrix(M.OR.X, T, N*P)                                    # (T x NP)
+##     M.OR.Y.mat             <- matrix(M.OR.Y, T, N)                                      # (T x N)
+##     M.OR.X.mat             <- matrix(M.OR.X, T, N*P)                                    # (T x NP)
 
-    ## ==================================================================================
+##     ## ==================================================================================
     ## KSS-Routine
 
     ## Data
+    OR.Y.mat             <- matrix(OR.Y, T, N)                                      # (T x N)
+    OR.X.mat             <- matrix(OR.X, T, N*P)                                    # (T x NP)
+
     data.all.mat  <- cbind(M.OR.Y.mat,M.OR.X.mat)
 
     ## Data-Transformation:
@@ -208,21 +210,21 @@ KSScf.default <- function(formula,
       }else{result$print <- NULL}
     }
     ## ====================================================================================
-    class(result)        <- "KSScf" 
+    class(result)        <- "ADDvsINT" 
     return(result)
   }
 
 
 ## Methods ========================================================================================
 
-KSScf <- function(formula,
+ADDvsINT <- function(formula,
                   g.function,
                   additive.effects = c("none", "individual", "time", "twoways"),
                   level = 0.05){
-  UseMethod("KSScf")
+  UseMethod("ADDvsINT")
 }
 
-print.KSScf <- function(x,...){
+print.ADDvsINT <- function(x,...){
   cat("----------------------------------------------\n")
   cat("Test for pre-specified factor model\n")
   cat("----------------------------------------------\n")
@@ -241,80 +243,80 @@ print.KSScf <- function(x,...){
 
 ## ## ================================================================================================
 ## ## TEST: ==========================================================================================
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/OptDim.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/pca.fit.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.Pformula.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.add.eff.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fpca.fit.R")
-## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.with.trans.R")
-## source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/OptDim.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/pca.fit.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.Pformula.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.add.eff.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fpca.fit.R")
+source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.with.trans.R")
+source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
 
 
-## ## create data for FPCA
-## library(pspline)
-## T   = 100
-## N   =  50
-## dim =   6
+## create data for FPCA
+library(pspline)
+T   = 100
+N   =  50
+dim =   6
 
-## ## FS-Structure
-## FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.25, plot.opt = FALSE)
-## FS.obs   <- FS.obj[[1]]
+## FS-Structure
+FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.25, plot.opt = FALSE)
+FS.obs   <- FS.obj[[1]]
 
-## ## Regressor 1
-## X1 <- matrix(NA, T, N)
-## for(i in 1:N){
-##   X1[,i]       <- seq(1,rnorm(1)*10,length.out=T)+rnorm(T)
-## }
-## ## Regressor 2
-## X2 <- matrix(NA, T, N)
-## for(i in 1:N){
-##   X2[,i]       <- seq(5,rnorm(1)*1,length.out=T)+rnorm(T,sd=0.75)
-## }
+## Regressor 1
+X1 <- matrix(NA, T, N)
+for(i in 1:N){
+  X1[,i]       <- seq(1,rnorm(1)*10,length.out=T)+rnorm(T)
+}
+## Regressor 2
+X2 <- matrix(NA, T, N)
+for(i in 1:N){
+  X2[,i]       <- seq(5,rnorm(1)*1,length.out=T)+rnorm(T,sd=0.75)
+}
 
-## ## Intercept-Scalar
-## I.scl  <-  matrix(rep(70, N*T),T,N)
+## Intercept-Scalar
+I.scl  <-  matrix(rep(70, N*T),T,N)
 
 
-## ## Additive-Effects:
-##    ## individual-effects
+## Additive-Effects:
+   ## individual-effects
 
-## add.ind      <- sample(c(1:100),N)
-## add.ind      <- add.ind-mean(add.ind)
-## add.ind      <- matrix(rep(add.ind,each=T),T,N)
-##    ## time-effects
-## add.tim.fun  <-  FS.obj[[3]] %*% as.matrix(colMeans(FS.obj[[4]]))*c(1e18,1e18,1e18,1e18)
-## add.tim.fun  <-  matrix(rep(add.tim.fun,N),T,N); #matplot(add.tim.fun)
-## add.tim.fun  <-  add.tim.fun - mean(add.tim.fun[,1])
+add.ind      <- sample(c(1:100),N)
+add.ind      <- add.ind-mean(add.ind)
+add.ind      <- matrix(rep(add.ind,each=T),T,N)
+   ## time-effects
+add.tim.fun  <-  FS.obj[[3]] %*% as.matrix(colMeans(FS.obj[[4]]))*c(1e18,1e18,1e18,1e18)
+add.tim.fun  <-  matrix(rep(add.tim.fun,N),T,N); #matplot(add.tim.fun)
+add.tim.fun  <-  add.tim.fun - mean(add.tim.fun[,1])
 
 ## #######################################################################################
 
-## ## Model-Test-Checks:
+## Model-Test-Checks:
 
-## ## 1) TRUE: Individual Effects:
-## Y            <- I.scl + add.ind + 5 * X1 - 5 * X2 + matrix(rnorm(T*N),T,N)
-## KSScf(formula=Y ~ X1 + X2, g.function=NULL)
-## KSScf(formula=Y ~ X1 + X2)
-## ## wrong factros:
-## gf <- FS.obj[[3]][,1]
-## KSScf(formula=Y ~ X1 + X2, g.function=gf)
+## 1) TRUE: Individual Effects:
+Y            <- I.scl + add.ind + 5 * X1 - 5 * X2 + matrix(rnorm(T*N),T,N)
+ADDvsINT(formula=Y ~ X1 + X2, g.function=NULL)
+ADDvsINT(formula=Y ~ X1 + X2)
+## wrong factros:
+gf <- FS.obj[[3]][,1]
+ADDvsINT(formula=Y ~ X1 + X2, g.function=gf)
 
-## ## 2) TRUE: Individual + Time Effects:
-## Y            <- I.scl +add.tim.fun + add.ind + 5 * X1 - 5 * X2 + matrix(rnorm(T*N),T,N)
-## KSScf(formula=Y ~ X1 + X2, g.function=NULL)
-## KSScf(formula=Y ~ X1 + X2)
-## ## wrong factros:
-## gf <- FS.obj[[3]][,1]
-## KSScf(formula=Y ~ X1 + X2, g.function=gf)
+## 2) TRUE: Individual + Time Effects:
+Y            <- I.scl +add.tim.fun + add.ind + 5 * X1 - 5 * X2 + matrix(rnorm(T*N),T,N)
+KSScf(formula=Y ~ X1 + X2, g.function=NULL)
+KSScf(formula=Y ~ X1 + X2)
+## wrong factros:
+gf <- FS.obj[[3]][,1]
+KSScf(formula=Y ~ X1 + X2, g.function=gf)
 
-## ## 2) TRUE: 6-dimensional FS:
-## Y            <- I.scl + 5 * X1 - 5 * X2 + FS.obs
+## 2) TRUE: 6-dimensional FS:
+Y            <- I.scl + 5 * X1 - 5 * X2 + FS.obs
 
-## g.fun1 <- FS.obj[[3]][,1]
-## g.fun2 <- FS.obj[[3]][,2]
-## g.fun3 <- FS.obj[[3]][,3]
-## g.fun4 <- FS.obj[[3]][,4]
-## g.fun5 <- FS.obj[[3]][,5]
-## g.fun6 <- FS.obj[[3]][,6]
+g.fun1 <- FS.obj[[3]][,1]
+g.fun2 <- FS.obj[[3]][,2]
+g.fun3 <- FS.obj[[3]][,3]
+g.fun4 <- FS.obj[[3]][,4]
+g.fun5 <- FS.obj[[3]][,5]
+g.fun6 <- FS.obj[[3]][,6]
 
 ## gf     <- cbind(g.fun1,g.fun2,g.fun3,g.fun4,g.fun5,g.fun6)
 ## KSScf(formula=Y ~ X1 + X2, g.function=gf)
