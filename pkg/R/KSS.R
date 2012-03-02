@@ -62,11 +62,9 @@ KSS.default <- function(formula,
     try       <- tryxm[, 1, drop = FALSE]
     trx       <- tryxm[, -1, drop = FALSE]
     pre.beta  <- coef(lm(try ~ -1 + trx))
-    print(pre.beta)
     pre.residu.mat    <- matrix((TR.Y - (TR.X %*% pre.beta)), T, N)    
     ################################################
     spar.low       <- smooth.Pspline(x = seq.int(1,T), y = pre.residu.mat, method = 4       )$spar * 0.75
-    ## spar.low       <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat, spar=0.01, method = 4       )$spar * 0.99
     
     TR.Y.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat,      spar   = spar.low)$ysmth       #(T x N)    
     TR.X.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat,      spar   = spar.low)$ysmth       #(T x NP)
@@ -89,7 +87,6 @@ KSS.default <- function(formula,
     bloc2            <- t.TR.X.TR.Y - t.TR.X.TR.Y.smth     	               # (Px1)
     ## common-Slope.Coefficients:
     com.slops.0      <- solve(bloc1)%*%bloc2				       # (Px1)
-    print(com.slops.0)
     ## calculate first step residuals and estimate dimension of factor-structure
     Residu.mat       <- matrix((TR.Y - (TR.X %*% com.slops.0)), T, N)
 
@@ -213,6 +210,7 @@ KSS.default <- function(formula,
     ## Return ====================================================================================
     est                    <- vector("list")
     est$dat.matrix         <- dat.matrix
+    est$formula            <- formula
     est$dat.dim            <- dat.dim
     est$slope.para         <- beta
     est$beta.V             <- beta.V

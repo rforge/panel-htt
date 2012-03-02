@@ -65,6 +65,11 @@ coef.KSS <- function(object,...){
     return(coef.list)
 }
 
+residuals.KSS <- resid.KSS <- function(object,...){
+  Residual.mat <- object$residuals
+  return(Residual.mat)
+}
+
 summary.KSS <- function(object,...){
   ## Residuals:
   Res.outpt <- round((summary(as.vector(object$residuals))), digits=2)[-4]

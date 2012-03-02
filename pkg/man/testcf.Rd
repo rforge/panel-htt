@@ -1,45 +1,35 @@
-\name{KSScf}
-\alias{KSScf}
-\alias{KSScf.default}
+\name{ADDvsINT}
+\alias{ADDvsINT}
+\alias{ADDvsINT.default}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-KSS Common-Factors Specificationtest
+Specificationtest
 }
 \description{
-Test for certain user-specified common factors
+Test for ...
 }
 \usage{
-KSScf(formula,
-      g.function,
-      additive.effects = c("none", "individual", "time", "twoways"),
-      level)
+ADDvsINT(obj,
+         H0.ADD.effects = c("none", "individual", "time", "twoways"),
+         level)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{formula}{An object of class "formula".}
-  \item{g.function}{User-specified common factors given as a vector,
-    matrix, or list of functions.}
-    \item{additive.effects}{
-    Type of Data Transformations:
+  \item{obj}{An object either of class "KSS" or of class "Eup".}
+  \item{H0.ADD.effects}{
+    Type of Null-Hypothesis:
     \itemize{
-      \item \code{"none"}: for no transformation
-      \item \code{"individual"}: for within transformation
-      \item \code{"time"}: for between transformation
-      \item \code{"twoways"}: for twoways transformation
+      \item \code{"none"}: H0 There are none additive effects
+      \item \code{"individual"}: H0 There are only additive individual-effects
+      \item \code{"time"}: H0 There are only additive time-effects
+      \item \code{"twoways"}: H0 There are only additive twoways-effects
   }}
   \item{level}{alpha-level for Dimensionality-Criterion of Kneip,
     Sickles & Song 2011}
   }
   \details{
-    'KSScf' is a function to test for certain user-specified common
-    factors. The user can give his common factors to the argument
-    \code{g.function}.
-    \itemize{
-      \item{\code{g.function}: }{Can be a vector of length T, a matrix of
-	dimension TxL, or a list of length L with executable functions
-	in each list-element.}
-    }
-}
+    'ADDvsINT' ... 
+  }
 \references{
   \itemize{
     \item Kneip, A., Sickles, R. C., Song, W., 2011 \dQuote{A New Panel Data
@@ -47,7 +37,7 @@ KSScf(formula,
       Econometric Theory}
 }}
 \author{
-  Dominik Liebl
+  Oualid Bada and Dominik Liebl
 }
 % \note{
 % %%  ~~further notes~~
@@ -71,23 +61,24 @@ Y  <- matrix(DGP1$Y,  nrow=T, ncol=N)
 X1 <- matrix(DGP1$X1, nrow=T, ncol=N)
 X2 <- matrix(DGP1$X2, nrow=T, ncol=N)
 
-## Unobserved common factors:
-CF.1 <- DGP1$CF.1[1:T]
-CF.2 <- DGP1$CF.2[1:T]
-CF.3 <- DGP1$CF.3[1:T]
+## Unobserved additive individual-effects:
+add.ind      <- sample(c(1:100),N)
+add.ind      <- add.ind-mean(add.ind)
+add.ind      <- matrix(rep(add.ind,each=T),T,N)
+
+## Panel-Data-Generation: 
+Y            <-  add.ind + 5 * X1 - 5 * X2 + matrix(rnorm(T*N),T,N)
+
+## KSS-Estimation:
+KSS.obj <- KSS.default(formula=Y ~ X1 + X2)
 
 #############################################
-## Test for user-specified common factors: ##
+## Test                                    ##
 #############################################
 
-## H0: 'The given factors are the true common factors'
-
-  ## Cannot be rejected:
-  KSScf(formula    = Y ~ X1 + X2,
-        g.function = matrix(c(CF.1,CF.2,CF.3), nrow=T,ncol=3))
-
-  ##  Can be rejected:
-  KSScf(formula    = Y ~ X1 + X2,
-        g.function = CF.1)
+## Cannot be rejected
+ADDvsINT(obj=KSS.obj, H0.ADD.effects="individual")
+## Can be rejected
+ADDvsINT(obj=KSS.obj, H0.ADD.effects="time")
 }
 
