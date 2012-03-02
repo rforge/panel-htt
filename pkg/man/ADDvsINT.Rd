@@ -19,7 +19,8 @@ ADDvsINT(obj,
   \item{H0.ADD.effects}{
     Type of Null-Hypothesis:
     \itemize{
-      \item \code{"none"}: H0 There are none additive effects
+      \item \code{"none"}: H0 There are neither additive nor interactive
+      effects
       \item \code{"individual"}: H0 There are only additive individual-effects
       \item \code{"time"}: H0 There are only additive time-effects
       \item \code{"twoways"}: H0 There are only additive twoways-effects
