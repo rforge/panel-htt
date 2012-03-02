@@ -70,7 +70,7 @@ add.ind      <- matrix(rep(add.ind,each=T),T,N)
 Y            <-  add.ind + 5 * X1 - 5 * X2 + matrix(rnorm(T*N),T,N)
 
 ## KSS-Estimation:
-KSS.obj <- KSS.default(formula=Y ~ X1 + X2)
+KSS.obj <- KSS(formula=Y ~ X1 + X2)
 
 #############################################
 ## Test                                    ##

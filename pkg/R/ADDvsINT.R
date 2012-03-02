@@ -78,98 +78,98 @@ print.ADDvsINT <- function(x,...){
 
 ## ## ================================================================================================
 ## ## TEST: ==========================================================================================
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/OptDim.R")
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/pca.fit.R")
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.Pformula.R")
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.add.eff.R")
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fpca.fit.R")
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.with.trans.R")
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/KSS.R")
-source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/KSS.methods.R")
-source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/OptDim.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/pca.fit.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.Pformula.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.add.eff.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/fpca.fit.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/FUN.with.trans.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/KSS.R")
+## source("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/R/KSS.methods.R")
+## source("/home/dom/Dokumente/Uni/Promotion/myRoutines/Generate_FS.R")
 
 
-## create data for FPCA
-library(pspline)
-T   = 100
-N   =  50
-dim =   6
+## ## create data for FPCA
+## library(pspline)
+## T   = 100
+## N   =  50
+## dim =   6
 
-## FS-Structure
-FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.25, plot.opt = FALSE)
-FS.obs   <- FS.obj[[1]]
+## ## FS-Structure
+## FS.obj   <- sim.FS(T = T, N = N, dim=dim, Factors= "sin", AR =c(0,0), ar.sd = 0.25, plot.opt = FALSE)
+## FS.obs   <- FS.obj[[1]]
 
-## Regressor 1
-X1 <- matrix(NA, T, N)
-for(i in 1:N){
-  X1[,i]       <- seq(1,rnorm(1)*10,length.out=T)+rnorm(T)
-}
-## Regressor 2
-X2 <- matrix(NA, T, N)
-for(i in 1:N){
-  X2[,i]       <- seq(5,rnorm(1)*1,length.out=T)+rnorm(T,sd=0.75)
-}
+## ## Regressor 1
+## X1 <- matrix(NA, T, N)
+## for(i in 1:N){
+##   X1[,i]       <- seq(1,rnorm(1)*10,length.out=T)+rnorm(T)
+## }
+## ## Regressor 2
+## X2 <- matrix(NA, T, N)
+## for(i in 1:N){
+##   X2[,i]       <- seq(5,rnorm(1)*1,length.out=T)+rnorm(T,sd=0.75)
+## }
 
-## Intercept-Scalar
-I.scl  <-  matrix(rep(70, N*T),T,N)
-
-
-## Additive-Effects:
-   ## individual-effects
-
-add.ind      <- sample(c(1:100),N)
-add.ind      <- add.ind-mean(add.ind)
-add.ind      <- matrix(rep(add.ind,each=T),T,N)
-   ## time-effects
-add.tim.fun  <-  FS.obj[[3]] %*% as.matrix(colMeans(FS.obj[[4]]))*c(1e18,1e18,1e18,1e18)
-add.tim.fun  <-  matrix(rep(add.tim.fun,N),T,N); #matplot(add.tim.fun)
-add.tim.fun  <-  add.tim.fun - mean(add.tim.fun[,1])
-
-## #######################################################################################
-
-## Model-Test-Check:
-
-## 1) TRUE: Individual Effects:
-Y            <- I.scl + add.ind + 5 * X1 - 5 * X2 + matrix(rnorm(T*N),T,N)
+## ## Intercept-Scalar
+## I.scl  <-  matrix(rep(70, N*T),T,N)
 
 
-## TEST:
-KSS.obj <- KSS.default(formula=Y ~ X1 + X2, additive.effects="twoways")
+## ## Additive-Effects:
+##    ## individual-effects
 
-ADDvsINT(obj=KSS.obj, H0.ADD.effects="none")
-ADDvsINT(obj=KSS.obj, H0.ADD.effects="individual")
-ADDvsINT(obj=KSS.obj, H0.ADD.effects="time")
-ADDvsINT(obj=KSS.obj, H0.ADD.effects="twoways")
+## add.ind      <- sample(c(1:100),N)
+## add.ind      <- add.ind-mean(add.ind)
+## add.ind      <- matrix(rep(add.ind,each=T),T,N)
+##    ## time-effects
+## add.tim.fun  <-  FS.obj[[3]] %*% as.matrix(colMeans(FS.obj[[4]]))*c(1e18,1e18,1e18,1e18)
+## add.tim.fun  <-  matrix(rep(add.tim.fun,N),T,N); #matplot(add.tim.fun)
+## add.tim.fun  <-  add.tim.fun - mean(add.tim.fun[,1])
+
+## ## #######################################################################################
+
+## ## Model-Test-Check:
+
+## ## 1) TRUE: Individual Effects:
+## Y            <- I.scl + add.ind + 5 * X1 - 5 * X2 + matrix(rnorm(T*N),T,N)
+
+
+## ## TEST:
+## KSS.obj <- KSS.default(formula=Y ~ X1 + X2, additive.effects="twoways")
+
+## ADDvsINT(obj=KSS.obj, H0.ADD.effects="none")
+## ADDvsINT(obj=KSS.obj, H0.ADD.effects="individual")
+## ADDvsINT(obj=KSS.obj, H0.ADD.effects="time")
+## ADDvsINT(obj=KSS.obj, H0.ADD.effects="twoways")
 
 
 
 
-load("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/data/DGP1.rda")
-N <- 60
-T <- 30
+## load("/home/dom/Dokumente/Uni/Promotion/Panel_HTT/our_package/panel_htt_Arbeitskopie/pkg/data/DGP1.rda")
+## N <- 60
+## T <- 30
 
-## Observed variables:
-Y  <- matrix(DGP1$Y,  nrow=T, ncol=N)
-X1 <- matrix(DGP1$X1, nrow=T, ncol=N)
-X2 <- matrix(DGP1$X2, nrow=T, ncol=N)
+## ## Observed variables:
+## Y  <- matrix(DGP1$Y,  nrow=T, ncol=N)
+## X1 <- matrix(DGP1$X1, nrow=T, ncol=N)
+## X2 <- matrix(DGP1$X2, nrow=T, ncol=N)
 
-## Unobserved additive individual-effects:
-add.ind      <- sample(c(1:100),N)
-add.ind      <- add.ind-mean(add.ind)
-add.ind      <- matrix(rep(add.ind,each=T),T,N)
+## ## Unobserved additive individual-effects:
+## add.ind      <- sample(c(1:100),N)
+## add.ind      <- add.ind-mean(add.ind)
+## add.ind      <- matrix(rep(add.ind,each=T),T,N)
 
-## Panel-Data-Generation: 
-Y            <-  add.ind + 5 * X1 - 5 * X2 + matrix(rnorm(T*N),T,N)
+## ## Panel-Data-Generation: 
+## Y            <-  add.ind + 5 * X1 - 5 * X2 + matrix(rnorm(T*N),T,N)
 
-## KSS-Estimation:
-KSS.obj <- KSS.default(formula=Y ~ X1 + X2)
+## ## KSS-Estimation:
+## KSS.obj <- KSS.default(formula=Y ~ X1 + X2)
 
-#############################################
-## Test                                    ##
-#############################################
+## #############################################
+## ## Test                                    ##
+## #############################################
 
-## Cannot be rejected
-ADDvsINT(obj=KSS.obj, H0.ADD.effects="individual")
-## Can be rejected
-ADDvsINT(obj=KSS.obj, H0.ADD.effects="time")
+## ## Cannot be rejected
+## ADDvsINT(obj=KSS.obj, H0.ADD.effects="individual")
+## ## Can be rejected
+## ADDvsINT(obj=KSS.obj, H0.ADD.effects="time")
 
