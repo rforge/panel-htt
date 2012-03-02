@@ -16,9 +16,9 @@ is.regular.panel <- function(dat,
                              stopper = FALSE){
   
   if(!is.matrix(dat)&!is.data.frame(dat)){
-    if(stopper) stop(expression("Each Variable of your model should be in a TxN-matrix 
+    if(stopper) stop(expression("Each Variable of your model should be in a Txn-matrix 
 				form or has a 'data.frame' class"),  call. = FALSE)
-    if(comment) message(expression("Each Variable of your model should be in a TxN-matrix 
+    if(comment) message(expression("Each Variable of your model should be in a Txn-matrix 
 				form or has a 'data.frame' class"))
     FALSE
   }

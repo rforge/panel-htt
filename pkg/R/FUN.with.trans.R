@@ -96,9 +96,21 @@ WithTrans <- function(z, intercept= TRUE, heto.effect = c("none", "individual", 
 	FUN.with.trans(z, N = nc, T = nr, is.intercept = intercept, effect = with.trans)
   }
 ##========================================================================================================
-
+standardize <- function(z, MARGIN = c("rows", "columns")){
+	is.regular.panel(z, stopper = TRUE)
+	margc <-  match.arg(MARGIN)
+	marg <-  switch(margc, rows = 1, columns = 2) 
+	R <- apply(z, MARGIN = marg, function(x) (x- mean(x))/sqrt(var(x)))
+	R <- t(R)
+}
 
 ############################ test
 
-## Y <- matrix(rnorm(100), 10 , 10)
+## Y <- sapply(1:5, function(x) rnorm(10, mean = x))%*%diag((1:5)^2, 5) + 10*(1:10)
+## B <- standardize(Y)
+##(B)%*%t(B)/(4)
+## par(mfcol = c(1,2))
+## matplot(B, typ = "l")
+## matplot(Y, typ = "l")
 ## WithTrans(Y, intercept= T, heto.effect = "individual")
+

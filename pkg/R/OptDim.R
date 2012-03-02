@@ -7,7 +7,7 @@ bai.dim.opt <- function(Obj, d.max = NULL, sig2.hat = NULL)
 	d.seq <- Obj$d.seq
 	C     <- min(nr, nc)
 	max.rk <- length(w)
-	d.max <- ifelse(is.null(d.max),min(trunc(0.25*C), max.rk ), d.max)
+	d.max <- ifelse(is.null(d.max),min(round(sqrt(C)), max.rk ), d.max)
 	if(d.max > max.rk)
 		{
 		warning(expression("The given maximun dimension 'd.max' is larger than the postive eingen values of the corresponding covariance matrix. We use maximum rank as 'd.max' "))
@@ -207,7 +207,7 @@ RH.dim.opt <- function(svd.pca.obj, d.max = NULL)
 
 	exa.ev  <- c(sum(ev), ev)	
 	C       <- min(nr, nc)
-	d.max   <- ifelse(is.null(d.max),min(trunc(0.5*C), max.rk), d.max)
+	d.max   <- ifelse(is.null(d.max),min(round(sqrt(C)), max.rk), d.max)
 	if(d.max > max.rk)
 		{
 		warning(expression("The given maximun dimension 'd.max' is larger than the postive eingen values of the corresponding covariance matrix. We use maximum rank as 'd.max' "))
@@ -349,8 +349,8 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, factor.dim = NULL, d.m
     used.dim.C1 <- d.opt.KSS1
     used.dim.C2 <- d.opt.KSS2
   }
-  result1     <- c(d.opt.KSS1, used.dim.C1, w[d.opt.KSS1+1], sig2.hat, alpha )
-  result2     <- c(d.opt.KSS2, used.dim.C2, w[d.opt.KSS2+1], sig2.hat, level2)# level2: p.value of thres2 (thres2: alternativ crit.value)
+  result1     <- c(d.opt.KSS1, used.dim.C1, w[(d.opt.KSS1+1)], sig2.hat, alpha )
+  result2     <- c(d.opt.KSS2, used.dim.C2, w[(d.opt.KSS2+1)], sig2.hat, level2)# level2: p.value of thres2 (thres2: alternativ crit.value)
 
   result      <- rbind(result1, result2)
   Result      <- vector("list", 2)
@@ -448,7 +448,7 @@ KSS.OptDim <- function(Obj,
 ############## compare  ######################################################################################
 
 OptDim.default <- function(Obj, criteria.of = c("Bai", "KSS", "Onatski", "RH")
-				, d.max = NULL, sig2.hat=NULL, level= 0.05
+				, d.max = NULL, sig2.hat=NULL, level= 0.01
 				){
 	criteria.of <- match.arg(criteria.of, several.ok = TRUE)
 	FUN.crit <- function(criteria.of, d.max, sig2.hat, level) {
