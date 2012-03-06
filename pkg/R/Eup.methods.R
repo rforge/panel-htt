@@ -20,7 +20,7 @@ Eup <- function(formula, ...){ UseMethod("Eup")}
    print(t(slope.para))
    cat("\nAdditive Effects Type: ", as.name(x$additive.effects)," \n")
    cat("\nDimension of the Unobserved Factors:", x$used.dim," \n")
-   cat("\nNumber of iterations:", x$Nbr.iteration,".")
+   cat("\nNumber of iterations:", x$Nbr.iteration,".\n")
  }
 
 
@@ -59,6 +59,10 @@ coef.Eup <- function(x,...){
         
     return(coef.list)
 }
+
+residuals.Eup <- function(x, ...){
+	x$residuals
+	}
 
 summary.Eup <- function(x,...){
   ## Residuals:

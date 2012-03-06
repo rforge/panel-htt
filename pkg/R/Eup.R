@@ -37,7 +37,9 @@
 FUN.Eup <- function(dat.matrix, dat.dim
 		, double.iteration = double.iteration
 		, dim.criterion, factor.dim, d.max, sig2.hat
-		, start.beta){
+		, start.beta, max.iteration, convergence){
+
+
 #### data 
 	y 	<- dat.matrix[, 1, drop = FALSE]
 	x 	<- dat.matrix[,-1, drop = FALSE]
@@ -60,7 +62,6 @@ FUN.Eup <- function(dat.matrix, dat.dim
 		try   <- tryxm[, 1, drop = FALSE]
 		trx   <- tryxm[, -1, drop = FALSE]
 		beta.0 <- coef(lm(try ~ -1 + trx ))
-print(beta.0)
 		}
 
 #### calculate the inverse once in order to reduce computations of the 
@@ -68,6 +69,7 @@ print(beta.0)
 	FUN.ols.beta <- function(updated.y, x, inv.xx.x){
 		beta <- tcrossprod(inv.xx.x, t(updated.y))
 		}
+
 	xx 	   <- crossprod(x)
 	inv.xx   <- solve(xx)
 	inv.xx.x  <- inv.xx%*%t(x)
@@ -84,7 +86,8 @@ print(beta.0)
 				  , factor.dim = factor.dim, d.max=d.max
 				  , sig2.hat= sig2.hat
 				  , double.iteration = double.iteration
-				  , i=1){
+				  , max.iteration = max.iteration, convergence = convergence
+				  , past.iterations = past.iterations, i=1){
   # Iteration (0): initial cumputations
 	# w.0 = y-x%*%beta.0 
 		w.0 <- y - tcrossprod(x, t(beta.0))
@@ -114,20 +117,20 @@ print(beta.0)
 		beta.1 <- FUN.ols.beta(y.updated.1, x, inv.xx.x) 
 
   	# convergence condition
-		#if(isTRUE(all.equal(beta.0, beta.1, check.attributes = FALSE
-		#	, check.names = FALSE))| i ==500)
-		if(all( abs((beta.0 - beta.1)) < 1e-6)| i ==500){
-			if(i==500) warning(expression("the maximal number of 
-			iterations is achieved (500)"))
+		if(all( abs((beta.0 - beta.1)) < convergence)| (i + past.iterations) == max.iteration){
+			if((i + past.iterations) == max.iteration) 
+			warning(paste("The maximal number of iterations is achieved ", max.iteration), call. = FALSE)
 			Result <- list(PCA=PCA.0, beta=beta.1
-			, factor.dim=factor.dim, Nbr.Iterations = i)
+			,factor.dim=factor.dim, Nbr.Iterations = i)
 			Result
 			}
 
 		else inner.iteration(y=y, x=x, inv.xx.x =inv.xx.x 
 			,beta.0 = beta.1,factor.dim = factor.dim 
 			,d.max=d.max,sig2.hat= sig2.hat 
-			,double.iteration = double.iteration, (i+1))
+			,double.iteration = double.iteration
+			,max.iteration = max.iteration, convergence = convergence
+			,past.iterations = past.iterations, (i+1))
 	}
 
 ####  outer and inner iterateion 
@@ -136,17 +139,21 @@ print(beta.0)
 				    , beta.0 = beta.0, factor.dim = factor.dim 
 				    , d.max=d.max, sig2.hat= sig2.hat 
 				    , double.iteration = double.iteration
+				    , max.iteration = max.iteration
+				    , convergence = convergence
 				    , past.iterations = 0, l =1){
 	# first inner iteration 
 		In.Iter.0 <- inner.iteration(y=y, x=x, inv.xx.x =inv.xx.x 
 				, beta.0 = beta.0, factor.dim = factor.dim
 				, d.max=d.max, sig2.hat= sig2.hat
-				, double.iteration = double.iteration, i =1)
+				, double.iteration = double.iteration
+				, max.iteration = max.iteration, convergence = convergence
+				, past.iterations = past.iterations
+				, i =1)
 		pca.d0 	  <- In.Iter.0$PCA
 		beta.d0 	  <- In.Iter.0$beta 
 		opt.d0	  <- In.Iter.0$factor.dim
 		nbr.iteration <- In.Iter.0$Nbr.Iterations + past.iterations
-
 
 		# if double.iteration is TRUE select new opt.d iteratively
 		if(double.iteration && is.null(given.d)){	
@@ -155,10 +162,10 @@ print(beta.0)
 				, d.max = d.max, sig2.hat= sig2.hat)
 		opt.d1  <- opt.dim1[,2]
 		  # convergence condition
-			if(opt.d1==opt.d0|l >= d.max){
-				if(l >= d.max) warning(expression("the maximal
-					number of outer iterations is 
-					achieved (d.max)"))
+			if(opt.d1==opt.d0| nbr.iteration >= max.iteration){
+				#if(l >= d.max) warning(expression(" The maximal
+				#	number of outer iterations is 
+				#	achieved (d.max)"))
 				Result  <- list(y=y, x=x, dat.dim= dat.dim
 						, PCA = pca.d0, beta= beta.d0
 						, opt.d =opt.d1
@@ -170,6 +177,7 @@ print(beta.0)
 					, d.max=d.max, sig2.hat= sig2.hat
 					, double.iteration = double.iteration
 					, past.iterations = nbr.iteration
+					, max.iteration = max.iteration, convergence = convergence
 					, l = (l+1))
 		}
 		else {
@@ -186,6 +194,7 @@ print(beta.0)
 			    , beta.0 = beta.0 , factor.dim = factor.dim
 			    , d.max=d.max, sig2.hat= sig2.hat 
 			    , double.iteration = double.iteration
+			    , max.iteration = max.iteration, convergence = convergence
 			    , past.iterations = 0, l =1)
 
 	Result
@@ -238,6 +247,8 @@ Eup.default <- function(formula
 				, factor.dim = NULL
 				, double.iteration = TRUE
 				, start.beta= NULL
+				, max.iteration = 500
+				, convergence = 1e-6
 				, restrict.mode= c("restrict.factors"
 							,"restrict.loadings")){
 
@@ -294,20 +305,16 @@ Eup.default <- function(formula
 					, dim.criterion 	= dim.criterion
 					, factor.dim	= factor.dim
 					, d.max		= d.max
+					, max.iteration   = max.iteration
+					, convergence     = convergence
 					, sig2.hat = sig2.hat)
 
     # Eup beta and Nbr.iteration
 
 	Nbr.iteration	<- tr.model.est$nbr.iterations
 	beta.Eup		<- tr.model.est$beta
-  colnames(beta.Eup) <- ""
-  rownames(beta.Eup) <- names[-1]
-
-    # Inference for beta
-
-# 	Inf.result	<- Eup.inference(tr.model.est)
-# 	slope.inf 	<- Inf.result$inf.result
-# 	var.result	<- Inf.result$var.result
+  	colnames(beta.Eup) <- ""
+  	rownames(beta.Eup) <- names[-1]
 
     # additive effects
 
@@ -383,7 +390,7 @@ Eup.default <- function(formula
     , fitted.values = fitted.values
     , residuals = residuals
     , orig.Y = orig.Y
-  	, sig2.hat = sig2.hat
+    , sig2.hat = sig2.hat
     , degree.of.freedom = degree.of.freedom
     , call = match.call()
 		, Nbr.iteration= Nbr.iteration)
