@@ -36,6 +36,7 @@ ADDvsINT.default <- function(obj,
     if(class(obj)=="KSS"){
       ##===================================================================================
       ## calculate residuals
+	testname <- "Test of Kneip, Sickles, and Song (2012)"
       Residu.mat   <- KSS.default(formula=obj$formula, additive.effects=effect, level=level, factor.dim=0)$residuals
       ## functional principal component analysis
       fpca.fit.obj <- fpca.fit(dat           = Residu.mat,
@@ -50,10 +51,41 @@ ADDvsINT.default <- function(obj,
                             sig2.hat = NULL,
                             alpha    = level,
                             d.max    = NULL)[[2]]
-      result$print <- H0.ADD.effects
     }
     ## ====================================================================================
-    class(result)        <- "ADDvsINT" 
+
+    else{
+	testname <- "Test of Bai (2009)"
+	T <- obj$dat.dim[1]
+	n <- obj$dat.dim[2]	
+	P <- obj$dat.dim[3]
+	add.Obj <- Eup(formula=obj$formula, additive.effects=effect, factor.dim=0)
+	beta.add <- add.Obj$slope.para
+	C <- Eup.inference(add.Obj)$inv.ZZ
+	
+	int.Obj <- Eup(formula = obj$formula, dim.criterion	=  obj$dim.criterion
+	, d.max = obj$d.max
+	, sig2.hat = obj$sig2.hat.dim
+	, factor.dim = obj$factor.dim
+	, start.beta = obj$start.beta
+	, max.iteration = obj$max.iteration
+	, convergence = obj$convergence)
+	beta.int <- int.Obj$slope.para
+	infbetaint <- Eup.inference(int.Obj)
+	D <- infbetaint$inv.ZZ
+	sig2.hat <- infbetaint$sig2.hat
+
+	Test.Stat <- n*T*sig2.hat^{-1}*t(beta.int - beta.add)%*%solve(D - C)%*%(beta.int - beta.add)
+	p.value <- 1 - pchisq(Test.Stat, df = P)
+	crit.value <- qchisq(level, df = P)
+	result <- list(Test.Stat= round(Test.Stat,2), p.value= round(p.value, 2)
+			, crit.value = round(crit.value, 2), sig.level = round(level, 2))
+
+    }
+    ## ====================================================================================
+    result$print <- effect
+    result$testname <- testname
+    class(result)  <- "ADDvsINT" 
     return(result)
   }
 
@@ -69,8 +101,10 @@ ADDvsINT <- function(obj,
 print.ADDvsINT <- function(x,...){
   cat("----------------------------------------------\n")
   cat("Testing Additive vs. Interactive Effects\n")
-  cat("----------------------------------------------\n")
-  cat(paste("H0: There are only additive ",x$print,"-effects\n\n",sep=""))
+  cat(paste(x$testname))
+  cat("\n----------------------------------------------\n")
+  if(x$print != "none") cat(paste("H0: There are only additive ",x$print,"-effects\n\n",sep=""))
+  else cat(paste("H0: There are no additive effects\n\n",sep=""))
   outp        <- c(x$Test.Stat, signif(as.numeric(x$p.value),digits=3), x$crit.value, x$sig.level)
   names(outp) <- c("Test-Statistic", "p-value", "crit.-value", "sig.-level")
   print(outp)

@@ -269,6 +269,7 @@ Eup.default <- function(formula
   # define additive.effects
 	
 	additive.effects <- match.arg(additive.effects)
+	sig2.hat.dim <- sig2.hat
 
   ## Transform the response variable as well as the 'P' regressors and give them in a list where ech 
     ## componente contains also a list with:
@@ -384,16 +385,24 @@ Eup.default <- function(formula
     , unob.factors = factors
     , ind.loadings = loadings
 		, unob.fact.stru = unob.fact.stru
+		, factor.dim = factor.dim
+		, dim.criterion = dim.criterion
 		, used.dim= used.dim
 		, proposed.dim= proposed.dim
 		, optimal.dim = optimal.dim
+		, d.max = d.max
     , fitted.values = fitted.values
     , residuals = residuals
     , orig.Y = orig.Y
+    , sig2.hat.dim = sig2.hat.dim
     , sig2.hat = sig2.hat
     , degree.of.freedom = degree.of.freedom
+    , formula = formula
     , call = match.call()
-		, Nbr.iteration= Nbr.iteration)
+    , max.iteration = max.iteration
+    , convergence = convergence
+    , start.beta = start.beta
+    , Nbr.iteration= Nbr.iteration)
   class(final.result) <- "Eup"
   return(final.result)  
       }

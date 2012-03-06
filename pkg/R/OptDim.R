@@ -1,4 +1,4 @@
-OptDim2.default <- function(Obj, 
+OptDim.default <- function(Obj, 
                    criteria = c("PC1", "PC2", "PC3",
                      "IC1", "IC2", "IC3",
                      "IPC1","IPC2", "IPC3",
@@ -70,16 +70,16 @@ OptDim2.default <- function(Obj,
 	Result$RHC    <- criteria%in%c("ER", "GR")
 	Result$cl     <- match.call()
 	Result$obj    <- Obj
-	structure(Result, class = "OptDim2")
+	structure(Result, class = "OptDim")
 }
 
 
 # ####################### Methods ########################
-	OptDim2 <- function(Obj, ...){ UseMethod("OptDim2")}
+	OptDim <- function(Obj, ...){ UseMethod("OptDim")}
 
 
 ## Print
-print.OptDim2 <- function(x,...){
+print.OptDim <- function(x,...){
    	cat("Call: ")
 	cl <- x$cl
    	print(cl)
@@ -144,7 +144,7 @@ print.OptDim2 <- function(x,...){
  }
 	
 ## Print
-summary.OptDim2 <- function(x,...){
+summary.OptDim <- function(x,...){
    	cat("Call: ")
 	cl <- x$cl
    	print(cl)
@@ -219,7 +219,7 @@ summary.OptDim2 <- function(x,...){
 
  }
 
-plot.OptDim2 <- function(x, main, border, col, ...){
+plot.OptDim <- function(x, main, border, col, ...){
 	Resultcrit <- x$summary	
 	frq <- hist(Resultcrit, plot= FALSE, right = FALSE, breaks =seq.int(0, (max(Resultcrit)+1)))
 	dims <- seq.int(0, max(Resultcrit))[frq$intensities != 0]
