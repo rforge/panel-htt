@@ -104,12 +104,13 @@ print.summary.Eup <- function(x, ...){
   printCoefmat(x$coefficients)
   
   cat("\nAdditive Effects Type: ", as.name(x$Eup.obj$additive.effects)," \n")
-  cat("\nDimension of the Unobserved Factors:", x$Eup.obj$used.dim)
-  cat("\nOptimized Factor Dimension:         ", x$Eup.obj$optimal.dim," \n")
+  cat("\nDimension of the Unobserved Factors:", x$Eup.obj$used.dim," \n")
+  #cat("\nOptimized Factor Dimension:         ", x$Eup.obj$optimal.dim," \n")
   
   cat("\nResidual standard error:", x$Eup.obj$sig2.hat, "on", 
-            x$Eup.obj$degree.of.freedom, "degrees of freedom, ", "R-squared:", x$R2,".")
+            x$Eup.obj$degree.of.freedom, "degrees of freedom, ", "\nR-squared:", x$R2,"\n")
 }
+
 plot.summary.Eup <- function(x,...){
   if(is.null(x$Eup.obj$unob.factors) & x$Eup.obj$additive.effects=="none"){
     stop("Neither an estimated factor structure nor additive effects to plot.")
