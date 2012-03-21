@@ -15,7 +15,7 @@ KSS(formula,
     level            = 0.01,
     factor.dim       = NULL,
     d.max            = NULL,
-    CV               = FALSE,
+    spar             = NULL,
     sig2.hat         = NULL,
     restrict.mode    = c("restrict.factors","restrict.loadings"), ...)
 }
@@ -50,10 +50,7 @@ KSS(formula,
   \item{d.max}{Maximal Dimension for Dimensionality-Estimation of Bai
     (2009). The default (\code{d.max=NULL}) yields to an internal selection of
     d.max.}
-  \item{CV}{By default (CV=FALSE) the smoothing parameter is
-    approximated by a plug-in procedure. If CV=TRUE the smoothing
-    parameter is determined by Cross-Validation, which can take some
-    computational time.}
+  \item{spar}{}
   \item{sig2.hat}{Standard deviation of the error-term, chosen by
     the user. The default (\code{sig2.hat=NULL}) yields to an internal
     estimation.}

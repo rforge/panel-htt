@@ -5,7 +5,7 @@ KSS.default <- function(formula,
                         level            = 0.01,
                         factor.dim       = NULL,
                         d.max            = NULL,
-                        CV               = FALSE,
+                        spar             = NULL,
                         sig2.hat         = NULL,
                         restrict.mode    = c("restrict.factors","restrict.loadings"),
                         ...)
@@ -52,27 +52,22 @@ KSS.default <- function(formula,
 
 
     #####################################################################################################    
-    ## Plug-in Procedure to determine the smoothing parameter 
-    ymats     <- matrix(TR.Y, T,  N   )
-    xmats     <- matrix(TR.X, T, (N*P))
-    zmats     <- cbind(ymats, xmats)
-    z.dmax    <- round(min(sqrt(N*(P+1)),sqrt(T)))
-##    z.dmax    <- round(min(N*(P+1),T))
-    z.fact    <- pca.fit(zmats, restrict.mode=restrict.mode)$factors[,1:z.dmax, drop=FALSE]
-      
+    ## Plug-in Procedure to determine the smoothing parameter
+    if(is.null(spar)){
+      ymats     <- matrix(TR.Y, T,  N   )
+      xmats     <- matrix(TR.X, T, (N*P))
+      zmats     <- cbind(ymats, xmats)
+      z.dmax    <- c(OptDim(zmats, criteria = "KSS.C", spar = 0)$summary)
+      z.fact    <- pca.fit(zmats, restrict.mode=restrict.mode)$factors[,1:z.dmax, drop=FALSE]      
     ################################################
-    spar.vec  <- sapply(1:z.dmax, function(l){smooth.Pspline(x = seq.int(1,T), y = zmats[,l], method = 4)$spar})
-    spar.vec  <- spar.vec[order(spar.vec)]
-    spar.low  <- spar.vec[1]
-    #####################################################################################################
-    print(spar.vec)
-    ## Cross-Validation
-    if(CV){
-      test.obj <- KSS.CV(kappa.interv=c(spar.vec[1],spar.vec[z.dmax]), Y=TR.Y, X=TR.X, N=N, T=T, P=P)
-      print(test.obj)
+      spar.vec  <- sapply(1:z.dmax, function(l){smooth.Pspline(x = seq.int(1,T), y = zmats[,l], method = 4)$spar})
+      spar.vec  <- spar.vec[order(spar.vec)]
+      spar.low  <- spar.vec[1]
+    }else{
+      spar.low  <- spar
     }
-    
-    
+    #####################################################################################################
+
     TR.Y.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat,      spar   = spar.low)$ysmth       #(T x N)    
     TR.X.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat,      spar   = spar.low)$ysmth       #(T x NP)
     TR.X.mat.smth2 <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat.smth, spar   = spar.low)$ysmth       #(T x NP)
