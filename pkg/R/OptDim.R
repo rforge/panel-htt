@@ -286,6 +286,8 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, factor.dim = NULL, d.m
   evec     <- obj$L
   Eval     <- obj$V.d
   max.rk   <- length(Eval)
+
+ if(spar.low ==0) dat.smth <- NULL
   
 ### calculate traces
   
@@ -313,6 +315,8 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, factor.dim = NULL, d.m
 
 
 ### determine / calculate sig2.hat
+  d.max0 = d.max
+  sig2.hat0 = sig2.hat
 
   if(is.null(sig2.hat)){
 	# estimation of sig2.hat: Classical, if one wants to use the KSS-Criterion for non-smoothed dat
@@ -341,6 +345,16 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, factor.dim = NULL, d.m
   d.opt.KSS1  <- length(crit1[crit1 > 0])# minus 1, weil start bei dim = 0
                                          # plus  1, weil nur die dim, die das crit nicht erfüllen.
   d.opt.KSS2  <- length(crit2[crit2 > 0])
+  if(is.null(dat.smth)& is.null(d.max0) & is.null(sig2.hat0)){
+	sig2.hat <- w[d.opt.KSS1+1]*(nc*nr)/(nr*nc - (nr + nc)*d.opt.KSS1 - 1)
+  	delta       <- (Eval - (nc-1) * sig2.hat * tr1[1:max.rk])/(sig2.hat * sqrt(2*nc*tr2[1:max.rk]))
+ 	thres1      <- qnorm(1-alpha)
+ 	thres2      <- sqrt(2*log(min(nr, nc)))# default alpha = NULL / falls alpha != 0 dann, werden beide beide berechnet
+  	level2      <- 1 - pnorm(thres2)
+  	crit1       <- delta - thres1
+ 	crit2       <- delta - thres2
+  	d.opt.KSS1  <- length(crit1[crit1 > 0])
+  }
 
   if(!is.null(factor.dim)){
     used.dim.C1 <- factor.dim
@@ -373,7 +387,8 @@ KSS.OptDim <- function(Obj,
                        sig2.hat    = NULL,
                        alpha       = 0.01, 
                        d.max       = NULL,
-                       factor.dim  = NULL){
+                       factor.dim  = NULL, 
+			     spar = NULL){
   ## what is Obj?
   if(class(Obj)=="svd.pca"|class(Obj)=="fsvd.pca"){
     if(class(Obj)=="fsvd.pca") obj <- Obj
@@ -381,7 +396,7 @@ KSS.OptDim <- function(Obj,
       ## Liste um spar.low und Q.orig.smth erweitern:
       nr          <- Obj$nr
       nc          <- Obj$nc
-      spar.low    <- 0          
+      spar.low    <- ifelse(is.null(spar), 0, spar)          
       Q.orig      <- Obj$Q.orig
       Q.orig.smth <- NULL
       L           <- Obj$L
@@ -407,7 +422,7 @@ KSS.OptDim <- function(Obj,
     }else{
       nr          <- Obj$data.dim[1]
       nc          <- Obj$data.dim[2]
-      spar.low    <- 0
+      spar.low    <- ifelse(is.null(spar), 0, spar)   
       Q.orig      <- Obj$orig.values
       Q.orig.smth <- NULL
       L           <- Obj$L
@@ -419,7 +434,7 @@ KSS.OptDim <- function(Obj,
   }else{
     if(is.matrix(Obj)){
       ## fPCA
-      Obj        <- fpca.fit(dat = Obj, given.d = factor.dim)
+      Obj        <- fpca.fit(dat = Obj, given.d = factor.dim, spar = spar)
       ## umbenennungen zu fsvd.pca-Elementen
       nr          <- Obj$data.dim[1]
       nc          <- Obj$data.dim[2]
@@ -457,13 +472,15 @@ EstDim <- function(Obj,
                    d.max,
                    factor.dim,
                    sig2.hat,
+			 spar = NULL,
                    level = 0.01
                    )
   {
   ## missing parameters
-         if(missing(factor.dim)) factor.dim  <- NULL
+       if(missing(factor.dim)) factor.dim  <- NULL
   	 if(missing(d.max))      d.max       <- NULL
  	 if(missing(sig2.hat))   sig2.hat    <- NULL
+	 if(missing(spar))       spar        <- NULL
 
   ## estimation 
 	 criteria <- match.arg(dim.criterion)
@@ -493,7 +510,7 @@ EstDim <- function(Obj,
                           GR   = try(RH.OptDim(Obj, criteria = c("GR")
                             , d.max = d.max)),
                           KSS.C  = try(KSS.OptDim(Obj, criteria = c("KSS.C1")
-				    , sig2.hat = sig2.hat, alpha=level
+				    , sig2.hat = sig2.hat, alpha=level, spar = spar
                                     , factor.dim=factor.dim, d.max=d.max)[[1]])#,
 ##                           KSS.C2  = try(KSS.OptDim(Obj, criteria = c("KSS.C2")
 ## 				    , sig2.hat = sig2.hat, alpha=level
@@ -502,7 +519,7 @@ EstDim <- function(Obj,
 	est.dim
        }
 
-############## Est dim compaire  ######################################################################################
+############## Est dim compair  ######################################################################################
 
 
 
@@ -515,6 +532,7 @@ OptDim.default <- function(Obj,
 			standardize = FALSE,
 			d.max,
 			sig2.hat,
+			spar,
 			level = 0.01
                    )
   {
@@ -525,6 +543,7 @@ OptDim.default <- function(Obj,
   ## missing parameters
   	 if(missing(d.max))      d.max       <- NULL
  	 if(missing(sig2.hat))   sig2.hat    <- NULL
+	 if(missing(spar))       spar        <- NULL
 
   ## standardize
 	 if(standardize) Obj <- standardize(Obj)
@@ -559,7 +578,7 @@ OptDim.default <- function(Obj,
                             , d.max = d.max)),
                           KSS.C  = try(KSS.OptDim(Obj, criteria = c("KSS.C1")
 				    , sig2.hat = sig2.hat, alpha=level
-                             , factor.dim= NULL, d.max=d.max)[[1]])
+                             , factor.dim= NULL, d.max=d.max, spar = spar)[[1]])
                           )
 	}
 
@@ -746,7 +765,7 @@ plot.OptDim <- function(x, main, border, col, ...){
 	d.max = min(nc, nr)
 	perceig <- eig/sum(eig)
 	perccum <- cumsum(perceig)
-	ycords <- c((2*perceig[1]-perceig[2]), perceig[-d.max])
+	ycords <- c(((3/2)*perceig[1]-0.5*perceig[2]), perceig[-d.max])
 	yycoreds <- ycords 
 	yycoreds[1] <- (ycords[1] - perceig[1])/2 + perceig[1]
 
@@ -758,7 +777,7 @@ plot.OptDim <- function(x, main, border, col, ...){
 	if(missing(border)) border = FALSE
 	if(missing(col)) col = "lightslategrey"
 	xaxis <- barplot(perceig,  main = main, border = border 
-		,axes = FALSE, col = col, ylim = c(0, ycords[1])
+		,axes = FALSE, col = col, ylim = c(0, ifelse(dims[1]==0, ycords[1], perceig[1]))
 		, ylab = "Proportion of variance"
 		, xlab = "Ordered eigenvalues")
 	
