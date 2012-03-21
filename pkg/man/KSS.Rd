@@ -50,7 +50,8 @@ KSS(formula,
   \item{d.max}{Maximal Dimension for Dimensionality-Estimation of Bai
     (2009). The default (\code{d.max=NULL}) yields to an internal selection of
     d.max.}
-  \item{spar}{}
+  \item{spar}{By default (spar=NULL) the smoothing prameter is
+    determined by a plug-in procedure.}
   \item{sig2.hat}{Standard deviation of the error-term, chosen by
     the user. The default (\code{sig2.hat=NULL}) yields to an internal
     estimation.}
