@@ -5,6 +5,7 @@ KSS.default <- function(formula,
                         level            = 0.01,
                         factor.dim       = NULL,
                         d.max            = NULL,
+                        CV               = FALSE,
                         sig2.hat         = NULL,
                         restrict.mode    = c("restrict.factors","restrict.loadings"),
                         ...)
@@ -49,7 +50,8 @@ KSS.default <- function(formula,
     TR.Y.mat <- matrix(TR.Y, T,     N)					        # (T x N)
     TR.X.mat <- matrix(TR.X, T, (N*P))						# (T x NP)
 
-    
+
+    #####################################################################################################
     ## smooth.splines with undersmoothing
     ## undersmoothing: 0.75 * GCV-value
     
@@ -65,6 +67,12 @@ KSS.default <- function(formula,
     pre.residu.mat    <- matrix((TR.Y - (TR.X %*% pre.beta)), T, N)    
     ################################################
     spar.low       <- smooth.Pspline(x = seq.int(1,T), y = pre.residu.mat, method = 4       )$spar * 0.75
+    #####################################################################################################
+
+    ## Cross-Validation
+    if(CV){
+      KSS.CV(init.kappa=spar.low, Y=TR.Y.mat, X=TR.X.mat, N=N, T=T, P=P)
+    }
     
     TR.Y.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat,      spar   = spar.low)$ysmth       #(T x N)    
     TR.X.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat,      spar   = spar.low)$ysmth       #(T x NP)
@@ -91,7 +99,7 @@ KSS.default <- function(formula,
     Residu.mat       <- matrix((TR.Y - (TR.X %*% com.slops.0)), T, N)
 
     ## functional pca
-    fpca.fit.obj     <- fpca.fit(Residu.mat)
+    fpca.fit.obj     <- fpca.fit(Residu.mat, spar.low=spar.low)
 
     ## Estimation of Dimension
     dim.criterion    <- c("PC1",  "PC2",  "PC3",   "IC1",   "IC2", "IC3",

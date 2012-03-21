@@ -6,6 +6,7 @@ KSS <- function(formula,
                 level            = 0.01,
                 factor.dim       = NULL,
                 d.max            = NULL,
+                CV               = TRUE,
                 sig2.hat         = NULL,
                 restrict.mode    = c("restrict.factors","restrict.loadings"),
                 ...){

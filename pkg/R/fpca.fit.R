@@ -3,10 +3,13 @@
 #########################################################################################
 
 fsvd.pca <- function(Q,
-                            allow.dual      = TRUE,
-                            given.d         = NULL,
-                            calcul.loadings = TRUE,
-                            neglect.neg.ev  = FALSE){
+                     allow.dual      = TRUE,
+                     given.d         = NULL,
+                     calcul.loadings = TRUE,
+                     neglect.neg.ev  = FALSE,
+                     spar.low        = NULL
+                     )
+{
   ## extract data information
   nr      <- nrow(Q)
   nc      <- ncol(Q)
@@ -14,9 +17,11 @@ fsvd.pca <- function(Q,
   ## save original Q-values 
   Q.non.smth <- Q 
 
+
   ## smoothing Q (small degree of undersmoothing) ===============================================#
-  spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, method = 4       )$spar  * 0.75    #
-                                                                                                 #
+  if(is.null(spar.low)){                                                                         #
+    spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, method = 4       )$spar  * 0.75  #
+  }                                                                                              #
   Q        <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar   = spar.low)$ysmth           #
   ##=============================================================================================#
   

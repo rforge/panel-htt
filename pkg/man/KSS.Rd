@@ -15,6 +15,7 @@ KSS(formula,
     level            = 0.01,
     factor.dim       = NULL,
     d.max            = NULL,
+    CV               = FALSE,
     sig2.hat         = NULL,
     restrict.mode    = c("restrict.factors","restrict.loadings"), ...)
 }
@@ -25,7 +26,7 @@ KSS(formula,
     \itemize{
       \item{If \code{consult.dim.crit} is \code{FALSE} (default) and
 	\code{factor.dim} is \code{NULL}:
-	Only the dimensionality criterion of Kneip, Sickles & Song 2011
+	Only the dimensionality criterion of Kneip, Sickles & Song 2012
 	is used.}
       \item{If \code{consult.dim.crit} is \code{TRUE} and
 	\code{factor.dim} is \code{NULL}:
@@ -42,13 +43,17 @@ KSS(formula,
       \item \code{"twoways"}: for twoways transformation
   }}
   \item{level}{alpha-level for Dimensionality-Criterion of Kneip,
-    Sickles & Song 2011}
+    Sickles & Song 2012}
   \item{factor.dim}{Dimension of Factor-Structure, pre-specified
     by the user. The default (\code{factor.dim=NULL}) yields to an internal
     estimation.}
   \item{d.max}{Maximal Dimension for Dimensionality-Estimation of Bai
     (2009). The default (\code{d.max=NULL}) yields to an internal selection of
     d.max.}
+  \item{CV}{By default (CV=FALSE) the smoothing parameter is
+    approximated by a plug-in procedure. If CV=TRUE the smoothing
+    parameter is determined by Cross-Validation, which can take some
+    computational time.}
   \item{sig2.hat}{Standard deviation of the error-term, chosen by
     the user. The default (\code{sig2.hat=NULL}) yields to an internal
     estimation.}
@@ -91,7 +96,7 @@ KSS(formula,
 	  \itemize{
 	    \item{If \code{consult.dim.crit} is \code{FALSE} (default)
 	      only the dimensionality criterion
-	      of Kneip, Sickles & Song 2011 is used -- except for the
+	      of Kneip, Sickles & Song 2012 is used -- except for the
 	      case if the user pre-specifies a dimension via the
 	      argument \code{factor.dim}. If the latter is the case,
 	      there is no estimation of the dimensionality of the factor
@@ -154,7 +159,7 @@ KSS(formula,
 		selected dimension of the factor structure is true, the
 		estimates of the slope-parameters are more
 		efficient than those proposed in Kneip, Sickles & Song
-		(2011). But, if the selected dimension of the factor
+		(2012). But, if the selected dimension of the factor
 		structure is smaller than the true dimension and if the
 		factor structure correlates with at least one of the
 		regressors then the estimates of the slope-parameters
@@ -199,7 +204,7 @@ KSS(formula,
 }
 \references{
   \itemize{
-    \item Kneip, A., Sickles, R. C., Song, W., 2011 \dQuote{A New Panel Data
+    \item Kneip, A., Sickles, R. C., Song, W., 2012 \dQuote{A New Panel Data
       Treatment for Heterogeneity in Time Trends}, \emph{Forthcoming in
       Econometric Theory}
     \item Bai, J., 2009 \dQuote{Panel data models with interactive fixed
