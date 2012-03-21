@@ -54,24 +54,31 @@ KSS.default <- function(formula,
     #####################################################################################################    
     ## Plug-in Procedure to determine the smoothing parameter
     if(is.null(spar)){
-      ymats     <- matrix(TR.Y, T,  N   )
-      xmats     <- matrix(TR.X, T, (N*P))
-      zmats     <- cbind(ymats, xmats)
-      z.dmax    <- c(OptDim(zmats, criteria = "KSS.C", spar = 0)$summary)
-      z.fact    <- pca.fit(zmats, restrict.mode=restrict.mode)$factors[,1:z.dmax, drop=FALSE]      
+     # ymats     <- matrix(TR.Y, T,  N   )
+     # xmats     <- matrix(TR.X, T, (N*P))
+     # zmats     <- cbind(ymats, xmats)
+     # z.dmax    <- c(OptDim(zmats, criteria = "KSS.C", spar = 0)$summary)
+     # z.fact    <- pca.fit(zmats, restrict.mode="restrict.loadings")$factors[,1:z.dmax, drop=FALSE]
+     #  matplot(z.fact,type="l")
     ################################################
-      spar.vec  <- sapply(1:z.dmax, function(l){smooth.Pspline(x = seq.int(1,T), y = zmats[,l], method = 4)$spar})
-      spar.vec  <- spar.vec[order(spar.vec)]
-      spar.low  <- spar.vec[1]
+     # df.vec    <- sapply(1:z.dmax, function(l){smooth.Pspline(x = seq.int(1,T), y = zmats[,l], method = 4)$df})
+      df.low    <- round(0.25*T)
+
+      TR.Y.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat,      df   = df.low)$ysmth       #(T x N)    
+      TR.X.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat,      df   = df.low)$ysmth       #(T x NP)
+      TR.X.mat.smth2 <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat.smth, df   = df.low)$ysmth       #(T x NP)
+
     }else{
       spar.low  <- spar
+      
+      TR.Y.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat,      spar   = spar.low)$ysmth       #(T x N)    
+      TR.X.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat,      spar   = spar.low)$ysmth       #(T x NP)
+      TR.X.mat.smth2 <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat.smth, spar   = spar.low)$ysmth       #(T x NP)
+
     }
     #####################################################################################################
 
-    TR.Y.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat,      spar   = spar.low)$ysmth       #(T x N)    
-    TR.X.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat,      spar   = spar.low)$ysmth       #(T x NP)
-    TR.X.mat.smth2 <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat.smth, spar   = spar.low)$ysmth       #(T x NP)
-    
+        
     ## calculate beta coefficents
 
     TR.Y.smth        <- matrix(TR.Y.mat.smth,  nrow= (N*T), ncol = 1)	       # (TN x 1)
