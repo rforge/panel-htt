@@ -51,28 +51,25 @@ KSS.default <- function(formula,
     TR.X.mat <- matrix(TR.X, T, (N*P))						# (T x NP)
 
 
-    #####################################################################################################
-    ## smooth.splines with undersmoothing
-    ## undersmoothing: 0.75 * GCV-value
-    
-    ## Consistent Pre-Estimation of Slope-Parameters
+    #####################################################################################################    
+    ## Plug-in Procedure to determine the smoothing parameter 
     ymats     <- matrix(TR.Y, T,  N   )
     xmats     <- matrix(TR.X, T, (N*P))
     zmats     <- cbind(ymats, xmats)
-    trzma     <- zmats - svd.pca(zmats, given.d = round(sqrt(min(N, T))))$Q.fit
-    tryxm     <- matrix(trzma, (N*T), (P+1))
-    try       <- tryxm[, 1, drop = FALSE]
-    trx       <- tryxm[, -1, drop = FALSE]
-    pre.beta  <- coef(lm(try ~ -1 + trx))
-    pre.residu.mat    <- matrix((TR.Y - (TR.X %*% pre.beta)), T, N)    
+    z.dmax    <- round(min(sqrt(N),sqrt(T)))
+    z.fact    <- pca.fit(zmats, restrict.mode=restrict.mode)$factors[,1:z.dmax, drop=FALSE]
+      
     ################################################
-    spar.low       <- smooth.Pspline(x = seq.int(1,T), y = pre.residu.mat, method = 4       )$spar * 0.75
+    spar.vec  <- sapply(1:z.dmax, function(l){smooth.Pspline(x = seq.int(1,T), y = zmats[,l], method = 4)$spar})
+    spar.vec  <- spar.vec[order(spar.vec)]
+    spar.low  <- spar.vec[1]
     #####################################################################################################
 
     ## Cross-Validation
     if(CV){
-      KSS.CV(init.kappa=spar.low, Y=TR.Y.mat, X=TR.X.mat, N=N, T=T, P=P)
+      test.obj <- KSS.CV(kappa.interv=c(spar.vec[1],spar.vec[z.dmax]), Y=TR.Y, X=TR.X, N=N, T=T, P=P)
     }
+    print(test.obj)
     
     TR.Y.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat,      spar   = spar.low)$ysmth       #(T x N)    
     TR.X.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat,      spar   = spar.low)$ysmth       #(T x NP)
@@ -99,7 +96,7 @@ KSS.default <- function(formula,
     Residu.mat       <- matrix((TR.Y - (TR.X %*% com.slops.0)), T, N)
 
     ## functional pca
-    fpca.fit.obj     <- fpca.fit(Residu.mat, spar.low=spar.low)
+    fpca.fit.obj     <- fpca.fit(Residu.mat, spar=spar.low)
 
     ## Estimation of Dimension
     dim.criterion    <- c("PC1",  "PC2",  "PC3",   "IC1",   "IC2", "IC3",
@@ -108,7 +105,7 @@ KSS.default <- function(formula,
       EstDim(dim.criterion, Obj=Residu.mat, d.max=d.max, factor.dim=factor.dim,
              sig2.hat=sig2.hat, level=level)[2]}))
 
-    ## User-Interface 
+    ## User-Interface--------------------------------------------------------------------------- 
     Opt.dim.Output.Bai            <- c(as.numeric(Opt.dim.Output[1:9,1]))
     names(Opt.dim.Output.Bai)     <- c("PC1","PC2","PC3","IC1","IC2","IC3","IPC3","IPC2","IPC3")
     Opt.dim.Output.KSS            <- c(as.numeric(Opt.dim.Output[10,1]))
@@ -129,9 +126,10 @@ KSS.default <- function(formula,
       cat("-----------------------------------------------------------\n")
       cat("Please, Enter a Dimension:", "\n")
       used.dim <- scan(n=1)
-      cat("Used Dimension of unobs. Factor-Structure is:\n", used.dim,"\n")
+      cat("Used Dimension of unobs. Factor-Structure is:", used.dim,"\n")
       cat("-----------------------------------------------------------\n")
     }
+    ##------------------------------------------------------------------------------------------
     if(!is.null(factor.dim)){
         used.dim <- factor.dim
       }
