@@ -3,13 +3,11 @@
 #########################################################################################
 
 fsvd.pca <- function(Q,
-                     allow.dual      = TRUE,
-                     given.d         = NULL,
-                     calcul.loadings = TRUE,
-                     neglect.neg.ev  = FALSE,
-                     spar.low        = NULL
-                     )
-{
+                            allow.dual      = TRUE,
+                            given.d         = NULL,
+                            calcul.loadings = TRUE,
+                            neglect.neg.ev  = FALSE, 
+				    spar = NULL){
   ## extract data information
   nr      <- nrow(Q)
   nc      <- ncol(Q)
@@ -19,9 +17,9 @@ fsvd.pca <- function(Q,
 
 
   ## smoothing Q (small degree of undersmoothing) ===============================================#
-  if(is.null(spar.low)){                                                                         #
-    spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, method = 4       )$spar  * 0.75  #
-  }                                                                                              #
+  if(is.null(spar)) {													 #
+  spar.low <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, method = 4       )$spar  * 0.75 }  #
+  else spar.low = spar                                                                           #
   Q        <- smooth.Pspline(x=seq(0, 1, length.out=nr), y=Q, spar   = spar.low)$ysmth           #
   ##=============================================================================================#
   
@@ -170,7 +168,8 @@ fpca.fit <- function(dat,
                      given.d        = NULL,
                      restrict.mode  = c("restrict.factors","restrict.loadings"),
                      allow.dual     = TRUE,
-                     neglect.neg.ev = TRUE){
+                     neglect.neg.ev = TRUE, 
+			   spar = NULL){
 
 
   ## Check input
@@ -180,7 +179,8 @@ fpca.fit <- function(dat,
   fpca.obj       <- fsvd.pca(Q              = dat,
                              given.d        = given.d,
                              allow.dual     = allow.dual,
-                             neglect.neg.ev = neglect.neg.ev)
+                             neglect.neg.ev = neglect.neg.ev, 
+				     spar = spar)
                            
   
   ## impose Restrictions (default: restrict.factors such that F'F/T = I )
