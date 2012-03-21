@@ -34,18 +34,25 @@ KSS.CV <- function(kappa.interv, Y, X, N, T, P){
       ## common-Slope.Coefficients:
       com.slops.0.min_i   <- solve(bloc1)%*%bloc2				       # (Px1)
       ## calculate first step residuals and estimate dimension of factor-structure
-      Residu.mat          <- matrix((Y.min_i - (X.min_i %*% com.slops.0)), T, (N-1))   # (Tx(N-1))
+      Residu.mat          <- matrix((Y.min_i - (X.min_i %*% com.slops.0.min_i)), T, (N-1))   # (Tx(N-1))
     
       ## functional pca
       fpca.fit.obj     <- fpca.fit(Residu.mat, spar=kappa)
       d.hat            <- c(OptDim(Obj=Residu.mat, criteria="KSS.C", spar=kappa)$summary)
-      factors          <- fpca.fit.obj$factors[,  1:d.hat, drop= FALSE]
-      Reminder_i       <- Y.mat[,i] - X.mat[,seq(from=c(i),to=c(N*P),by=N)] %*% com.slops.0.min_i
-      Sum.Resid_i      <- sum(residuals(lm(Reminder_i~factors)))
+      Reminder_i       <- Y.mat[,i] - X.mat[,seq(from=c(i),to=c(N*P),by=N)] %*% com.slops.0.min_i      
+      if(d.hat == 0){
+        Sum.Resid_i    <- sum(Reminder_i^2)
+      }else{
+        factors          <- fpca.fit.obj$factors[,0:d.hat, drop= FALSE]
+        Reminder_i       <- Y.mat[,i] - X.mat[,seq(from=c(i),to=c(N*P),by=N)] %*% com.slops.0.min_i
+        Sum.Resid_i      <- sum(residuals(lm(Reminder_i~factors))^2)
+      }
+      print(c(d.hat))
     }
-
-    sum(sapply(1:N, fun=Inner.CV, kappa=kappa))
+    result <-  sum(apply(matrix(1:N, N, 1),1, Inner.CV, kappa=kappa))
+   # print(result)
+    result 
   }
-  return.obj <- optimize(f=Outer.CV, interval=kappa.interv)
+  return.obj <- optimize(f=Outer.CV, interval=c(0,kappa.interv[2]))
   return(return.obj)
 }
