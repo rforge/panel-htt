@@ -54,31 +54,19 @@ KSS.default <- function(formula,
     #####################################################################################################    
     ## Plug-in Procedure to determine the smoothing parameter
     if(is.null(spar)){
-     # ymats     <- matrix(TR.Y, T,  N   )
-     # xmats     <- matrix(TR.X, T, (N*P))
-     # zmats     <- cbind(ymats, xmats)
-     # z.dmax    <- c(OptDim(zmats, criteria = "KSS.C", spar = 0)$summary)
-     # z.fact    <- pca.fit(zmats, restrict.mode="restrict.loadings")$factors[,1:z.dmax, drop=FALSE]
-     #  matplot(z.fact,type="l")
-    ################################################
-     # df.vec    <- sapply(1:z.dmax, function(l){smooth.Pspline(x = seq.int(1,T), y = zmats[,l], method = 4)$df})
-      df.low    <- round(0.25*T)
-
-      TR.Y.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat,      df   = df.low)$ysmth       #(T x N)    
-      TR.X.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat,      df   = df.low)$ysmth       #(T x NP)
-      TR.X.mat.smth2 <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat.smth, df   = df.low)$ysmth       #(T x NP)
+	iterateGCV <- FUN.iterate.GCV(TR.Y.mat, TR.X.mat, N, T, P)
+	spar.low <- iterateGCV$PCA$spar*0.75
+	print(spar.low)
 
     }else{
       spar.low  <- spar
-      
-      TR.Y.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.Y.mat,      spar   = spar.low)$ysmth       #(T x N)    
-      TR.X.mat.smth  <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat,      spar   = spar.low)$ysmth       #(T x NP)
-      TR.X.mat.smth2 <- smooth.Pspline(x = seq.int(1,T), y = TR.X.mat.smth, spar   = spar.low)$ysmth       #(T x NP)
-
     }
     #####################################################################################################
-
-        
+    t.seq <- seq(0, 1, length.out=T)
+    TR.Y.mat.smth  <- smooth.Pspline(x = t.seq, y = TR.Y.mat,      spar   = spar.low)$ysmth       #(T x N)    
+    TR.X.mat.smth  <- smooth.Pspline(x = t.seq, y = TR.X.mat,      spar   = spar.low)$ysmth       #(T x NP)
+    TR.X.mat.smth2 <- smooth.Pspline(x = t.seq, y = TR.X.mat.smth, spar   = spar.low)$ysmth       #(T x NP)
+    
     ## calculate beta coefficents
 
     TR.Y.smth        <- matrix(TR.Y.mat.smth,  nrow= (N*T), ncol = 1)	       # (TN x 1)
@@ -95,7 +83,8 @@ KSS.default <- function(formula,
     bloc1            <- t.TR.X.TR.X - t.TR.X.TR.X.smth     		       # (PxP)
     bloc2            <- t.TR.X.TR.Y - t.TR.X.TR.Y.smth     	               # (Px1)
     ## common-Slope.Coefficients:
-    com.slops.0      <- solve(bloc1)%*%bloc2				       # (Px1)
+    inv.bloc1 <- solve(bloc1)
+    com.slops.0      <- inv.bloc1%*%bloc2				       # (Px1)
     ## calculate first step residuals and estimate dimension of factor-structure
     Residu.mat       <- matrix((TR.Y - (TR.X %*% com.slops.0)), T, N)
 
