@@ -6,6 +6,10 @@ KSS.default <- function(formula,
                         factor.dim       = NULL,
                         d.max            = NULL,
                         spar             = NULL,
+                        CV               = FALSE,
+                        spar.interval.max= NULL,
+                        max.CV.rep       = 3,
+                        tol              = .Machine$double.eps^0.25,
                         sig2.hat         = NULL,
                         restrict.mode    = c("restrict.factors","restrict.loadings"),
                         ...)
@@ -19,6 +23,30 @@ KSS.default <- function(formula,
     }
     if(!is.numeric(level)){
       stop("\n Argument >>alpha<< has to be numeric.")
+    }
+    if(!is.null(factor.dim) & !is.numeric(factor.dim)){
+      stop("\n Argument >>factor.dim<< has to be numeric.")
+    }
+    if(!is.null(spar) & !is.numeric(spar)){
+      stop("\n Argument >>spar<< has to be numeric.")
+    }
+    if(!is.logical(CV)){
+      stop("\n Argument >>CV<< has to be TRUE or FALSE.")
+    }
+    if(!is.null(spar.interval.max) & !is.numeric(spar.interval.max)){
+      stop("\n Argument >>spar.interval.max<< has to be numeric.")
+    }
+    if(!is.numeric(max.CV.rep)){
+      stop("\n Argument >>max.CV.rep<< has to be numeric.")
+    } 
+    if(!is.numeric(tol)){
+      stop("\n Argument >>tol<< has to be numeric.")
+    }
+    if(!is.null(sig2.hat) &!is.numeric(sig2.hat)){
+      stop("\n Argument >>sig2.hat<< has to be numeric.")
+    }
+    if(!any(restrict.mode==c("restrict.factors","restrict.loadings"))){
+      stop("\n Argument >>restrict.mode<< must be either: restrict.factors or: restrict.loadings")
     }
     ##====================================================================================
     
@@ -60,6 +88,28 @@ KSS.default <- function(formula,
 
     }else{
       spar.low  <- spar
+    }
+    if(CV){
+      if(is.null(spar.interval.max)){
+        spar.interval.max <- 20
+      }
+      spar.CV <- KSS.CV(kappa.interv=c(.Machine$double.eps, spar.interval.max),
+                        Y=TR.Y, X=TR.X, N=N, T=T, P=P, spar.dim.fit=spar.low, tol=tol)$minimum
+      CV.rep <- 1
+      while(spar.interval.max-spar.CV<.Machine$double.eps^0.25 & CV.rep<max.CV.rep){
+        cat("\n No convergence. CV-Optimization started again.\n")
+        spar.interval.max <- spar.interval.max+50
+        spar.CV <- KSS.CV(kappa.interv=c(.Machine$double.eps, spar.interval.max),
+                          Y=TR.Y, X=TR.X, N=N, T=T, P=P, tol=tol)$minimum
+        CV.rep <- CV.rep +1
+      }
+      if(CV.rep==3){
+        cat("\n No convergence.")
+      }else{
+        cat("\n CV-Optimization converged.\n spar.CV=")
+      }
+      print(spar.CV)
+      spar.low <- spar.CV
     }
     #####################################################################################################
     t.seq <- seq(0, 1, length.out=T)
