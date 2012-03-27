@@ -84,6 +84,7 @@ KSS.default <- function(formula,
     if(is.null(spar)){
 	iterateGCV <- FUN.iterate.GCV(TR.Y.mat, TR.X.mat, N, T, P)
 	spar.low <- iterateGCV$PCA$spar*0.75
+        ## print(spar.low)
     }else{
       spar.low  <- spar
     }
@@ -106,7 +107,7 @@ KSS.default <- function(formula,
       }else{
         cat("\n CV-Optimization converged.\n spar.CV=")
       }
-      print(spar.CV)
+      ## print(spar.CV)
       spar.low <- spar.CV
     }
     #####################################################################################################
