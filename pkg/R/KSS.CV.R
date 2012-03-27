@@ -1,4 +1,4 @@
-KSS.CV <- function(kappa.interv, Y, X, N, T, P, tol=tol){
+KSS.CV <- function(kappa.interv, Y, X, N, T, P, spar.dim.fit, tol=tol){
   ## Y (TN x 1)
   ## X (TN x P)
   Outer.CV <- function(kappa){
@@ -34,7 +34,7 @@ KSS.CV <- function(kappa.interv, Y, X, N, T, P, tol=tol){
       Residu.mat          <- matrix((Y.min_i - (X.min_i %*% com.slops.0.min_i)), T, (N-1)) # (Tx(N-1))        
       ## functional pca
       fpca.fit.obj     <- fpca.fit(Residu.mat, spar=kappa)
-      d.hat            <- c(OptDim(Obj=Residu.mat, criteria="KSS.C", spar=1.362e-05)$summary)# 
+      d.hat            <- c(OptDim(Obj=Residu.mat, criteria="KSS.C", spar=spar.dim.fit)$summary)
       print(d.hat)
       Reminder_i       <- Y.mat[,i] - X.mat[,seq(from=c(i),to=c(N*P),by=N)] %*% com.slops.0.min_i      
       if(d.hat == 0){
