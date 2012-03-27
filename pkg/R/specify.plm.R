@@ -15,7 +15,7 @@
 
 ## rm(list=ls())
 
-anova.Eup <- function(obj1, obj2, level = 0.05)
+specify.pdm <- function(obj1, obj2, level = 0.05)
   {
 
     if(missing(obj2)) test.int <- TRUE
@@ -72,8 +72,11 @@ anova.Eup <- function(obj1, obj2, level = 0.05)
     }
     ## ====================================================================================
   else{
+	#if(class(obj1)!="Eup" | class(obj1)!="KSS"){
+	#	stop("\n >>obj1<< has to be a 'Eup' or a 'KSS' object.")
+	#}
 	testname <- "Test of Kneip, Sickles, and Song (2012)"
-	obj <- Eup(formula=obj$formula, additive.effects= "twoways", factor.dim=0)
+	obj <- Eup(formula=obj1$formula, additive.effects= "twoways", factor.dim=0)
 	resObj <- obj$unob.fact.stru + obj$residuals
 	fsvd.pca.obj <- fsvd.pca(resObj, spar = 0)
 	result <- KSS.OptDim(fsvd.pca.obj, criteria = c("KSS.C1"), alpha    = level)[[2]]
@@ -81,60 +84,21 @@ anova.Eup <- function(obj1, obj2, level = 0.05)
   }
     result$test.int <- test.int
     result$testname <- testname
-    class(result)  <- "anova.Eup" 
+    class(result)  <- "specify.pdm" 
     return(result)
   }
 
 
 ## Methods ========================================================================================
 
-print.anova.Eup <- function(x,...){
+print.specify.pdm <- function(x,...){
   cat("----------------------------------------------\n")
   if(!x$test.int) cat("Testing Additive vs. Interactive Effects\n")
   else  cat("Testing the Presence of Interactive Effects\n")
   cat(paste(x$testname))
-  if(x$test.int) cat("\nSmoothing Parameter = 0.")
   cat("\n----------------------------------------------\n")
   if(!x$test.int) cat(paste("H0: There are only additive ",x$print,"-effects\n\n",sep=""))
   else  cat(paste("H0: The factor dimension is equal to 0.\n\n",sep=""))
-  outp        <- c(x$Test.Stat, signif(as.numeric(x$p.value),digits=3), x$crit.value, x$sig.level)
-  names(outp) <- c("Test-Statistic", "p-value", "crit.-value", "sig.-level")
-  print(outp)
-}
-
-anova.KSS <- function(obj, level = 0.05)
-  {
-
-
-    ## ==================================================================================
-    ## effects
-
-   	 if(class(obj)!="KSS"){
-    	  stop("\n >>obj<< has to be a KSS-object.")
-   	 }
-
-    ## ====================================================================================
-	testname <- "Test of Kneip, Sickles, and Song (2012)"
-	obj <- Eup(formula=obj$formula, additive.effects= "twoways", factor.dim=0)
-	resObj <- obj$unob.fact.stru + obj$residuals
-	fsvd.pca.obj <- fsvd.pca(resObj, spar = 0)
-	result <- KSS.OptDim(fsvd.pca.obj, criteria = c("KSS.C1"), alpha    = level)[[2]]
-
-	result$testname <- testname
-	class(result)  <- "anova.KSS" 
-	return(result)
-  }
-
-
-## Methods ========================================================================================
-
-print.anova.KSS <- function(x,...){
-  cat("----------------------------------------------\n")
-  cat("Testing the Presence of Interactive Effects\n")
-  cat(paste(x$testname))
-  cat("\nSmoothing Parameter = 0.")
-  cat("\n----------------------------------------------\n")
-  cat(paste("H0: The factor dimension is equal to 0.\n\n",sep=""))
   outp        <- c(x$Test.Stat, signif(as.numeric(x$p.value),digits=3), x$crit.value, x$sig.level)
   names(outp) <- c("Test-Statistic", "p-value", "crit.-value", "sig.-level")
   print(outp)
