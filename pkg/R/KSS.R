@@ -105,9 +105,8 @@ KSS.default <- function(formula,
       if(CV.rep==3){
         cat("\n No convergence.")
       }else{
-        cat("\n CV-Optimization converged.\n spar.CV=")
+        cat("\n CV-Optimization converged.\n")
       }
-      ## print(spar.CV)
       spar.low <- spar.CV
     }
     #####################################################################################################
@@ -158,17 +157,20 @@ KSS.default <- function(formula,
     names(Opt.dim.Output.RH)      <- c(" ER","GR")
     if(is.null(factor.dim) && consult.dim.crit){
       cat("-----------------------------------------------------------\n")
-      cat("Results of Dimension-Estimation");cat("\n\n-Bai:\n")
+      cat("Results of Dimension-Estimations");cat("\n\n-Bai:\n")
       print(Opt.dim.Output.Bai, quote = FALSE, na.print="");    cat("\n-KSS:\n")
       print(Opt.dim.Output.KSS, quote = FALSE, na.print="");    cat("\n-Onatski:\n")
       print(Opt.dim.Output.Onatski, quote = FALSE, na.print="");cat("\n-RH:\n")
-      print(Opt.dim.Output.RH, quote = FALSE, na.print="");     cat("\n-Summary:\n")
+      print(Opt.dim.Output.RH, quote = FALSE, na.print="");
       otp <- as.numeric(c(Opt.dim.Output.Bai,Opt.dim.Output.KSS,Opt.dim.Output.Onatski,Opt.dim.Output.RH))
-      print(summary(otp), quote = FALSE, na.print="");cat("\n")
+      cat("\n")
       cat("-----------------------------------------------------------\n")
-      cat("Please, Enter a Dimension:", "\n")
-      used.dim <- scan(n=1)
-      cat("Used Dimension of unobs. Factor-Structure is:", used.dim,"\n")
+      myASK <- function(){
+        cat("Please, select one dimension: ")
+        readLines(con = stdin(), n = 1)
+      }
+      used.dim <- as.numeric(myASK())
+      cat("Used dimension of unobs. factor structure is:", used.dim,"\n")
       cat("-----------------------------------------------------------\n")
     }
     ##------------------------------------------------------------------------------------------
