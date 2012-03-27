@@ -84,8 +84,6 @@ KSS.default <- function(formula,
     if(is.null(spar)){
 	iterateGCV <- FUN.iterate.GCV(TR.Y.mat, TR.X.mat, N, T, P)
 	spar.low <- iterateGCV$PCA$spar*0.75
-	print(spar.low)
-
     }else{
       spar.low  <- spar
     }
