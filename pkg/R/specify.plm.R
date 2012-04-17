@@ -47,7 +47,7 @@ specify.pdm <- function(obj1, obj2, level = 0.05)
 		}
 
 	else{
-		if(d2 != 0) stope("Both objects have interactive effects.")
+		if(d2 != 0) stop("Both objects have interactive effects.")
 		add.Obj <- obj2
 		int.Obj <- obj1
 		additive.effects <- add.Obj$additive.effects
