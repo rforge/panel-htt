@@ -158,11 +158,29 @@ KSS.default <- function(formula,
       otp <- as.numeric(c(Opt.dim.Output.Bai,Opt.dim.Output.KSS,Opt.dim.Output.Onatski,Opt.dim.Output.RH))
       cat("\n")
       cat("-----------------------------------------------------------\n")
+      ## Auxiliary Fct's
       myASK <- function(){
         cat("Please, choose one of the proposed integers: ")
         readLines(con = stdin(), n = 1)
       }
-      used.dim <- as.numeric(myASK())
+      is.wholenumber <- function(x, tol = .Machine$double.eps^0.5){
+        if(is.na(x)){
+          result <- FALSE
+        }else{
+          if(is.numeric(x) & abs(x - round(x)) < tol){
+            result <- min(as.numeric(Opt.dim.Output[,1]))<=x & x<= max(as.numeric(Opt.dim.Output[,1]))
+          }else{
+            result <- FALSE
+          }
+        }
+        return(result)
+      }
+      used.dim      <- suppressWarnings(as.numeric(myASK()))
+      ## Checking the Comand-Line input:
+      while(!is.wholenumber(used.dim)){
+        cat("Wrong input! You have to select a particular dimension by giving a numeric integer value between ", min(as.numeric(Opt.dim.Output[,1]))," and ", max(as.numeric(Opt.dim.Output[,1])),"! \n")
+        used.dim      <- suppressWarnings(as.numeric(myASK()))
+      }
       cat("Used dimension of unobs. factor structure is:", used.dim,"\n")
       cat("-----------------------------------------------------------\n")
     }
