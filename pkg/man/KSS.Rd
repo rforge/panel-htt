@@ -17,8 +17,6 @@ KSS(formula,
     d.max            = NULL,
     spar             = NULL,
     CV               = FALSE,
-    spar.interval.max= NULL,
-    max.CV.rep       = 3,
     tol              = .Machine$double.eps^0.25,
     sig2.hat         = NULL,
     restrict.mode    = c("restrict.factors","restrict.loadings"), ...)

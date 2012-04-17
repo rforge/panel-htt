@@ -7,8 +7,6 @@ KSS.default <- function(formula,
                         d.max            = NULL,
                         spar             = NULL,
                         CV               = FALSE,
-                        spar.interval.max= NULL,
-                        max.CV.rep       = 3,
                         tol              = .Machine$double.eps^0.25,
                         sig2.hat         = NULL,
                         restrict.mode    = c("restrict.factors","restrict.loadings"),
@@ -33,12 +31,6 @@ KSS.default <- function(formula,
     if(!is.logical(CV)){
       stop("\n Argument >>CV<< has to be TRUE or FALSE.")
     }
-    if(!is.null(spar.interval.max) & !is.numeric(spar.interval.max)){
-      stop("\n Argument >>spar.interval.max<< has to be numeric.")
-    }
-    if(!is.numeric(max.CV.rep)){
-      stop("\n Argument >>max.CV.rep<< has to be numeric.")
-    } 
     if(!is.numeric(tol)){
       stop("\n Argument >>tol<< has to be numeric.")
     }
@@ -89,11 +81,9 @@ KSS.default <- function(formula,
       spar.low  <- spar
     }
     if(CV){
-      if(is.null(spar.interval.max)){
-        spar.interval.max <- spar.GCV
-      }
-      spar.CV <- KSS.CV(kappa.interv=c(.Machine$double.eps, spar.interval.max),
-                        Y=TR.Y, X=TR.X, N=N, T=T, P=P, spar.dim.fit=spar.low, tol=tol)$minimum
+      spar.interval.max <- spar.GCV
+      spar.CV           <- KSS.CV(kappa.interv=c(.Machine$double.eps, spar.interval.max),
+                                  Y=TR.Y, X=TR.X, N=N, T=T, P=P, spar.dim.fit=spar.low, tol=tol)$minimum
 ##       CV.rep <- 1
 ##       while(spar.interval.max-spar.CV<.Machine$double.eps^0.25 & CV.rep<max.CV.rep){
 ##         cat("\n No convergence. CV-Optimization started again.\n")
@@ -108,6 +98,8 @@ KSS.default <- function(formula,
 ##         cat("\n CV-Optimization converged.\n")
 ##       }
       cat("\n CV-Optimization converged.\n")
+      print(spar.GCV)
+      print(spar.CV)
       spar.low <- spar.CV
     }
     #####################################################################################################
@@ -167,7 +159,7 @@ KSS.default <- function(formula,
       cat("\n")
       cat("-----------------------------------------------------------\n")
       myASK <- function(){
-        cat("Please, select one dimension: ")
+        cat("Please, choose one of the proposed integers: ")
         readLines(con = stdin(), n = 1)
       }
       used.dim <- as.numeric(myASK())
