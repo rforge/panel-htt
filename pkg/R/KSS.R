@@ -80,33 +80,34 @@ KSS.default <- function(formula,
 
 
     #####################################################################################################    
-    ## Plug-in Procedure to determine the smoothing parameter
+    ## GCV Procedure to determine the smoothing parameter
+    iterateGCV <- FUN.iterate.GCV(TR.Y.mat, TR.X.mat, N, T, P)
+    spar.GCV   <- iterateGCV$PCA$spar
     if(is.null(spar)){
-	iterateGCV <- FUN.iterate.GCV(TR.Y.mat, TR.X.mat, N, T, P)
-	spar.low <- iterateGCV$PCA$spar*0.75
-        ## print(spar.low)
+      spar.low <- spar.GCV*0.75
     }else{
       spar.low  <- spar
     }
     if(CV){
       if(is.null(spar.interval.max)){
-        spar.interval.max <- 20
+        spar.interval.max <- spar.GCV
       }
       spar.CV <- KSS.CV(kappa.interv=c(.Machine$double.eps, spar.interval.max),
                         Y=TR.Y, X=TR.X, N=N, T=T, P=P, spar.dim.fit=spar.low, tol=tol)$minimum
-      CV.rep <- 1
-      while(spar.interval.max-spar.CV<.Machine$double.eps^0.25 & CV.rep<max.CV.rep){
-        cat("\n No convergence. CV-Optimization started again.\n")
-        spar.interval.max <- spar.interval.max+50
-        spar.CV <- KSS.CV(kappa.interv=c(.Machine$double.eps, spar.interval.max),
-                          Y=TR.Y, X=TR.X, N=N, T=T, P=P, tol=tol)$minimum
-        CV.rep <- CV.rep +1
-      }
-      if(CV.rep==3){
-        cat("\n No convergence.")
-      }else{
-        cat("\n CV-Optimization converged.\n")
-      }
+##       CV.rep <- 1
+##       while(spar.interval.max-spar.CV<.Machine$double.eps^0.25 & CV.rep<max.CV.rep){
+##         cat("\n No convergence. CV-Optimization started again.\n")
+##         spar.interval.max <- spar.interval.max+50
+##         spar.CV <- KSS.CV(kappa.interv=c(.Machine$double.eps, spar.interval.max),
+##                           Y=TR.Y, X=TR.X, N=N, T=T, P=P, tol=tol)$minimum
+##         CV.rep <- CV.rep +1
+##       }
+##       if(CV.rep==3){
+##         cat("\n No convergence.")
+##       }else{
+##         cat("\n CV-Optimization converged.\n")
+##       }
+      cat("\n CV-Optimization converged.\n")
       spar.low <- spar.CV
     }
     #####################################################################################################
