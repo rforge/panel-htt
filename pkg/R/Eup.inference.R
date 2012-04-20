@@ -85,7 +85,10 @@ Eup.inference <- function(Eup.Obj){
   
 	test <- slope/mpp 
 	p.value <- (1 - pnorm(abs(test)))*2
-	inf.result <- cbind(slope, mpp, test,p.value)
+	inf.result <- cbind(signif(as.numeric(slope),   digits=3),
+                            signif(as.numeric(mpp),     digits=3),
+                            signif(as.numeric(test),    digits=3),
+                            signif(as.numeric(p.value), digits=3))
 	colnames(inf.result) <- c("Estimate", "Std.Err", "Z value", "Pr(>z)")
 	result <- list(ZZ = ZZ, inv.ZZ = inv.ZZ, inf.result=inf.result, sig2.hat=sig2.hat) 	
   return(result)
