@@ -18,48 +18,48 @@ Eup <- function(formula,
   UseMethod("Eup")
 }
 
- print.Eup <- function(x,...){
-   cat("Call:\n")
-   print(x$call)
+print.Eup <- function(object,...){
+  cat("Call:\n")
+  print(object$call)
+  
+  cat("\nCoeff(s) of the Observed Regressor(s) :\n\n")
+  slope.para <- object$slope.para
+  if(object$is.intercept){
+    inter <- matrix(object$Intercept, 1, 1)
+    colnames(inter) <- ""
+    rownames(inter) <- "(Intercept)"
+    slope.para <- rbind(signif(inter,digits=3), signif(slope.para,digits=3))
+    slope.para <- round(slope.para, 3)
+  }
+  print(t(slope.para))
+  cat("\nAdditive Effects Type: ", as.name(object$additive.effects)," \n")
+  cat("\nDimension of the Unobserved Factors:", object$used.dim," \n")
+  cat("\nNumber of iterations:", object$Nbr.iteration,".\n")
+}
 
-   cat("\nCoeff(s) of the Observed Regressor(s) :\n\n")
-   slope.para <- x$slope.para
-    if(x$is.intercept){
-      inter <- matrix(x$Intercept, 1, 1)
-      colnames(inter) <- ""
-      rownames(inter) <- "(Intercept)"
-      slope.para <- rbind(signif(inter,digits=3), signif(slope.para,digits=3))
-      slope.para <- round(slope.para, 3)
-    }
-   print(t(slope.para))
-   cat("\nAdditive Effects Type: ", as.name(x$additive.effects)," \n")
-   cat("\nDimension of the Unobserved Factors:", x$used.dim," \n")
-   cat("\nNumber of iterations:", x$Nbr.iteration,".\n")
- }
 
-
-coef.Eup <- function(x,...){
-    if(x$is.intercept)
-    Intercept <- x$Intercept
+coef.Eup <- function(object,...){
+    if(object$is.intercept)
+    Intercept <- object$Intercept
     else Intercept <- NULL
     
-    Slope.Coef <- x$slope.para
+    Slope.Coef <- object$slope.para
     
-    if(x$additive.effects== "individual"| x$additive.effects== "twoways")
-    Add.Ind.Eff <- x$Add.Ind.Eff
+    if(object$additive.effects== "individual"| object$additive.effects== "twoways")
+    Add.Ind.Eff <- object$Add.Ind.Eff
     else Add.Ind.Eff <- NULL
 
-    if(x$additive.effects== "time"| x$additive.effects== "twoways")
-    Add.Tim.Eff <- x$Add.Tim.Eff
+    if(object$additive.effects== "time"| object$additive.effects== "twoways")
+    Add.Tim.Eff <- object$Add.Tim.Eff
     else Add.Tim.Eff <- NULL
     
-    Factors <- x$unob.factors
+    Factors <- object$unob.factors
     
-    Loadings <- x$ind.loadings
+    Loadings <- object$ind.loadings
     
-    Heterogeneity <- x$unob.fact.stru
+    Heterogeneity <- object$unob.fact.stru
     
-    Factor.Dim <- x$used.dim
+    Factor.Dim <- object$used.dim
     
     coef.list <- list(
         Intercept = Intercept,
@@ -74,8 +74,8 @@ coef.Eup <- function(x,...){
     return(coef.list)
 }
 
-residuals.Eup <- function(x, ...){
-	x$residuals
+residuals.Eup <- function(object, ...){
+	object$residuals
 	}
 
 summary.Eup <- function(object,...){
@@ -104,24 +104,24 @@ summary.Eup <- function(object,...){
   result
 }
 
-print.summary.Eup <- function(x, ...){
+print.summary.Eup <- function(object, ...){
   ## Call
   cat("Call:\n")
-  print(x$Eup.obj$call)
+  print(object$Eup.obj$call)
   ## Residuals:
   cat("\nResiduals:\n")
-  print(x$Res.outpt)
+  print(object$Res.outpt)
   cat("\n")
   ## Beta-Coeffs
   cat("\n Slope-Coefficients:\n")
-  printCoefmat(x$coefficients)
+  printCoefmat(object$coefficients)
   
-  cat("\nAdditive Effects Type: ",                   as.name(x$Eup.obj$additive.effects)," \n")
-  cat("\nUsed Dimension of the Unobserved Factors:", x$Eup.obj$used.dim)
-#  cat("\nOptimized Factor Dimension:              ", x$Eup.obj$optimal.dim," \n") 
-  cat("\nResidual standard error:",             signif(x$Eup.obj$sig2.hat, digits=3), "on", 
-                                                x$Eup.obj$degrees.of.freedom, "degrees of freedom \n")
-  cat("Multiple R-squared:",                    signif(x$R2,digits=3),"\n")
+  cat("\nAdditive Effects Type: ",                   as.name(object$Eup.obj$additive.effects)," \n")
+  cat("\nUsed Dimension of the Unobserved Factors:", object$Eup.obj$used.dim)
+#  cat("\nOptimized Factor Dimension:              ", object$Eup.obj$optimal.dim," \n") 
+  cat("\nResidual standard error:",             signif(object$Eup.obj$sig2.hat, digits=3), "on", 
+                                                object$Eup.obj$degrees.of.freedom, "degrees of freedom \n")
+  cat("Multiple R-squared:",                    signif(object$R2,digits=3),"\n")
 }
 
 ## print.summary.Eup <- function(object, ...){
