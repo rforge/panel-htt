@@ -78,28 +78,28 @@ residuals.Eup <- function(x, ...){
 	x$residuals
 	}
 
-summary.Eup <- function(x,...){
+summary.Eup <- function(object,...){
   ## Residuals:
-  Res.outpt <- round((summary(as.vector(x$residuals))), digits=2)[-4]
+  Res.outpt <- round((summary(as.vector(object$residuals))), digits=2)[-4]
   names(Res.outpt) <- c("Min", "1Q", "Median", "3Q", "Max")
-  yy <- sum(diag(crossprod(x$orig.Y - mean(x$orig.Y))))
-  ee <- sum(diag(crossprod(x$residuals)))
+  yy <- sum(diag(crossprod(object$orig.Y - mean(object$orig.Y))))
+  ee <- sum(diag(crossprod(object$residuals)))
   R2 <- 1 - ee/yy
-  #R2a <- 1 - (ee/x$degree.of.freedom)/(yy - 1)
+  #R2a <- 1 - (ee/object$degree.of.freedom)/(yy - 1)
   
   ## Add-Effect-Type:
-  eff              <- matrix(x$additive.effects)
+  eff              <- matrix(object$additive.effects)
   colnames(eff)    <- ""
   rownames(eff)    <- ""
   
   ## Coefficients:
-  TAB  <-  Eup.inference(x)$inf.result
+  TAB  <-  Eup.inference(Eup.Obj=object)$inf.result
   
   ## Result:
   result        <- list(Res.outpt    = Res.outpt,
                         coefficients = TAB,
                         R2 = R2,
-                        Eup.obj      = x)                
+                        Eup.obj      = object)                
   class(result) <- "summary.Eup"
   result
 }

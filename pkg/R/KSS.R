@@ -31,8 +31,8 @@ KSS.default <- function(formula,
     if(!is.logical(CV)){
       stop("\n Argument >>CV<< has to be TRUE or FALSE.")
     }
-    if(!is.numeric(tol)){
-      stop("\n Argument >>tol<< has to be numeric.")
+    if(!is.numeric(convergence)){
+      stop("\n Argument >>convergence<< has to be numeric.")
     }
     if(!is.null(sig2.hat) &!is.numeric(sig2.hat)){
       stop("\n Argument >>sig2.hat<< has to be numeric.")
@@ -83,13 +83,13 @@ KSS.default <- function(formula,
     if(CV){
       spar.interval.max <- spar.GCV
       spar.CV           <- KSS.CV(kappa.interv=c(.Machine$double.eps, spar.interval.max),
-                                  Y=TR.Y, X=TR.X, N=N, T=T, P=P, spar.dim.fit=spar.low, tol=tol)$minimum
+                                  Y=TR.Y, X=TR.X, N=N, T=T, P=P, spar.dim.fit=spar.low, tol=convergence)$minimum
 ##       CV.rep <- 1
 ##       while(spar.interval.max-spar.CV<.Machine$double.eps^0.25 & CV.rep<max.CV.rep){
 ##         cat("\n No convergence. CV-Optimization started again.\n")
 ##         spar.interval.max <- spar.interval.max+50
 ##         spar.CV <- KSS.CV(kappa.interv=c(.Machine$double.eps, spar.interval.max),
-##                           Y=TR.Y, X=TR.X, N=N, T=T, P=P, tol=tol)$minimum
+##                           Y=TR.Y, X=TR.X, N=N, T=T, P=P, tol=convergence)$minimum
 ##         CV.rep <- CV.rep +1
 ##       }
 ##       if(CV.rep==3){
