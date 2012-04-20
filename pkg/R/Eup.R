@@ -358,11 +358,11 @@ Eup.default <- function(formula,
     
   orig.Y <- PF.obj[[1]]$ODM
   fitted.values <- orig.Y - residuals
-  degree.of.freedom <- (nr*nc - (nr+nc)*used.dim - P - 
+  degrees.of.freedom <- (nr*nc - (nr+nc)*used.dim - P - 
                     intercept -
                     nc*(additive.effects == "individual"| additive.effects == "twoways") - 
                     nr*(additive.effects == "time"| additive.effects == "twoways"))
-  sig2.hat <- sum(diag(crossprod(residuals)))/degree.of.freedom
+  sig2.hat <- sum(diag(crossprod(residuals)))/degrees.of.freedom
 
 ## Results
 				
@@ -393,7 +393,7 @@ Eup.default <- function(formula,
     , orig.Y = orig.Y
     , sig2.hat.dim = sig2.hat.dim
     , sig2.hat = sig2.hat
-    , degree.of.freedom = degree.of.freedom
+    , degrees.of.freedom = degrees.of.freedom
     , formula = formula
     , call = match.call()
     , max.iteration = max.iteration

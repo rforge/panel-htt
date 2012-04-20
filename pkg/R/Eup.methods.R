@@ -86,7 +86,7 @@ summary.Eup <- function(object,...){
   yy <- sum(diag(crossprod(object$orig.Y - mean(object$orig.Y))))
   ee <- sum(diag(crossprod(object$residuals)))
   R2 <- 1 - ee/yy
-  #R2a <- 1 - (ee/object$degree.of.freedom)/(yy - 1)
+  #R2a <- 1 - (ee/object$degrees.of.freedom)/(yy - 1)
   
   ## Add-Effect-Type:
   eff              <- matrix(object$additive.effects)
@@ -142,7 +142,7 @@ print.summary.Eup <- function(x, ...){
 ##   #cat("\nOptimized Factor Dimension:         ", x$Eup.obj$optimal.dim," \n")
   
 ##   cat("\nResidual standard error:", signif(x$Eup.obj$sig2.hat,digits=3), "on", 
-##             x$Eup.obj$degree.of.freedom, "degrees of freedom, ", "\nR-squared:", signif(x$R2,digits=3),"\n")
+##             x$Eup.obj$degrees.of.freedom, "degrees of freedom, ", "\nR-squared:", signif(x$R2,digits=3),"\n")
 ## }
 
 plot.summary.Eup <- function(x,...){
