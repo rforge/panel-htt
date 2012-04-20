@@ -2,7 +2,21 @@
 
 ## Methods ========================================================================================
 
-Eup <- function(formula, ...){ UseMethod("Eup")}
+Eup <- function(formula,
+		additive.effects = c("none", "individual",
+				     "time", "twoways"),
+		dim.criterion	 = c("PC1", "PC2", "PC3", "IC1","IC2" , "IC3", "IPC1", "IPC2","IPC3" , "ED"),
+		d.max            = NULL
+		sig2.hat         = NULL
+		factor.dim       = NULL
+		double.iteration = TRUE
+		start.beta       = NULL
+		max.iteration    = 500
+		convergence      = 1e-6
+		restrict.mode    = c("restrict.factors","restrict.loadings"),
+                ...){
+  UseMethod("Eup")
+}
 
  print.Eup <- function(x,...){
    cat("Call:\n")
