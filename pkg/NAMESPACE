@@ -5,8 +5,11 @@ export(checkSpecification)
 
 import(pspline)
 
+S3method(print, checkSpecification)
+
 S3method(OptDim,  default)
 S3method(print,   OptDim)
+S3method(plot,    OptDim)
 S3method(summary, OptDim)
 
 S3method(KSS,  default)
