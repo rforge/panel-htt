@@ -10,20 +10,28 @@ Estimation of Panel Data Models with Heterogeneous Time Trends
 }
 \usage{
 KSS(formula,
+    additive.effects = c("none", "individual", "time", "twoways"),
     consult.dim.crit = FALSE,
-    additive.effects = c("none","individual","time", "twoways"),
-    level            = 0.01,
-    factor.dim       = NULL,
     d.max            = NULL,
+    sig2.hat         = NULL,
+    factor.dim       = NULL,
+    level            = 0.01,
     spar             = NULL,
     CV               = FALSE,
-    tol              = .Machine$double.eps^0.25,
-    sig2.hat         = NULL,
+    convergence      = 1e-6,#.Machine$double.eps^0.25,
     restrict.mode    = c("restrict.factors","restrict.loadings"), ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{formula}{An object of class 'formula'.}
+  \item{additive.effects}{
+    Type of Data Transformations:
+    \itemize{
+      \item \code{"none"}: for no transformation
+      \item \code{"individual"}: for within transformation
+      \item \code{"time"}: for between transformation
+      \item \code{"twoways"}: for twoways transformation
+  }}
   \item{consult.dim.crit}{logical.
     \itemize{
       \item{If \code{consult.dim.crit} is \code{FALSE} (default) and
@@ -33,34 +41,24 @@ KSS(formula,
       \item{If \code{consult.dim.crit} is \code{TRUE} and
 	\code{factor.dim} is \code{NULL}:
 	All implemented dimensionality criteria are computed and the user
-	has to select a dimension via a GUI. See also the details.}
+	has to select a dimension via a GUI. See also details.}
     }
   }
-  \item{additive.effects}{
-    Type of Data Transformations:
-    \itemize{
-      \item \code{"none"}: for no transformation
-      \item \code{"individual"}: for within transformation
-      \item \code{"time"}: for between transformation
-      \item \code{"twoways"}: for twoways transformation
-  }}
-  \item{level}{alpha-level for Dimensionality-Criterion of Kneip,
-    Sickles & Song 2012}
-  \item{factor.dim}{Dimension of Factor-Structure, pre-specified
-    by the user. The default (\code{factor.dim=NULL}) yields to an internal
-    estimation.}
   \item{d.max}{Maximal Dimension for Dimensionality-Estimation of Bai
     (2009). The default (\code{d.max=NULL}) yields to an internal selection of
     d.max.}
-  \item{spar}{By default (spar=NULL) the smoothing prameter is
-    determined by a plug-in procedure.}
-  \item{CV}{Bla}
-  \item{spar.interval.max}{Bla}
-  \item{max.CV.rep}{Bla}
-  \item{tol}{Bla}
   \item{sig2.hat}{Standard deviation of the error-term, chosen by
     the user. The default (\code{sig2.hat=NULL}) yields to an internal
     estimation.}
+  \item{factor.dim}{Dimension of Factor-Structure, pre-specified
+    by the user. The default (\code{factor.dim=NULL}) yields to an internal
+    estimation.}
+  \item{level}{alpha-level for Dimensionality-Criterion of Kneip,
+    Sickles & Song 2012}
+  \item{spar}{By default (spar=NULL) the smoothing prameter is
+    determined by a plug-in procedure.}
+  \item{CV}{Bla}
+  \item{convergence}{Bla}
   \item{restrict.mode}{
     Type of Restriction on the Factor-Structure:
     \itemize{
@@ -71,7 +69,6 @@ KSS(formula,
     }
   }
   \item{...}{Additional arguments to be passed to the low level functions.}
-
 }
 \details{
   'KSS' is a function to estimate panel data models with unobserved
@@ -147,29 +144,6 @@ KSS(formula,
 	      X_{itj}+\tau_i+v_i(t)+\epsilon_{it}, i=1,...,n, t=1,...,T.}
 	    The parameter 'alpha' is set to zero if '-1' is used in \code{formula}.
 	  }
-	  \item{\code{two.step}: }{
-	    \itemize{
-	      \item{If \code{two.step} is \code{FALSE} (default)
-		then the original estimation procedure proposed in Kneip,
-		Sickles & Song 2011 is used. This procedure is allways
-		consistent and shall be preferred unless the user knows
-		the true dimension of the factor structure. In the
-		latter case the user shall choose \code{two.step=TRUE}
-		and set \code{factor.dim} equal to the known factor
-		dimension.}
-	      \item{If \code{two.step} is \code{TRUE} then the
-		slope-parameters are re-estimated given the estimated factor
-		structure. This procedure has the advantage that, if the
-		selected dimension of the factor structure is true, the
-		estimates of the slope-parameters are more
-		efficient than those proposed in Kneip, Sickles & Song
-		(2012). But, if the selected dimension of the factor
-		structure is smaller than the true dimension and if the
-		factor structure correlates with at least one of the
-		regressors then the estimates of the slope-parameters
-		suffer from an unobserved variable bias.}
-	    }
-	  }
 	}
       }
     }
@@ -224,7 +198,7 @@ KSS(formula,
 % %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-KSScf, eup
+Eup
 }
 \examples{
 ## See the example in 'help(Cigar)' in order to take a look at the

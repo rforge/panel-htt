@@ -1,15 +1,15 @@
 ## Methods ========================================================================================
 
 KSS <- function(formula,
-                consult.dim.crit = FALSE,
                 additive.effects = c("none", "individual", "time", "twoways"),
-                level            = 0.01,
-                factor.dim       = NULL,
+                consult.dim.crit = FALSE,
                 d.max            = NULL,
+                sig2.hat         = NULL,
+                factor.dim       = NULL,
+                level            = 0.01,
                 spar             = NULL,
                 CV               = FALSE,
-                tol              = .Machine$double.eps^0.25,
-                sig2.hat         = NULL,
+                convergence      = 1e-6,#.Machine$double.eps^0.25,
                 restrict.mode    = c("restrict.factors","restrict.loadings"),
                 ...){
   UseMethod("KSS")
