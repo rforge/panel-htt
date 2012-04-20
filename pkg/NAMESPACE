@@ -5,6 +5,10 @@ export(checkSpecification)
 
 import(pspline)
 
+S3method(OptDim,  default)
+S3method(print,   OptDim)
+S3method(summary, OptDim)
+
 S3method(KSS,  default)
 S3method(print,  KSS)
 S3method(coef,   KSS)

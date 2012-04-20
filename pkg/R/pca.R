@@ -38,7 +38,7 @@ pcaFA.default <- function(dat, factor.dim = NULL,
 				, neglect.neg.ev = neglect.neg.ev)
 
 	criteria.of <- match.arg(consult.crit, several.ok = TRUE)# criteria.of = c("Bai", "KSS", "Onatski", "RH")
-	OptDimen <- OptDim(svd.pca.obj, criteria.of = criteria.of
+	OptDimen <- OptDim(svd.pca.obj, criteria = criteria.of
 			, d.max = d.max, sig2.hat = sig2.hat, level = level)
 
 	

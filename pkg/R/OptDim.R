@@ -602,7 +602,17 @@ OptDim.default <- function(Obj,
 
 
 # ####################### Methods ########################
-	OptDim <- function(Obj, ...){ UseMethod("OptDim")}
+	OptDim <- function(Obj, 
+                   criteria = c("PC1", "PC2", "PC3",
+                     "IC1", "IC2", "IC3",
+                     "IPC1","IPC2", "IPC3",
+                     "KSS.C",
+                     "ED",  "ER",  "GR"),
+			standardize = FALSE,
+			d.max,
+			sig2.hat,
+			spar,
+			level = 0.01){ UseMethod("OptDim")}
 
 
 ## Print
@@ -671,18 +681,18 @@ print.OptDim <- function(x,...){
  }
 	
 ## Print
-summary.OptDim <- function(x,...){
+summary.OptDim <- function(object,...){
    	cat("Call: ")
-	cl <- x$cl
+	cl <- object$cl
    	print(cl)
 
-	ll <- length(x$criteria)
+	ll <- length(object$criteria)
 
-	if(sum(x$KSSC) > 0){
+	if(sum(object$KSSC) > 0){
 	cat("\n---------")
 	cat("\nSequential testing of Kneip, Sickles, and Song (2009):\n\n")
 		KSS2009 <- numeric(0)
-		for(l in 1:ll) if(x$KSSC[l]) KSS2009 <- rbind(KSS2009, x[[l]])
+		for(l in 1:ll) if(object$KSSC[l]) KSS2009 <- rbind(KSS2009, object[[l]])
 		dimKSS2009 <- KSS2009[, c(2, 6)]
 		colnames(dimKSS2009) <- c("Estimate", "Level")
 		rownames(dimKSS2009) <- " KSS.C"
@@ -691,12 +701,12 @@ summary.OptDim <- function(x,...){
 		cat(round(KSS2009[1, 5], 3))
 	}
 	
-	if(sum(x$BaiNgC) > 0){
+	if(sum(object$BaiNgC) > 0){
 	cat("\n\n---------")
-	if(sum(x$BaiNgC) > 1) cat("\nCriteria of Bai and Ng (2002):\n\n")
+	if(sum(object$BaiNgC) > 1) cat("\nCriteria of Bai and Ng (2002):\n\n")
 	else  cat("\nCriterion of Bai and Ng (2002):\n\n")
 		BN2002 <- numeric(0)
-		for(l in 1:ll) if(x$BaiNgC[l]) BN2002 <- rbind(BN2002, x[[l]])
+		for(l in 1:ll) if(object$BaiNgC[l]) BN2002 <- rbind(BN2002, object[[l]])
 		dimBN2002 <- BN2002[, 2:3]
 		colnames(dimBN2002) <- c("Estimate", "Std Err")
 		rownames(dimBN2002) <- BN2002[, 1]
@@ -704,12 +714,12 @@ summary.OptDim <- function(x,...){
 		cat("\n\nUsed d.max:")
 		cat(BN2002[1, 5])
 	}
-	if(sum(x$RHC) > 0){
+	if(sum(object$RHC) > 0){
 	cat("\n\n--------")
-	if(sum(x$RHC) > 1) cat("\nCriteria of Ahn and Horenstein (2008):\n\n")
+	if(sum(object$RHC) > 1) cat("\nCriteria of Ahn and Horenstein (2008):\n\n")
 	else cat("\nCriterion of Ahn and Horenstein (2008):\n\n") 
 		AH2008 <- numeric(0)
-		for(l in 1:ll) if(x$RHC[l]) AH2008 <- rbind(AH2008, x[[l]])
+		for(l in 1:ll) if(object$RHC[l]) AH2008 <- rbind(AH2008, object[[l]])
 		dimAH2008 <- AH2008[, 2:3]
 		colnames(dimAH2008) <-  c("Estimate", "Std Err")
 		rownames(dimAH2008) <- AH2008[,1]
@@ -718,12 +728,12 @@ summary.OptDim <- function(x,...){
 		cat(AH2008[1, 4])	
 	}
 
-	if(sum(x$BaiC) > 0){
+	if(sum(object$BaiC) > 0){
 	cat("\n\n---------")
-	if(sum(x$BaiC) > 1) cat("\nCriteria of Bai (2004):\n\n") 
+	if(sum(object$BaiC) > 1) cat("\nCriteria of Bai (2004):\n\n") 
 	else cat("\n\nCriterion of Bai (2004):\n\n")
 		B2004 <- numeric(0)
-		for(l in 1:ll) if(x$BaiC[l]) B2004 <- rbind(B2004, x[[l]])
+		for(l in 1:ll) if(object$BaiC[l]) B2004 <- rbind(B2004, object[[l]])
 		dimB2004 <- B2004[, 2:3]
 		colnames(dimB2004) <- c("Estimate", "Std Err")
 		rownames(dimB2004) <- B2004[, 1]
@@ -732,11 +742,11 @@ summary.OptDim <- function(x,...){
 		cat(B2004[1, 5])
 	}
 
-	if(sum(x$OnatC) > 0){
+	if(sum(object$OnatC) > 0){
 	cat("\n\n---------")
 	cat("\nCriterion of Onatski (2009):\n\n")
 		O2009 <- numeric(0)
-		for(l in 1:ll) if(x$OnatC[l]) O2009 <- rbind(O2009, x[[l]])
+		for(l in 1:ll) if(object$OnatC[l]) O2009 <- rbind(O2009, object[[l]])
 		dimO2009 <- O2009[, 2:3]
 		colnames(dimO2009) <- c("Estimate", "Std Err")
 		rownames(dimO2009) <- O2009[1, 1]
