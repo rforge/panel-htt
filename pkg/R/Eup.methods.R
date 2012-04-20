@@ -78,26 +78,6 @@ residuals.Eup <- function(x, ...){
 	x$residuals
 	}
 
-print.summary.Eup <- function(x, ...){
-  ## Call
-  cat("Call:\n")
-  print(x$Eup.obj$call)
-  ## Residuals:
-  cat("\nResiduals:\n")
-  print(x$Res.outpt)
-  cat("\n")
-  ## Beta-Coeffs
-  cat("\n Slope-Coefficients:\n")
-  printCoefmat(x$coefficients)
-  
-  cat("\nAdditive Effects Type: ",                   as.name(x$Eup.obj$additive.effects)," \n")
-  cat("\nUsed Dimension of the Unobserved Factors:", x$Eup.obj$used.dim)
-#  cat("\nOptimized Factor Dimension:              ", x$Eup.obj$optimal.dim," \n") 
-  cat("\nResidual standard error:",             signif(x$Eup.obj$sig2.hat, digits=3), "on", 
-                                                x$Eup.obj$degrees.of.freedom, "degrees of freedom \n")
-  cat("Multiple R-squared:",                    signif(x$R2,digits=3),"\n")
-}
-
 summary.Eup <- function(object,...){
   ## Residuals:
   Res.outpt <- round((summary(as.vector(object$residuals))), digits=2)[-4]
@@ -122,6 +102,26 @@ summary.Eup <- function(object,...){
                         Eup.obj      = object)                
   class(result) <- "summary.Eup"
   result
+}
+
+print.summary.Eup <- function(x, ...){
+  ## Call
+  cat("Call:\n")
+  print(x$Eup.obj$call)
+  ## Residuals:
+  cat("\nResiduals:\n")
+  print(x$Res.outpt)
+  cat("\n")
+  ## Beta-Coeffs
+  cat("\n Slope-Coefficients:\n")
+  printCoefmat(x$coefficients)
+  
+  cat("\nAdditive Effects Type: ",                   as.name(x$Eup.obj$additive.effects)," \n")
+  cat("\nUsed Dimension of the Unobserved Factors:", x$Eup.obj$used.dim)
+#  cat("\nOptimized Factor Dimension:              ", x$Eup.obj$optimal.dim," \n") 
+  cat("\nResidual standard error:",             signif(x$Eup.obj$sig2.hat, digits=3), "on", 
+                                                x$Eup.obj$degrees.of.freedom, "degrees of freedom \n")
+  cat("Multiple R-squared:",                    signif(x$R2,digits=3),"\n")
 }
 
 ## print.summary.Eup <- function(object, ...){
