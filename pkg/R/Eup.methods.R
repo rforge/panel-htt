@@ -105,97 +105,97 @@ summary.Eup <- function(object,...){
 }
 
 
-print.summary.Eup <- function(x, ...){
+print.summary.Eup <- function(object, ...){
   ## Call
   cat("Call:\n")
-  print(x$Eup.obj$call)
+  print(object$Eup.obj$call)
   ## Residuals:
   cat("\nResiduals:\n")
-  print(x$Res.outpt)
+  print(object$Res.outpt)
   cat("\n")
   ## Beta-Coeffs
   cat("\n Slope-Coefficients:\n")
-  printCoefmat(x$coefficients)
+  printCoefmat(object$coefficients)
   
-  cat("\nAdditive Effects Type: ", as.name(x$Eup.obj$additive.effects)," \n")
-  cat("\nDimension of the Unobserved Factors:", x$Eup.obj$used.dim," \n")
-  #cat("\nOptimized Factor Dimension:         ", x$Eup.obj$optimal.dim," \n")
+  cat("\nAdditive Effects Type: ", as.name(object$Eup.obj$additive.effects)," \n")
+  cat("\nDimension of the Unobserved Factors:", object$Eup.obj$used.dim," \n")
+  #cat("\nOptimized Factor Dimension:         ", object$Eup.obj$optimal.dim," \n")
   
-  cat("\nResidual standard error:", x$Eup.obj$sig2.hat, "on", 
-            x$Eup.obj$degree.of.freedom, "degrees of freedom, ", "\nR-squared:", x$R2,"\n")
+  cat("\nResidual standard error:", object$Eup.obj$sig2.hat, "on", 
+            object$Eup.obj$degree.of.freedom, "degrees of freedom, ", "\nR-squared:", signif(object$R2,digits=3),"\n")
 }
 
-plot.summary.Eup <- function(x,...){
-  if(is.null(x$Eup.obj$unob.factors) & x$Eup.obj$additive.effects=="none"){
+plot.summary.Eup <- function(object,...){
+  if(is.null(object$Eup.obj$unob.factors) & object$Eup.obj$additive.effects=="none"){
     stop("Neither an estimated factor structure nor additive effects to plot.")
   }
-  if(!is.null(x$Eup.obj$unob.factors)){
-    if(x$Eup.obj$additive.effects=="none"){
+  if(!is.null(object$Eup.obj$unob.factors)){
+    if(object$Eup.obj$additive.effects=="none"){
       par(mfrow=c(1,2))
-      matplot(x$Eup.obj$unob.factors,
-            main=paste("Estimated Factors\n(Used Dimension = ",x$Eup.obj$used.dim,")",sep=""),
+      matplot(object$Eup.obj$unob.factors,
+            main=paste("Estimated Factors\n(Used Dimension = ",object$Eup.obj$used.dim,")",sep=""),
             xlab="Time",ylab="", type="l",...)
-      matplot(x$Eup.obj$unob.fact.stru,
+      matplot(object$Eup.obj$unob.fact.stru,
             main=paste("Estimated Factor-Structure"),
             xlab="Time",ylab="", type="l",...)
     par(mfrow=c(1,1))
     }
-    if(x$Eup.obj$additive.effects=="time"){
+    if(object$Eup.obj$additive.effects=="time"){
       par(mfrow=c(1,3))
-      plot.ts(x$Eup.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",xlab="Time",...)
-      matplot(x$Eup.obj$unob.factors,
-            main=paste("Estimated Factors\n(Used Dimension = ",x$Eup.obj$used.dim,")",sep=""),
+      plot.ts(object$Eup.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",xlab="Time",...)
+      matplot(object$Eup.obj$unob.factors,
+            main=paste("Estimated Factors\n(Used Dimension = ",object$Eup.obj$used.dim,")",sep=""),
             xlab="Time",ylab="", type="l",...)
-      matplot(x$Eup.obj$unob.fact.stru,
+      matplot(object$Eup.obj$unob.fact.stru,
             main=paste("Estimated Factor-Structure"),
             xlab="Time",ylab="", type="l",...)
     par(mfrow=c(1,1))
     }
-    if(x$Eup.obj$additive.effects=="twoways"){
+    if(object$Eup.obj$additive.effects=="twoways"){
       par(mfrow=c(1,4))
-      plot.ts(x$Eup.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",xlab="Time",...)
-      matplot(matrix(rep(x$Eup.obj$Add.Ind.Eff,each=x$Eup.obj$dat.dim[1]),
-                     nrow=x$Eup.obj$dat.dim[1],ncol=x$Eup.obj$dat.dim[2]),
+      plot.ts(object$Eup.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",xlab="Time",...)
+      matplot(matrix(rep(object$Eup.obj$Add.Ind.Eff,each=object$Eup.obj$dat.dim[1]),
+                     nrow=object$Eup.obj$dat.dim[1],ncol=object$Eup.obj$dat.dim[2]),
                      main="Additive Individual Effects", ylab="",xlab="Time", type="l", ...)
-      matplot(x$Eup.obj$unob.factors,
-            main=paste("Estimated Factors\n(Used Dimension = ",x$Eup.obj$used.dim,")",sep=""),
+      matplot(object$Eup.obj$unob.factors,
+            main=paste("Estimated Factors\n(Used Dimension = ",object$Eup.obj$used.dim,")",sep=""),
             xlab="Time",ylab="", type="l",...)
-      matplot(x$Eup.obj$unob.fact.stru,
+      matplot(object$Eup.obj$unob.fact.stru,
             main=paste("Estimated Factor-Structure"),
             xlab="Time",ylab="", type="l",...)
     par(mfrow=c(1,1))
     }
-    if(x$Eup.obj$additive.effects=="individual"){
+    if(object$Eup.obj$additive.effects=="individual"){
       par(mfrow=c(1,3))
-      matplot(matrix(rep(x$Eup.obj$Add.Ind.Eff,each=x$Eup.obj$dat.dim[1]),
-                     nrow=x$Eup.obj$dat.dim[1],ncol=x$Eup.obj$dat.dim[2]),
+      matplot(matrix(rep(object$Eup.obj$Add.Ind.Eff,each=object$Eup.obj$dat.dim[1]),
+                     nrow=object$Eup.obj$dat.dim[1],ncol=object$Eup.obj$dat.dim[2]),
                      main="Additive Individual Effects", ylab="",xlab="Time", type="l", ...)
-      matplot(x$Eup.obj$unob.factors,
-            main=paste("Estimated Factors\n(Used Dimension = ",x$Eup.obj$used.dim,")",sep=""),
+      matplot(object$Eup.obj$unob.factors,
+            main=paste("Estimated Factors\n(Used Dimension = ",object$Eup.obj$used.dim,")",sep=""),
             xlab="Time",ylab="", type="l",...)
-      matplot(x$Eup.obj$unob.fact.stru,
+      matplot(object$Eup.obj$unob.fact.stru,
             main=paste("Estimated Factor-Structure"),
             xlab="Time",ylab="", type="l",...)
     par(mfrow=c(1,1))
     }
   }else{
-    if(x$Eup.obj$additive.effects=="time"){
+    if(object$Eup.obj$additive.effects=="time"){
       par(mfrow=c(1,1))
-      plot.ts(x$Eup.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",xlab="Time",...)
+      plot.ts(object$Eup.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",xlab="Time",...)
       par(mfrow=c(1,1))
     }
-    if(x$Eup.obj$additive.effects=="twoways"){
+    if(object$Eup.obj$additive.effects=="twoways"){
       par(mfrow=c(1,2))
-      plot.ts(x$Eup.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",xlab="Time",...)
-      matplot(matrix(rep(x$Eup.obj$Add.Ind.Eff,each=x$Eup.obj$dat.dim[1]),
-                     nrow=x$Eup.obj$dat.dim[1],ncol=x$Eup.obj$dat.dim[2]),
+      plot.ts(object$Eup.obj$Add.Tim.Eff, main="Additive Time Effect", ylab="",xlab="Time",...)
+      matplot(matrix(rep(object$Eup.obj$Add.Ind.Eff,each=object$Eup.obj$dat.dim[1]),
+                     nrow=object$Eup.obj$dat.dim[1],ncol=object$Eup.obj$dat.dim[2]),
               main="Additive Individual Effects", ylab="",xlab="Time", type="l", ...)
       par(mfrow=c(1,1))
     }
-    if(x$Eup.obj$additive.effects=="individual"){
+    if(object$Eup.obj$additive.effects=="individual"){
       par(mfrow=c(1,1))
-      matplot(matrix(rep(x$Eup.obj$Add.Ind.Eff,each=x$Eup.obj$dat.dim[1]),
-                     nrow=x$Eup.obj$dat.dim[1],ncol=x$Eup.obj$dat.dim[2]),
+      matplot(matrix(rep(object$Eup.obj$Add.Ind.Eff,each=object$Eup.obj$dat.dim[1]),
+                     nrow=object$Eup.obj$dat.dim[1],ncol=object$Eup.obj$dat.dim[2]),
                      main="Additive Individual Effects", ylab="",xlab="Time", type="l", ...)
     par(mfrow=c(1,1))
     }
