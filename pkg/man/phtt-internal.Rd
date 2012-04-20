@@ -1,14 +1,11 @@
 \name{grid-internal}
-\alias{AFactMod}
-\alias{Eup}
-\alias{fpca.fit}
-\alias{FUN.add.eff}
-\alias{FUN.Pformula}
-\alias{FUN.with.trans}
-\alias{OptDim}
 \title{OptDim}
+\alias{OptDim}
+\alias{Eup}
+\alias{checkSpecification}
+
 \description{
-  Internal phtt functions
+  These Documentations still have to be written
 }
 \details{
   These are not to be called by the user (or in some cases are just

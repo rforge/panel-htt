@@ -1,9 +1,10 @@
-export(pca.fit)
 export(KSS)
-export(ADDvsINT)
 export(Eup)
+export(OptDim)
+export(checkSpecification)
+
 import(pspline)
-S3method(ADDvsINT,default)
+
 S3method(KSS,  default)
 S3method(print,  KSS)
 S3method(coef,   KSS)
@@ -17,4 +18,3 @@ S3method(coef,    Eup)
 S3method(summary, Eup)
 S3method(print,summary.Eup)
 S3method(plot, summary.Eup)
-S3method(print,ADDvsINT)
