@@ -1,11 +1,11 @@
 export(KSS)
 export(Eup)
 export(OptDim)
-export(checkSpecification)
+export(checkSpecif)
 
 import(pspline)
 
-S3method(print, checkSpecification)
+S3method(print, checkSpecif)
 
 S3method(OptDim,  default)
 S3method(print,   OptDim)

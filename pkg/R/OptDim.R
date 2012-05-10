@@ -88,17 +88,6 @@ B.OptDim <- function(Obj, criteria = c("PC1","PC2","PC3","IC1","IC2","IC3"
 	criteria <- match.arg(criteria, several.ok = TRUE)
 	return(result[result[,1] %in% criteria, ])
 	}
-## #### Test
-## Obj <- dat
-## B.OptDim(pca.fit(Obj), d.max =3)
-
-## Obj <- svd.pca(dat)
-## B.OptDim(Obj, criteria = c("IPC3"), d.max = 3)
-
-## pcaObj <- svd.pca(dat)
-## Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
-## B.OptDim(Obj)
-
 
 #####################################################################################################################
 
@@ -181,17 +170,6 @@ O.OptDim <- function(Obj, d.max = NULL){
 	return(result)
 	}
 
-## #### Test
-## Obj <- dat
-## O.OptDim(Obj)
-## O.OptDim(svd.pca(Obj))
-## O.OptDim(pca.fit(Obj))
-
-## pcaObj <- svd.pca(dat)
-## Obj2 <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
-## O.OptDim(Obj2)
-
-
 #####################################################################################################################
 
 
@@ -261,18 +239,6 @@ RH.OptDim <- function(Obj, criteria = c("ER", "GR"), d.max = NULL){
 	criteria <- match.arg(criteria, several.ok = TRUE)
 	return(result[result[,1] %in% criteria, ])
 	}
-
-## #### Test
-## Obj <- dat
-## RH.OptDim(Obj, criteria = c("GR"))
-## RH.OptDim(svd.pca(Obj))
-## Obj <- pca.fit(dat)
-## RH.OptDim(Obj, d.max = 10)
-
-## pcaObj <- svd.pca(dat)
-## Obj <- list(pcaObj$V.d, c(pcaObj$nr, pcaObj$nc))
-## RH.OptDim(Obj)
-
 
 #####################################################################################################################
 KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, factor.dim = NULL, d.max = NULL){
@@ -378,9 +344,6 @@ return(Result)
 }
 
 ## KSS.OptDim() =====================================================================================
-## Called by: fAFactMod()
-## Calls    : KSS.dim.opt()
-##==========================
 
 KSS.OptDim <- function(Obj,
                        criteria    = c("KSS.C1", "KSS.C2"),
@@ -511,10 +474,7 @@ EstDim <- function(Obj,
                             , d.max = d.max)),
                           KSS.C  = try(KSS.OptDim(Obj, criteria = c("KSS.C1")
 				    , sig2.hat = sig2.hat, alpha=level, spar = spar
-                                    , factor.dim=factor.dim, d.max=d.max)[[1]])#,
-##                           KSS.C2  = try(KSS.OptDim(Obj, criteria = c("KSS.C2")
-## 				    , sig2.hat = sig2.hat, alpha=level
-##                                     , factor.dim=factor.dim, d.max=d.max)[[1]])
+                                    , factor.dim=factor.dim, d.max=d.max)[[1]])
                           )
 	est.dim
        }

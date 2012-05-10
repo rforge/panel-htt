@@ -15,7 +15,7 @@
 
 ## rm(list=ls())
 
-checkSpecification <- function(obj1, obj2, level = 0.05)
+checkSpecif <- function(obj1, obj2, level = 0.05)
   {
 
     if(missing(obj2)) test.int <- TRUE
@@ -84,14 +84,14 @@ checkSpecification <- function(obj1, obj2, level = 0.05)
   }
     result$test.int <- test.int
     result$testname <- testname
-    class(result)  <- "checkSpecification" 
+    class(result)  <- "checkSpecif" 
     return(result)
   }
 
 
 ## Methods ========================================================================================
 
-print.checkSpecification <- function(x,...){
+print.checkSpecif <- function(x,...){
   cat("----------------------------------------------\n")
   if(!x$test.int) cat("Testing Additive vs. Interactive Effects\n")
   else  cat("Testing the Presence of Interactive Effects\n")

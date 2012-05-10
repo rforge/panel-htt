@@ -237,8 +237,8 @@ FUN.Eup <- function(dat.matrix, dat.dim
 #	  4. $nbr.iterations 	= number of iteration
 ###########################################################################
 Eup.default <- function(formula,
-		additive.effects = c("none", "individual","time", "twoways"),
-		dim.criterion	 = c("PC1", "PC2", "PC3", "IC1","IC2" , "IC3", "IPC1", "IPC2","IPC3" , "ED"),
+		additive.effects = c("none", "individual", "time", "twoways"),
+		dim.criterion	 = c("PC1", "PC2", "PC3", "IC1", "IC2" , "IC3", "IPC1", "IPC2", "IPC3" , "ED"),
 		d.max            = NULL,
 		sig2.hat         = NULL,
 		factor.dim       = NULL,
@@ -246,7 +246,7 @@ Eup.default <- function(formula,
 		start.beta       = NULL,
 		max.iteration    = 500,
 		convergence      = 1e-6,
-		restrict.mode    = c("restrict.factors","restrict.loadings"),
+		restrict.mode    = c("restrict.factors", "restrict.loadings"),
                 ...){
 
 ### substruct data from fomrmula and perfome a transformation according 
@@ -368,38 +368,38 @@ Eup.default <- function(formula,
 				
 	final.result <- list(
     dat.matrix = dat.matrix
+    , formula = formula
     , dat.dim = dat.dim
-    , OvMeans = OvConst
-    , ColMean = ind.means
-    , RowMean = tim.means
     , slope.para = beta.Eup
     , names = names
     , is.intercept = intercept
     , additive.effects = additive.effects
-		, Intercept = c(ConsCoef)
-		, Add.Ind.Eff = c(Ind.Eff)
-		, Add.Tim.Eff = c(Tim.Eff)
+    , Intercept = c(ConsCoef)
+    , Add.Ind.Eff = c(Ind.Eff)
+    , Add.Tim.Eff = c(Tim.Eff)
     , unob.factors = factors
     , ind.loadings = loadings
-		, unob.fact.stru = unob.fact.stru
-		, factor.dim = factor.dim
-		, dim.criterion = dim.criterion
-		, used.dim= used.dim
-		, proposed.dim= proposed.dim
-		, optimal.dim = optimal.dim
-		, d.max = d.max
-    , fitted.values = fitted.values
-    , residuals = residuals
-    , orig.Y = orig.Y
-    , sig2.hat.dim = sig2.hat.dim
-    , sig2.hat = sig2.hat
-    , degrees.of.freedom = degrees.of.freedom
-    , formula = formula
-    , call = match.call()
+    , unob.fact.stru = unob.fact.stru
+    , used.dim= used.dim
+    , proposed.dim= proposed.dim
+    , optimal.dim = optimal.dim
+    , factor.dim = factor.dim
+    , d.max = d.max
+    , dim.criterion = dim.criterion
+    , OvMeans = OvConst
+    , ColMean = ind.means
+    , RowMean = tim.means
     , max.iteration = max.iteration
     , convergence = convergence
     , start.beta = start.beta
-    , Nbr.iteration= Nbr.iteration)
+    , Nbr.iteration= Nbr.iteration    		
+    , fitted.values = fitted.values
+    , orig.Y = orig.Y
+    , residuals = residuals
+    , sig2.hat.dim = sig2.hat.dim
+    , sig2.hat = sig2.hat
+    , degrees.of.freedom = degrees.of.freedom
+    , call = match.call())
   class(final.result) <- "Eup"
   return(final.result)  
       }
