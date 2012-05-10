@@ -264,6 +264,3 @@ pca.fit <- function(dat, given.d=NULL
 	structure(result, class = "pca.fit")
 	}
 ############################################################################
-# test
-#test <- matrix(c(1,2,0, 3), 2,2 )
-#svd.pca(test, given.d = 0)

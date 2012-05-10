@@ -1,7 +1,3 @@
-#########################################################################################
-## Ramsay-approach 
-#########################################################################################
-
 fsvd.pca <- function(Q,
                             allow.dual      = TRUE,
                             given.d         = NULL,
@@ -14,7 +10,6 @@ fsvd.pca <- function(Q,
 
   ## save original Q-values 
   Q.non.smth <- Q 
-
 
   ## smoothing Q (small degree of undersmoothing) ===============================================#
   if(is.null(spar)) {													 #

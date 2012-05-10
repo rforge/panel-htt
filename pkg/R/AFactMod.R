@@ -79,6 +79,3 @@ AFactMod <- function(dat, demean = TRUE
 		}
 	R
       }
-  
-
-## AFactMod(Y,demean = FALSE, add.effects = "individual", dim.criterion = c("IPC1"), d.max = 3)
