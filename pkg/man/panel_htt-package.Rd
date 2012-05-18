@@ -4,18 +4,21 @@
 \alias{phtt}
 \docType{package}
 \title{
-Panel Data Models for HTT
+Panel Data Analysis with Heterogeneous Time Trends
 }
 \description{
-  The Package implements a new class of panel data models. This class
-  allows for unobserved heterogeneous individual time trends. 
+  The Package \code{phtt} allows for the estimation of panel data models
+  with an unobserved factor structure of the error term. This class of
+  panel data models extends the classical within-models, which assume
+  that the unobserved individual effects a constant over the time, and
+  allows for the unobserved individual effects to vary with the time.
 }
 \details{
   \tabular{ll}{
     Package: \tab phtt\cr
     Type: \tab Package\cr
     Version: \tab 1.0\cr
-    Date: \tab 2011-10-25\cr
+    Date: \tab 2012-05-18\cr
     License: \tab GPL-2\cr
     LazyLoad: \tab yes \cr
   }
@@ -26,7 +29,7 @@ Panel Data Models for HTT
 }
 \references{
   \itemize{
-    \item Kneip, A., Sickles, R. C., Song, W., 2011 \dQuote{A New Panel Data
+    \item Kneip, A., Sickles, R. C., Song, W., 2012 \dQuote{A New Panel Data
       Treatment for Heterogeneity in Time Trends}, \emph{Forthcoming in
       Econometric Theory}
     \item Bai, J., 2009 \dQuote{Panel data models with interactive fixed
