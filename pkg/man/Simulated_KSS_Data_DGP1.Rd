@@ -2,7 +2,7 @@
 \docType{data}
 \alias{DGP1}
 
-\title{Simulated Panel-Data Set with Polynomial Factor Structure}
+\title{Simulated Panel-Data Set with Polynomial Factor Structure and \emph{exogenous} regressors.}
 \description{
   A Panel-Data Sets with:
   
@@ -35,7 +35,7 @@ data(DGP1)
 
 \details{
   The panel-data set DPG1 is simulated according to the simulation-study
-  in Kneip, Sickles & Song (2011):
+  in Kneip, Sickles & Song (2012):
   \eqn{$Y_{it}=\beta_{1}X_{it1}+\beta_{2}X_{it2}+v_i(t)+\epsilon_{it}\quad
     i=1,\dots,n;\quad
     t=1,\dots,T$}{Y_{it}=\beta_{1}X_{it1}+\beta_{2}X_{it2}+v_i(t)+\epsilon_{it},
@@ -61,12 +61,12 @@ data(DGP1)
   \eqn{$\mu_1=(5,5)',\;\mu_2=(7.5,7.5)',\textrm{ and }\;\mu_3=(10,10)'$}{mu_1=(5,5)', mu_2=(7.5,7.5)', and mu_3=(10,10)'}
   
   
-  In this Panel-Data Set the regressors are exogenous. See Kneip, Sickles & Song (2011) for more details.
+  In this Panel-Data Set the regressors are exogenous. See Kneip, Sickles & Song (2012) for more details.
 }
 
 \references{
   \itemize{
-    \item Kneip, A., Sickles, R. C., Song, W., 2011 \dQuote{A New Panel Data
+    \item Kneip, A., Sickles, R. C., Song, W., 2012 \dQuote{A New Panel Data
       Treatment for Heterogneity in Time Trends}, \emph{Forthcoming in
       Econometric Theory}
   }
@@ -103,4 +103,10 @@ matplot(matrix(c(CF.1,
                  CF.3), nrow=T,ncol=3),
         type="l", xlab="Time", ylab="", main="Unobserved Common Factors")
 par(mfrow=c(1,1))
+
+## Estimation:
+KSS.fit      <-KSS(Y~-1+X1+X2)
+(KSS.fit.sum <-summary(KSS.fit))
+
+plot(KSS.fit.sum)
 }

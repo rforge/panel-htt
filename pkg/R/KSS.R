@@ -85,8 +85,8 @@ KSS.default <- function(formula,
       spar.CV           <- KSS.CV(kappa.interv=c(.Machine$double.eps, spar.interval.max),
                                   Y=TR.Y, X=TR.X, N=N, T=T, P=P, spar.dim.fit=spar.low, tol=convergence)$minimum
       cat("\n CV-Optimization converged.\n")
-      print(spar.GCV)
-      print(spar.CV)
+##       print(spar.GCV)
+##       print(spar.CV)
       spar.low <- spar.CV
     }
     #####################################################################################################

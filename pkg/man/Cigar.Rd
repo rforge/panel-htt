@@ -1,7 +1,7 @@
 \name{Cigar}
 \docType{data}
 \alias{Cigar}
-\title{Cigarette Consumption }
+\title{Cigarette Consumption}
 \description{
   a panel of N=46 observations each with time-dimension T=30 from 1963 to 1992
 
@@ -40,46 +40,41 @@ Online complements to Baltagi (2001).
 
  Baltagi, B.H., J.M. Griffin and  W. Xiong (2000) \dQuote{To pool or not to pool: Homogeneous versus heterogeneous estimators applied to cigarette demand}, \emph{Review of Economics and Statistics}, \bold{82}, 117--126.
 }
-
-\keyword{datasets}
 \examples{
 data(Cigar)
+## Panel-Dimensions:
 N <- 46
 T <- 30
 
 ## Dependent variable:
 
   ## Cigarette-Sales per Capita
-  l.sales    <- log(matrix(Cigar$sales, T,N))
+  l.Consumption    <- log(matrix(Cigar$sales, T,N))
 
 ## Independent variables:
 
   ## Consumer Price Index
   cpi        <- matrix(Cigar$cpi, T,N)
 
-  ## Real Disposable Income per Capita  
-  l.r.ndi    <- log(matrix(Cigar$ndi,   T,N)/cpi)
-
   ## Real Price per Pack of Cigarettes 
-  l.r.price  <- log(matrix(Cigar$price, T,N)/cpi)
+  l.Price    <- log(matrix(Cigar$price, T,N)/cpi)
 
-  ## Real Min-Price per Pack of Cigarettes in Neighboring States
-  l.r.pimin  <- log(matrix(Cigar$pimin, T,N)/cpi) 
+  ## Real Disposable Income per Capita  
+  l.Income   <- log(matrix(Cigar$ndi,   T,N)/cpi)
 
-##############################
-## Plot the data set Cigar: ##
-##############################
 
-par(mfrow=c(2,2))
+####################
+## Plot the data  ##
+####################
+
+par(mfrow=c(1,3))
 ## Dependent variable
-matplot(l.sales,main="Log's of Cigaret-Sales\nper Capita",
-        type="l",xlab="Time",ylab="")
+matplot(l.Consumption, main="Log's of Cigarette -Sales\nper Capita",
+        type="l", xlab="Time", ylab="")
 ## Independent variables
-matplot(l.r.price,main="Log's of Real-Prices of\nCigarets per Pack",
-        type="l",xlab="Time",ylab="")
-matplot(l.r.ndi,main="Log's of Real Disposable Income\nper Capita",
-        type="l",xlab="Time",ylab="")
-matplot(l.r.pimin,main="Log's of Real Minimum-Price of\nCigarets per Pack\nin Neighbouring States",
-        type="l",xlab="Time",ylab="")
+matplot(l.Price, main="Log's of Real-Prices of\nCigarettes per Pack",
+        type="l", xlab="Time", ylab="")
+matplot(l.Income, main="Log's of Real Disposable Income\nper Capita",
+        type="l", xlab="Time", ylab="")
 par(mfrow=c(1,1))
 }
