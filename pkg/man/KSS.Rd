@@ -85,17 +85,15 @@ KSS(formula,
   'KSS' is a function to estimate panel data models with unobserved
   heterogeneous time trends v_i(t). The considered model in Kneip,
   Sickles & Song (2012) is given by
-  \eqn{$Y_{it}=\beta_{0}(t)+\sum_{j=1}^P\beta_{j}
+  \eqn{$Y_{it}=\theta_{t}+\sum_{j=1}^P\beta_{j}
     X_{itj}+v_i(t)+\epsilon_{it}\quad i=1,\dots,n; t=1,\dots,T.$}{
-        Y_{it}=\beta_{0}(t)+\sum_{j=1}^P\beta_{j}
+        Y_{it}=\theta_{t}+\sum_{j=1}^P\beta_{j}
 	X_{itj}+v_i(t)+\epsilon_{it}, i=1,...,n; t=1,...,T.}
       Where the individual time trends, v_i(t), are assumed to come from
       a finite dimensional factor model
       \eqn{$v_i(t)=\sum_{l=1}^d\lambda_{il}f_l(t),\quad\lambda_{il}\in
-	R,\quad f_l\in
-	L^2[0,T].$}{v_i(t)=\sum_{l=1}^d\lambda_{il}f_l(t),
-	 \lambda_{il}\in R,  f_l\in
-	L^2[0,T].}
+	R,\quad f_l\in L^2[0,T].$}{v_i(t)=\sum_{l=1}^d\lambda_{il}f_l(t),
+	 \lambda_{il}\in R,  f_l\in L^2[0,T].}
       The unobserved functions v_i(t) can be interpreted as smooth
       functions of a continuous argument t, as well as stochastic
       processes for discrete argument t.
@@ -119,26 +117,26 @@ KSS(formula,
 	    tau_i, besides the individual time trends v_i(t). The
 	    model can be written as
 	    \eqn{$Y_{it}=\mu+\sum_{j=1}^P\beta_{j}
-	      X_{itj}+v_i(t)+\tau_{i}+\epsilon_{it}\quad i=1,\dots,n; t=1,\dots,T.$}{
-              Y_{it}=\beta_0(t)+\sum_{j=1}^P\beta_{j}
-	      X_{itj}+v_i(t)+\tau_{i}+\epsilon_{it}, i=1,...,n; t=1,...,T.}
+	      X_{itj}+v_i(t)+\alpha_{i}+\epsilon_{it}\quad i=1,\dots,n; t=1,\dots,T.$}{
+              Y_{it}=\mu+\sum_{j=1}^P\beta_{j}
+	      X_{itj}+v_i(t)+\alpha_{i}+\epsilon_{it}, i=1,...,n; t=1,...,T.}
 	    The parameter 'mu' is set to zero if '-1' is used in \code{formula}.
 	    \item \code{"time"}: This is the "between"-model, which assumes
 	    that there is a common (for all individuals) time trend, beta_0(t). The
 	    model can be written as
-	    \eqn{$Y_{it}=\mu+\beta_{0}(t)+\sum_{j=1}^P\beta_{j}
+	    \eqn{$Y_{it}=\mu+\theta_{t}+\sum_{j=1}^P\beta_{j}
 	      X_{itj}+v_i(t)+\epsilon_{it}\quad i=1,\dots,n; t=1,\dots,T.$}{
-              Y_{it}=\beta_0(t)+\sum_{j=1}^P\beta_{j}
+              Y_{it}=\mu+\theta_{t}+\sum_{j=1}^P\beta_{j}
 	      X_{itj}+v_i(t)+\epsilon_{it}, i=1,...,n; t=1,...,T.}
 	    The parameter 'mu' is set to zero if '-1' is used in \code{formula}.
 	    \item \code{"twoways"}: This is the "twoways"-model ("within" &
 	    "between"), which assumes that there are time-constant
 	    individual effects, tau_i, and a common time trend,
 	    beta_0(t). The model can be written as
-	    \eqn{$Y_{it}=\mu+\beta_{0}(t)+\sum_{j=1}^P\beta_{j}
-	      X_{itj}+\tau_i+v_i(t)+\epsilon_{it}\quad i=1,\dots,n; t=1,\dots,T.$}{
-              Y_{it}=\mu+\beta_0(t)+\sum_{j=1}^P\beta_{j}
-	      X_{itj}+\tau_i+v_i(t)+\epsilon_{it}, i=1,...,n; t=1,...,T.}
+	    \eqn{$Y_{it}=\mu+\theta_{t}+\sum_{j=1}^P\beta_{j}
+	      X_{itj}+\alpha_i+v_i(t)+\epsilon_{it}\quad i=1,\dots,n; t=1,\dots,T.$}{
+              Y_{it}=\mu+\theta_{t}+\sum_{j=1}^P\beta_{j}
+	      X_{itj}+\alpha_i+v_i(t)+\epsilon_{it}, i=1,...,n; t=1,...,T.}
 	    The parameter 'mu' is set to zero if '-1' is used in \code{formula}.
 	  }}}}
     \value{

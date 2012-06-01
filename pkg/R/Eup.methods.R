@@ -38,6 +38,7 @@ print.Eup <- function(x,...){
 }
 
 
+
 coef.Eup <- function(object,...){
     if(object$is.intercept)
     Intercept <- object$Intercept
@@ -52,24 +53,31 @@ coef.Eup <- function(object,...){
     if(object$additive.effects== "time"| object$additive.effects== "twoways")
     Add.Tim.Eff <- object$Add.Tim.Eff
     else Add.Tim.Eff <- NULL
+
+    Common.factors <- object$unob.factors
     
-    Factors <- object$unob.factors
+    Ind.loadings.param <- object$ind.loadings
     
-    Loadings <- object$ind.loadings
-    
-    Heterogeneity <- object$unob.fact.stru
+    Time.varying.ind.eff <- object$unob.fact.stru
     
     Factor.Dim <- object$used.dim
-    
+
+    Var.shares.of.loadings.param      <- numeric(Factor.Dim)
+    Total.var.loadings.param          <- sum(apply(Ind.loadings.param,2,var))
+    for(i in 1:Factor.Dim){
+      Var.shares.of.loadings.param[i] <- round(var(c(Ind.loadings.param[,i]))/Total.var.loadings.param,
+                    digits=4)*100
+    }
     coef.list <- list(
-        Intercept = Intercept,
-        Slope.Coef = Slope.Coef,
-        Add.Ind.Eff = Add.Ind.Eff, 
-        Add.Tim.Eff = Add.Tim.Eff, 
-        Factors = Factors, 
-        Loadings = Loadings, 
-        Heterogeneity = Heterogeneity,
-        Factor.Dim = Factor.Dim)  
+        Intercept                    = Intercept,
+        Slope.Coef                   = Slope.Coef,
+        Add.Ind.Eff                  = Add.Ind.Eff, 
+        Add.Tim.Eff                  = Add.Tim.Eff, 
+        Common.factors               = Common.factors, 
+        Ind.loadings.param           = Ind.loadings.param,
+        Var.shares.of.loadings.param = Var.shares.of.loadings.param,
+        Time.varying.ind.eff         = Time.varying.ind.eff,
+        Factor.Dim                   = Factor.Dim)  
         
     return(coef.list)
 }

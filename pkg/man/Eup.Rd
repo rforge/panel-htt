@@ -1,6 +1,7 @@
 \name{Eup}
 \alias{Eup}
 \alias{Eup.default}
+
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Eup-Routine
@@ -12,7 +13,7 @@ Estimation of Panel Data Models with Interactive Fixed Effects.
 Eup(formula,
     additive.effects = c("none", "individual", "time", "twoways"),
     dim.criterion    = c("PC1", "PC2", "PC3", "IC1", "IC2" , "IC3",
-"IPC1", "IPC2", "IPC3" , "ED"),
+                         "IPC1", "IPC2", "IPC3" , "ED"),
     d.max            = NULL,
     sig2.hat         = NULL,
     factor.dim       = NULL,
@@ -25,7 +26,7 @@ Eup(formula,
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{formula}{An object of class 'formula' where the arguments are matrices. The number of rows has to be equal to the temporal dimension and the number of columns has to be equal to the number of individuals. The details of model specification are given under ‘Details’.}
+  \item{formula}{An object of class 'formula' where the arguments are matrices. The number of rows has to be equal to the temporal dimension and the number of columns has to be equal to the number of individuals. The details of model specification are given under 'Details'.}
   \item{additive.effects}{
     Type of Data Transformations:
     \itemize{
