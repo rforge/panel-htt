@@ -159,18 +159,18 @@ KSS(formula,
 	\item{\code{Intercept}: }{Intercept-parameter}
 	\item{\code{Add.Ind.Eff}: }{Estimated values of additive individual effects.}
 	\item{\code{Add.Tim.Eff}: }{Estimated values of additive time effects.}
-	\item{\code{unob.factors}: }{TxL-matrix of estimated unobserved common
-	  factors, where 'L' is the number of used factors.} 
-	\item{\code{ind.loadings}: }{NxL-matrix of loadings parameters.}
+	\item{\code{unob.factors}: }{Txd-matrix of estimated unobserved common
+	  factors, where 'd' is the number of used factors.} 
+	\item{\code{ind.loadings}: }{Nxd-matrix of loadings parameters.}
 	\item{\code{unob.fact.stru}: }{TxN-matrix of the estimated factor
 	  structure. Each column represents an estimated individual unobserved time trend.}
 	\item{\code{used.dim}: }{Used dimensionality of the factor structure.}
 	\item{\code{optimal.dim}: }{List of proposed dimensionalities.}
-	\item{\code{fitted.values}: }{Fitted values}
+	\item{\code{fitted.values}: }{Fitted values.}
 	\item{\code{orig.Y}: }{Original values of the dependent variable.}       
 	\item{\code{residuals}: }{Residuals}    
 	\item{\code{sig2.hat}: }{Estimated variance of the error term.}     
-	\item{\code{degrees.of.freedom}: }{Degrees of freedom}
+	\item{\code{degrees.of.freedom}: }{Degrees of freedom of the residuals.}
 	\item{\code{call}}
       }
 }

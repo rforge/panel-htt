@@ -110,39 +110,43 @@ Eup(formula,
       'Eup' returns an object of 'class' '"Eup"' containing the
       following components:
       \itemize{
-    \item{dat.matrix}
-    \item{formula}
-    \item{dat.dim}
-    \item{slope.para}
-    \item{names}
-    \item{is.intercept}
-    \item{additive.effects}
-    \item{Intercept} 
-    \item{Add.Ind.Eff} 
-    \item{Add.Tim.Eff} 
-    \item{unob.factors} 
-    \item{ind.loadings} 
-    \item{unob.fact.stru} 
-    \item{used.dim}
-    \item{proposed.dim}
-    \item{optimal.dim}
-    \item{factor.dim} 
-    \item{d.max} 
-    \item{dim.criterion} 
-    \item{OvMeans}
-    \item{ColMean} 
-    \item{RowMean}
-    \item{max.iteration} 
-    \item{convergence}
-    \item{start.beta} 
-    \item{Nbr.iteration}  		
-    \item{fitted.values} 
-    \item{orig.Y} 
-    \item{residuals} 
-    \item{sig2.hat.dim}
-    \item{sig2.hat} 
-    \item{degrees.of.freedom}
-    \item{call}
+    \item{dat.matrix: }{Whole data set stored within a
+	  (N*T)x(p+1)-Matrix, where P is the number of independent
+	  variables without the intercept.}
+    \item{formula: }{returns the used formula object.}
+    \item{dat.dim: }{Vector of length 3: c(T,N,p)}
+    \item{slope.para: }{Beta-parameters}
+    \item{names: }{Names of the dependent and independent variables.}
+    \item{is.intercept: }{logical.Used an intercept in the formula?: TRUE or FALSE}
+    \item{additive.effects: }{Additive effect type. One of: "none","individual","time", "twoways".}
+    \item{Intercept: }{Intercept-parameter. Tacks the value 0 if it is not specified in the model.}
+    \item{Add.Ind.Eff: } {Estimated values of additive individual effects. If additive individual effects are not specified in the model, the function returns a vector of zeros.}
+    \item{Add.Tim.Eff: } {Estimated values of additive time effects. If this effects are not specified in the model, the function returns a vector of zeros.}
+    \item{unob.factors: } {Txd-matrix of estimated unobserved common
+	  factors, where 'd' is the number of used factors.}
+    \item{ind.loadings: } {Nxd-matrix of loadings parameters.}
+    \item{unob.fact.stru: } {TxN-matrix of the estimated factor
+	  structure. Each column represents an estimated individual unobserved time trend.}
+    \item{used.dim: }{Used dimension 'd' to calculate the factor structure.}
+    \item{proposed.dim: }{Indicates whether the user has specified the factor dimension or not.}
+    \item{optimal.dim: }{The optimal dimension calculated internally.}
+    \item{factor.dim: } {The user-specified factor dimension. Default is \code{NULL}}
+    \item{d.max: } {The maximum number of factors used to estimate the optimal dimension.}
+    \item{dim.criterion: } {The used dimensionality criterion.}
+    \item{OvMeans: }{A vector that contains the overall means of the observed variables (Y and X).}
+    \item{ColMean: } {A matrix that contains the column means of the observed variables (Y and X).}
+    \item{RowMean: } {A matrix that contains the row means of the observed variables (Y and X).}
+    \item{max.iteration: } {The maximum number of iterations. The default is '500'.}
+    \item{convergence: }{The convergence condition. The default is '1e-6'.}
+    \item{start.beta: A vector of user-specified starting values for the estimation of the beta-parameters. Default is \code{NULL}.} 
+    \item{Nbr.iteration: } {Number of iterations required for the computation.} 		
+    \item{fitted.values: } {Fitted values.}
+    \item{orig.Y: } {Original values of the dependent variable.} 
+    \item{residuals: } {Original values of the dependent variable.}   
+    \item{sig2.hat.dim: }{user-specified variance estimator of the errors. Default is \code{NULL}.}
+    \item{sig2.hat: } {Estimated variance of the error term.}     
+    \item{degrees.of.freedom: }{Degrees of freedom of the residuals.}
+    \item{call: }
       }
 }
 \references{
