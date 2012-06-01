@@ -18,7 +18,7 @@ KSS(formula,
     level            = 0.01,
     spar             = NULL,
     CV               = FALSE,
-    convergence      = 1e-6,#.Machine$double.eps^0.25,
+    convergence      = 1e-6,
     restrict.mode    = c("restrict.factors","restrict.loadings"), ...)
 }
 %- maybe also 'usage' for other objects documented here.
