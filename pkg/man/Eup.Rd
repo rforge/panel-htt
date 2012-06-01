@@ -147,7 +147,7 @@ Eup(formula,
     \item{sig2.hat.dim: }{user-specified variance estimator of the errors. Default is \code{NULL}.}
     \item{sig2.hat: } {Estimated variance of the error term.}     
     \item{degrees.of.freedom: }{Degrees of freedom of the residuals.}
-    \item{call: }
+    \item{call}
       }
 }
 \references{
