@@ -67,8 +67,7 @@ data(DGP1)
 \references{
   \itemize{
     \item Kneip, A., Sickles, R. C., Song, W., 2012 \dQuote{A New Panel Data
-      Treatment for Heterogneity in Time Trends}, \emph{Forthcoming in
-      Econometric Theory}
+      Treatment for Heterogneity in Time Trends}, \emph{Econometric Theory}
   }
 }
 \author{

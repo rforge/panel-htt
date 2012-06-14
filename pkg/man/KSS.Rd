@@ -175,8 +175,7 @@ KSS(formula,
 \references{
   \itemize{
     \item Kneip, A., Sickles, R. C., Song, W., 2012 \dQuote{A New Panel Data
-      Treatment for Heterogeneity in Time Trends}, \emph{Forthcoming in
-      Econometric Theory}
+      Treatment for Heterogeneity in Time Trends}, \emph{Econometric Theory}
 }}
 \author{
   Dominik Liebl

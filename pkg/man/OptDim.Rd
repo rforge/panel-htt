@@ -37,6 +37,8 @@ OptDim(Obj,
   \itemize{
     \item Bai, J., 2009 \dQuote{Panel data models with interactive fixed
       effects}, \emph{Econometrica}
+    \item Kneip, A., Sickles, R. C., Song, W., 2012 \dQuote{A New Panel Data
+      Treatment for Heterogeneity in Time Trends}, \emph{Econometric Theory}
 }}
 \author{
   Oualid Bada
