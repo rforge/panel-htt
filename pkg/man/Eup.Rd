@@ -193,8 +193,8 @@ T <- 30
   l.Income    <- log(matrix(Cigar$ndi,   T,N)/cpi)
 
 ## Estimation:
-Eup.fit      <- Eup(l.Consumption~l.Price+l.Income)
-(Eup.fit.sum <- summary(KSS.fit))
+Eup.fit      <- Eup(l.Consumption~l.Price+l.Income, additive.effects = "twoways")
+(Eup.fit.sum <- summary(Eup.fit))
 
 ## Plot the components of the estimated individual effects
 

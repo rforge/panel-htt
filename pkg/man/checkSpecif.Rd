@@ -63,7 +63,7 @@ T <- 30
   
 ## Testing the Sufficiency of Classical Additive Effects
 	twoways.obj <- Eup(d.l.Consumption ~ -1 + d.l.Price + d.l.Income, factor.dim = 0, additive.effects = "twoways")
-	not.twoways.obj <- Eup(d.l.Consumption ~ -1 + d.l.Price + d.l.Income, factor.dim = 7,
+	not.twoways.obj <- Eup(d.l.Consumption ~ -1 + d.l.Price + d.l.Income, factor.dim = 2,
 additive.effects = "none")
 	checkSpecif(obj1 = twoways.obj, obj2 = not.twoways.obj, level = 0.01)
 	
