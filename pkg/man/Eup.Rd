@@ -173,6 +173,10 @@ KSS, OptDim
 ## See the example in 'help(Cigar)' in order to take a look at the
 ## data set 'Cigar'
 
+##########
+## DATA ##
+##########
+
 data(Cigar)
 ## Panel-Dimensions:
 N <- 46
