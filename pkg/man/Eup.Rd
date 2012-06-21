@@ -183,17 +183,17 @@ N <- 46
 T <- 30
 ## Dependent variable:
   ## Cigarette-Sales per Capita
-  l.Consumption    <- log(matrix(Cigar$sales, T,N))
+  d.l.Consumption    <- diff(log(matrix(Cigar$sales, T,N)))
 ## Independent variables:
   ## Consumer Price Index
   cpi        <- matrix(Cigar$cpi, T,N)
   ## Real Price per Pack of Cigarettes 
-  l.Price  <- log(matrix(Cigar$price, T,N)/cpi)
+  d.l.Price  <- diff(log(matrix(Cigar$price, T,N)/cpi))
   ## Real Disposable Income per Capita  
-  l.Income    <- log(matrix(Cigar$ndi,   T,N)/cpi)
-
+  d.l.Income    <- diff(log(matrix(Cigar$ndi,   T,N)/cpi))
+  
 ## Estimation:
-Eup.fit      <- Eup(l.Consumption~l.Price+l.Income, additive.effects = "twoways")
+Eup.fit      <- Eup(d.l.Consumption~d.l.Price+d.l.Income)
 (Eup.fit.sum <- summary(Eup.fit))
 
 ## Plot the components of the estimated individual effects
