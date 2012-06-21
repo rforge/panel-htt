@@ -64,14 +64,14 @@ OptDim(Obj,
 }
 \references{
   \itemize{
-      \item  Ahn, S. C., Horenstein, A. R. 2009 \qQuote{Eigenvalue ratio test for the number of factors}, \emph{Working Paper}
+      \item  Ahn, S. C., Horenstein, A. R. 2009 \dQuote{Eigenvalue ratio test for the number of factors}, \emph{Working Paper}
     \item Bai, J., 2009 \dQuote{Panel data models with interactive fixed
       effects}, \emph{Econometrica}
-    \item Bai, J. 2004 \qQuote{Estimating cross-section common stochastic trends in nonstationary data},  \emph{Journal of Econometrics}
-    \item Bai, J., Ng, S. 2009 \qQuote{Determining the number of factors in approximated factor models}, \emph{Econometrica}
+    \item Bai, J. 2004 \dQuote{Estimating cross-section common stochastic trends in nonstationary data},  \emph{Journal of Econometrics}
+    \item Bai, J., Ng, S. 2009 \dQuote{Determining the number of factors in approximated factor models}, \emph{Econometrica}
     \item Kneip, A., Sickles, R. C., Song, W., 2012 \dQuote{A New Panel Data
       Treatment for Heterogeneity in Time Trends}, \emph{Econometric Theory}
-    \item Onatski, A. 2010 \qQuote{Determining the number of factors from empirical distribution of eigenvalues}, \emph{The Review of Economics and Statistics}
+    \item Onatski, A. 2010 \dQuote{Determining the number of factors from empirical distribution of eigenvalues}, \emph{The Review of Economics and Statistics}
 }}
 \author{
   Oualid Bada
