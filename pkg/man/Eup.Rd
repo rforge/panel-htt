@@ -36,10 +36,10 @@ Eup(formula,
       \item \code{"twoways"}: for twoways transformation
   }}
   \item{dim.criterion}{The dimensionality criterion to be used if \code{factor.dim} is left unspecified. The default criterion is \code{"PC1"}}.
-  \item{d.max}{Maximal Dimension for Dimensionality-Estimation of Bai
+  \item{d.max}{Maximal dimension used in the dimensionality-criteria of Bai
     (2009). The default (\code{d.max=NULL}) yields to an internal selection of
     d.max.}
-  \item{sig2.hat}{Standard deviation of the error-term required for the computation of some dimensionality criteria. The user can specify it in instead of \code{d.max}. The default (\code{sig2.hat=NULL}) yields to an internal estimation.}
+  \item{sig2.hat}{The squared standard deviation of the error-term required for the computation of some dimensionality criteria. The user can specify it in instead of \code{d.max}. The default (\code{sig2.hat=NULL}) yields to an internal estimation.}
   \item{factor.dim}{Dimension of Factor-Structure, pre-specified
     by the user. The default (\code{factor.dim=NULL}) yields to an internal estimation.}
   \item{double.iteration}{logical. If \code{FALSE} the update of the factor dimension \code{d} will be done simultaneously with remaining model parameters without alternating between inner and outer iteration. This may speed up computations, but the convergence is less stable than in the default setting.}

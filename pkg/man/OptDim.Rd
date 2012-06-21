@@ -23,22 +23,42 @@ OptDim(Obj,
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{Obj}{Bla}
-  \item{criteria}{Bla}
-  \item{standardize}{Bla}
-  \item{d.max}{Bla}
-  \item{sig2.hat}{Bla}
-  \item{spar}{Bla}
-  \item{level}{Bla}
+  \item{Obj}{The function requires either a Txn matrix or an object with class "`Eup"' or "`KSS"'.}
+  \item{criteria}{A character vector that contains the desired criteria to be used. If it is left unspecified, the function returns the result of all 13 criteria. }
+  \item{standardize}{logical. If \code{TRUE} the input variable will be standardized. Default is \code{FALSE}.}
+  \item{d.max}{Maximal dimension used in the dimensionality-criteria of Bai
+    (2009). The default (\code{d.max=NULL}) yields to an internal selection of
+    d.max.}
+  \item{sig2.hat}{The squared standard deviation of the error-term required for the computation of some dimensionality criteria. The user can specify it in instead of \code{d.max}. The default (\code{sig2.hat=NULL}) yields to an internal estimation.}
+  \item{spar}{Smoothing parameter used to calculate the criterion of Kneip, Sickles, and Song (2012). The default is \code{NULL}, which leads to internal computation.}
+  \item{level}{The significance level used for the criterion of Kneip, Sickles, and Song (2012). The default is 0.01.}
 }
-%\details{}
-%\value{}
+\details{The function 'OptDim' allows for a comparison of the optimal factor dimensions obtained from different panel criteria (in total 13) adjusted for the case where N and T are }
+\value{
+'OptDim' returns an object of 'class' '"OptDim"' containing a list with the
+      following components:
+\item{summary:} 
+\item{criteria:}
+\item{BaiNgC}
+\item{BaiC}
+\item{KSSC}
+\item{OnatC}
+\item{RHC}
+\item{cl}
+\item{obj}
+
+}
 \references{
   \itemize{
+      \item  Ahn, S. C., Horenstein, A. R. 2009 \qQuote{Eigenvalue ratio test for the number of factors}, \emph{Working Paper}
     \item Bai, J., 2009 \dQuote{Panel data models with interactive fixed
       effects}, \emph{Econometrica}
+    \item Bai, J. 2004 \qQuote{Estimating cross-section common stochastic trends in nonstationary data},  \emph{Journal of Econometrics}
+    \item Bai, J., Ng, S. 2009 \qQuote{Determining the number of factors in approximated factor models}, \emph{Econometrica}
     \item Kneip, A., Sickles, R. C., Song, W., 2012 \dQuote{A New Panel Data
-      Treatment for Heterogeneity in Time Trends}, \emph{Econometric Theory}
+      Treatment for Heterogeneity in Time Trends}, \emph{Forthcoming in
+      Econometric Theory}
+    \item Onatski, A. 2010 \qQuote{Determining the number of factors from empirical distribution of eigenvalues}, \emph{The Review of Economics and Statistics}
 }}
 \author{
   Oualid Bada
@@ -49,7 +69,7 @@ OptDim(Obj,
 
 % %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-% \seealso{
+% \seealso{plot.OptDim, 
 % }
 \examples{
 ## See the example in 'help(Cigar)' in order to take a look at the
