@@ -52,14 +52,14 @@ OptDim(Obj,
 \item{ED:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max}.}
 \item{ER:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max}.}
 \item{GR:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max}.}
-\item{summary:} {A table (in a matrix form) containing all the estimated dimensions obtained by the specified criteria.}
-\item{BaiNgC:} {A logical vector required for further internal computations.}
-\item{BaiC:} {A logical vector required for further internal computations.}
-\item{KSSC:} {A logical vector required for further internal computations.}
-\item{OnatC:} {A logical vector required for further internal computations.}
-\item{RHC:} {A logical vector required for further internal computations.}
-\item{obj:} {The object 'Obj' given in the function 'OptDim'.}
-\item{cl:} {Object of mode "call".}
+\item{summary:}{A table (in a matrix form) containing all the estimated dimensions obtained by the specified criteria.}
+\item{BaiNgC:}{A logical vector required for further internal computations.}
+\item{BaiC:}{A logical vector required for further internal computations.}
+\item{KSSC:}{A logical vector required for further internal computations.}
+\item{OnatC:}{A logical vector required for further internal computations.}
+\item{RHC:}{A logical vector required for further internal computations.}
+\item{obj:}{The object 'Obj' given in the function 'OptDim'.}
+\item{cl:}{Object of mode "call".}
 
 }
 \references{
