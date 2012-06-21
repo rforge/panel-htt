@@ -17,7 +17,7 @@ checkSpecif(obj1, obj2, level = 0.05)
   \item{obj2}{Can be specified with an object of class "`Eup"' where the underling model is estimated without additive effects and a non-zero factor dimension.}
   \item{level}{The significance level used for the tests.}
 }
-%\details{}
+\details{This function is equipped with two types of specification tests:  The first one is a Hausman-type test appropriate for the model of Bai (2009). The second one examines the existence of a factor structure in Bai's model as well as in the model of Kneip, Sickles, and Song, (2012).}
 %\value{}
 \references{
   \itemize{
