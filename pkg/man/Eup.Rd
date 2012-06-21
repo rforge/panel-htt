@@ -167,39 +167,42 @@ Time-Varying Effects to Estimate Risk Premium of Corporate Bonds}, \emph{Working
 % %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-KSS
+KSS, OptDim
 }
 \examples{
 ## See the example in 'help(Cigar)' in order to take a look at the
 ## data set 'Cigar'
 
-##########
-## DATA ##
-##########
-
 data(Cigar)
+## Panel-Dimensions:
 N <- 46
 T <- 30
-
 ## Dependent variable:
-
   ## Cigarette-Sales per Capita
-  l.sales    <- log(matrix(Cigar$sales, T,N))
-
+  l.Consumption    <- log(matrix(Cigar$sales, T,N))
 ## Independent variables:
-
   ## Consumer Price Index
   cpi        <- matrix(Cigar$cpi, T,N)
-
-  ## Real Disposable Income per Capita  
-  l.r.ndi    <- log(matrix(Cigar$ndi,   T,N)/cpi)
-
   ## Real Price per Pack of Cigarettes 
-  l.r.price  <- log(matrix(Cigar$price, T,N)/cpi)
+  l.Price  <- log(matrix(Cigar$price, T,N)/cpi)
+  ## Real Disposable Income per Capita  
+  l.Income    <- log(matrix(Cigar$ndi,   T,N)/cpi)
 
-  ## Real Min-Price per Pack of Cigarettes in Neighboring States
-  l.r.pimin  <- log(matrix(Cigar$pimin, T,N)/cpi) 
+## Estimation:
+Eup.fit      <- Eup(l.Consumption~l.Price+l.Income)
+(Eup.fit.sum <- summary(KSS.fit))
 
+## Plot the components of the estimated individual effects
+
+plot(Eup.fit.sum)
+
+## Estimate the factor dimension with other criteria
+
+OptDim(Eup.fit)
+
+## Display the magnitude of the eigenvalues in percentage of the total variance of the individual effecs
+
+plot(OptDim(Eup.fit))
 
 
 }

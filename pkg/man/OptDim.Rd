@@ -33,19 +33,33 @@ OptDim(Obj,
   \item{spar}{Smoothing parameter used to calculate the criterion of Kneip, Sickles, and Song (2012). The default is \code{NULL}, which leads to internal computation.}
   \item{level}{The significance level used for the criterion of Kneip, Sickles, and Song (2012). The default is 0.01.}
 }
-\details{The function 'OptDim' allows for a comparison of the optimal factor dimensions obtained from different panel criteria (in total 13) adjusted for the case where N and T are }
+\details{The function 'OptDim' allows for a comparison of the optimal factor dimensions obtained from different panel criteria (in total 13). This criteria are adjusted for panel data with diverging T and N.}
 \value{
 'OptDim' returns an object of 'class' '"OptDim"' containing a list with the
       following components:
-\item{summary:} 
-\item{criteria:}
-\item{BaiNgC}
-\item{BaiC}
-\item{KSSC}
-\item{OnatC}
-\item{RHC}
-\item{cl}
-\item{obj}
+      
+\item{criteria:}{The name of the criteria specified by the user.}
+\item{PC1:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max} and/ or \code{sig2.hat}.}
+\item{PC2:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max} and/ or \code{sig2.hat}.}
+\item{PC3:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max} and/ or \code{sig2.hat}.}
+\item{IC1:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max}.}
+\item{IC2:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max}.}
+\item{IC3:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max}.}
+\item{IPC1:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max} and/ or \code{sig2.hat}.}
+\item{IPC2:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max} and/ or \code{sig2.hat}.}
+\item{IPC3:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max} and/ or \code{sig2.hat}.}
+\item{KSS.C:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max} and/ or \code{sig2.hat}.}
+\item{ED:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max}.}
+\item{ER:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max}.}
+\item{GR:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max}.}
+\item{summary:} {A table (in a matrix form) containing all the estimated dimensions obtained by the specified criteria.}
+\item{BaiNgC:} {A logical vector required for further internal computations.}
+\item{BaiC:} {A logical vector required for further internal computations.}
+\item{KSSC:} {A logical vector required for further internal computations.}
+\item{OnatC:} {A logical vector required for further internal computations.}
+\item{RHC:} {A logical vector required for further internal computations.}
+\item{obj:} {The object 'Obj' given in the function 'OptDim'.}
+\item{cl:} {Object of mode "call".}
 
 }
 \references{
@@ -56,8 +70,7 @@ OptDim(Obj,
     \item Bai, J. 2004 \qQuote{Estimating cross-section common stochastic trends in nonstationary data},  \emph{Journal of Econometrics}
     \item Bai, J., Ng, S. 2009 \qQuote{Determining the number of factors in approximated factor models}, \emph{Econometrica}
     \item Kneip, A., Sickles, R. C., Song, W., 2012 \dQuote{A New Panel Data
-      Treatment for Heterogeneity in Time Trends}, \emph{Forthcoming in
-      Econometric Theory}
+      Treatment for Heterogeneity in Time Trends}, \emph{Econometric Theory}
     \item Onatski, A. 2010 \qQuote{Determining the number of factors from empirical distribution of eigenvalues}, \emph{The Review of Economics and Statistics}
 }}
 \author{
@@ -83,27 +96,21 @@ data(Cigar)
 N <- 46
 T <- 30
 
-## Dependent variable:
 
-  ## Cigarette-Sales per Capita
-  l.sales    <- log(matrix(Cigar$sales, T,N))
+## Data: Cigarette-Sales per Capita
+l.Consumption    <- log(matrix(Cigar$sales, T,N))
 
-## Independent variables:
+## Calculation is based on the covariance matrix of l.Consumption
 
-  ## Consumer Price Index
-  cpi        <- matrix(Cigar$cpi, T,N)
+OptDim(l.Consumption)
 
-  ## Real Disposable Income per Capita  
-  l.r.ndi    <- log(matrix(Cigar$ndi,   T,N)/cpi)
+## Calculation is based on the correlation matrix of l.Consumption
 
-  ## Real Price per Pack of Cigarettes 
-  l.r.price  <- log(matrix(Cigar$price, T,N)/cpi)
+OptDim(l.Consumption, standardize = TRUE)
 
-  ## Real Min-Price per Pack of Cigarettes in Neighboring States
-  l.r.pimin  <- log(matrix(Cigar$pimin, T,N)/cpi) 
+## Display the magnitude of the eigenvalues in percentage of the total variance
 
-
-
+plot(OptDim(l.Consumption))
 }
 % % Add one or more standard keywords, see file 'KEYWORDS' in the
 % % R documentation directory.
