@@ -1,4 +1,3 @@
-## 
 KSS.default <- function(formula,
                         additive.effects = c("none", "individual", "time", "twoways"),
                         consult.dim.crit = FALSE,
@@ -8,7 +7,7 @@ KSS.default <- function(formula,
                         level            = 0.01,
                         spar             = NULL,
                         CV               = FALSE,
-                        convergence      = 1e-6,#.Machine$double.eps^0.25,
+                        convergence      = 1e-6,
                         restrict.mode    = c("restrict.factors","restrict.loadings"),
                         ...)
   {
@@ -85,8 +84,6 @@ KSS.default <- function(formula,
       spar.CV           <- KSS.CV(kappa.interv=c(.Machine$double.eps, spar.interval.max),
                                   Y=TR.Y, X=TR.X, N=N, T=T, P=P, spar.dim.fit=spar.low, tol=convergence)$minimum
       cat("\n CV-Optimization converged.\n")
-##       print(spar.GCV)
-##       print(spar.CV)
       spar.low <- spar.CV
     }
     #####################################################################################################

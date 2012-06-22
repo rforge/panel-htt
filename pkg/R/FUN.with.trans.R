@@ -71,7 +71,7 @@ FUN.with.trans <- function(z, N, T, is.intercept, effect = c("none", "individual
     )		 		
   }
 
-## cover =================================================================================================
+## Wrapper-Fct =================================================================================================
 WithTrans <- function(z, intercept= TRUE, heto.effect = c("none", "individual", "time", "twoways"))
   {
 	is.regular.panel(z, stopper = TRUE)

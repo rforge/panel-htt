@@ -131,7 +131,7 @@ fsvd.pca <- function(Q,
 # The function calculates functional spectral decomposition of a matrix in >>dat<<
 # dimension: dim(dat) == T x N
 # and, according to the argument >>given.d<<, does pca-fitting. Generally it is assumend
-# that the column of the TxN-matrix >>dat<< are demaend by the "mean-column".
+# that the column of the TxN-matrix >>dat<< are demaened by the "mean-column".
 # Calls:                   #
 # is.regular.panel()       #
 # fsvc.pca()               #

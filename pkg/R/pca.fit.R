@@ -1,4 +1,3 @@
-#rm(list= ls())
 ######## check the input data if is a regular panel ########################
 # is.regular.panel check if the data is a matrix or dataframe 
 # without NA NaN
@@ -40,12 +39,6 @@ is.regular.panel <- function(dat,
     }
   }
 }
-
-############# test
-#test <- matrix(c(1,2,0, 3), 2,2 )
-#data.frame(test)
-#test[1,1] <- "a" 
-#is.regular.panel(test, comment = T, stopper = T)
 
 ########### spectral variance decomposition and pca fitting #################
 # Input:

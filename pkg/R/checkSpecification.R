@@ -1,30 +1,8 @@
-########################################################################################
-## Model-Test (Kneip Sickles Song 2009 Section 3.4)  
-##
-## Takes:
-## formula    = formula-object,
-## effect     = c("none", "individual", "time", "twoways")
-## g.function = NULL, numeric, matrix, function-obj or a list of function-objects
-## alpha      = numeric
-##
-## Gives:
-## Test-Statistic, p.value, crit.value and sig.level
-##
-## status 12.10.10: not completed
-########################################################################################
-
-## rm(list=ls())
-
 checkSpecif <- function(obj1, obj2, level = 0.05)
   {
 
     if(missing(obj2)) test.int <- TRUE
     else test.int <- FALSE
-    ##===================================================================================
-    ## check arguments
-
-    ## ==================================================================================
-    ## effects
 
     if(!test.int){
    	 if(class(obj1)!="Eup" & !class(obj2)!="Eup"){

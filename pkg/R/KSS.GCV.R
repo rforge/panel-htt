@@ -29,27 +29,26 @@ FUN.iterate.GCV <- function(TR.Y.mat, TR.X.mat, N, T, P){
 				  beta.0 = beta.0, t.seq,i=1){
 	nr <- length(t.seq)
 	nc <- nrow(y)/nr
-  # Iteration (0): initial cumputations
-	# w.0 = y-x%*%beta.0 
+  ## Iteration (0): initial cumputations
+	## w.0 = y-x%*%beta.0 
 		w.0 <- y - tcrossprod(x, t(beta.0))
 
-  	# W.0: write w.0 in a matrix form 
+  	## W.0: write w.0 in a matrix form 
 		W.0 <- matrix(w.0, nr, nc)
 
- 	# PCA.0: PCA.0 computation, OptDim.0 and y.fitted
+ 	## PCA.0: PCA.0 computation, OptDim.0 and y.fitted
 		PCA.0    <- smooth.Pspline(x = t.seq, y = W.0, method = 3)
 
 		y.fitted.0 = PCA.0$ysmth
-	#matplot(y.fitted.0, typ = "l")
 
-   # Iteration (+1)
-  	# y.updated.0: updat y.updated.0 = y - fs.0
+   ## Iteration (+1)
+  	## y.updated.0: updat y.updated.0 = y - fs.0
 		y.updated.1 <- y -  c(y.fitted.0)
 
-  	# beta.1: OLS.1 computation for the computed fs.0 in interation 0 
+  	## beta.1: OLS.1 computation for the computed fs.0 in interation 0 
 		beta.1 <- FUN.ols.beta(y.updated.1, x, inv.xx.x) 
 
-  	# convergence condition
+  	## convergence condition
 		if(all( abs((beta.0 - beta.1)) < 1e-3)| i  == 100){
 			Result <- list(PCA=PCA.0, beta=beta.1, Nbr.Iterations = i)
 			Result

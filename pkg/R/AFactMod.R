@@ -1,5 +1,3 @@
-######################################################################
-
 AFactMod <- function(dat, demean = TRUE
 			, add.effects = c("none", "individual", "time", "twoways")
 			, dim.criterion = c("PC1", "PC2", "PC3", "IC1", "IC2" 
@@ -14,19 +12,19 @@ AFactMod <- function(dat, demean = TRUE
   	with.trans <- match.arg(add.effects)
 	dat.trans <- FUN.with.trans(dat, N = nc, T = nr, is.intercept = demean, effect = with.trans)
 	dat <- dat.trans$TDM
-  # missing parameters
+  ## missing parameters
 
 	if(missing(factor.dim)) factor.dim  <- NULL
 	if(missing(d.max))      d.max 	<- NULL
 	if(missing(sig2.hat))   sig2.hat    <- NULL
 
-  # pca.fit
+  ## pca.fit
 
 	obj.pca.fit <- pca.fit(dat, given.d       = factor.dim
 					  , restrict.mode = restrict.mode
 					  , allow.dual    = allow.dual)
 
-  # dimension selection
+  ## dimension selection
 	dim.criterion <- match.arg(dim.criterion)
 	est.dim       <- switch(dim.criterion,
 				PC1 = B.OptDim(obj.pca.fit, criteria = c("PC1")
@@ -57,7 +55,7 @@ AFactMod <- function(dat, demean = TRUE
 	opt.d  <- est.dim[1,2]
 	used.d <- ifelse(is.null(factor.dim), opt.d, factor.dim)
 
-  # factors and loadings parameters
+  ## factors and loadings parameters
 
 	if(used.d!=0){
 		factors <- obj.pca.fit$factors[, 1:used.d, drop= FALSE]
