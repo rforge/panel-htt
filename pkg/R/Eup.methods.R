@@ -29,7 +29,7 @@ print.Eup <- function(x,...){
     colnames(inter) <- ""
     rownames(inter) <- "(Intercept)"
     slope.para <- rbind(signif(inter,digits=3), signif(slope.para,digits=3))
-    slope.para <- round(slope.para, 3)
+    slope.para <- signif(slope.para, 3)
   }
   print(t(slope.para))
   cat("\nAdditive Effects Type: ", as.name(x$additive.effects)," \n")
@@ -89,12 +89,11 @@ residuals.Eup <- resid.Eup <- function(object,...){
 
 summary.Eup <- function(object,...){
   ## Residuals:
-  Res.outpt <- round((summary(as.vector(object$residuals))), digits=2)[-4]
+  Res.outpt <- signif((summary(as.vector(object$residuals))), digits=3)[-4]
   names(Res.outpt) <- c("Min", "1Q", "Median", "3Q", "Max")
   yy <- sum(diag(crossprod(object$orig.Y - mean(object$orig.Y))))
   ee <- sum(diag(crossprod(object$residuals)))
-  R2 <- 1 - ee/yy
-  #R2a <- 1 - (ee/object$degrees.of.freedom)/(yy - 1)
+  R2 <- signif(1 - ee/yy, 4)
   
   ## Add-Effect-Type:
   eff              <- matrix(object$additive.effects)
@@ -103,6 +102,7 @@ summary.Eup <- function(object,...){
   
   ## Coefficients:
   TAB  <-  Eup.inference(Eup.Obj=object)$inf.result
+  TAB <- signif(TAB, 3)
   
   ## Result:
   result        <- list(Res.outpt    = Res.outpt,
@@ -128,8 +128,8 @@ print.summary.Eup <- function(x, ...){
   cat("\nAdditive Effects Type: ", as.name(x$Eup.obj$additive.effects)," \n")
   cat("\nDimension of the Unobserved Factors:", x$Eup.obj$used.dim," \n")
   #cat("\nOptimized Factor Dimension:         ", x$Eup.obj$optimal.dim," \n")
-  cat("\nResidual standard error:", x$Eup.obj$sig2.hat, "on",
-            x$Eup.obj$degree.of.freedom, "degrees of freedom, ", "\nR-squared:", x$R2,"\n")
+  cat("\nResidual standard error:", signif(x$Eup.obj$sig2.hat, 4), "on",
+            x$Eup.obj$degrees.of.freedom, "degrees of freedom, ", "\nR-squared:", x$R2,"\n")
 }
 
 ## print.summary.Eup <- function(x, ...){

@@ -334,7 +334,7 @@ KSS.dim.opt <- function(obj, sig2.hat = NULL, alpha=0.01, factor.dim = NULL, d.m
 
   result      <- rbind(result1, result2)
   Result      <- vector("list", 2)
-  Result[[1]] <- data.frame(I(c("KSS.C1", "KSS.C2")), result)
+  Result[[1]] <- data.frame(I(c("KSS.C", "KSS.C2")), result)
   colnames(Result[[1]]) <- c("Criterion", "Optimal Dimension", "Used Dimension", "sd2.rest", "sd2.hat", "level")
   rownames(Result[[1]]) <- c("KSS.1", "KSS.2")
 
@@ -346,7 +346,7 @@ return(Result)
 ## KSS.OptDim() =====================================================================================
 
 KSS.OptDim <- function(Obj,
-                       criteria    = c("KSS.C1", "KSS.C2"),
+                       criteria    = c("KSS.C", "KSS.C2"),
                        sig2.hat    = NULL,
                        alpha       = 0.01, 
                        d.max       = NULL,
@@ -472,7 +472,7 @@ EstDim <- function(Obj,
                             , d.max = d.max)),
                           GR   = try(RH.OptDim(Obj, criteria = c("GR")
                             , d.max = d.max)),
-                          KSS.C  = try(KSS.OptDim(Obj, criteria = c("KSS.C1")
+                          KSS.C  = try(KSS.OptDim(Obj, criteria = c("KSS.C")
 				    , sig2.hat = sig2.hat, alpha=level, spar = spar
                                     , factor.dim=factor.dim, d.max=d.max)[[1]])
                           )
@@ -536,7 +536,7 @@ OptDim.default <- function(Obj,
                             , d.max = d.max)),
                           GR   = try(RH.OptDim(Obj, criteria = c("GR")
                             , d.max = d.max)),
-                          KSS.C  = try(KSS.OptDim(Obj, criteria = c("KSS.C1")
+                          KSS.C  = try(KSS.OptDim(Obj, criteria = c("KSS.C")
 				    , sig2.hat = sig2.hat, alpha=level
                              , factor.dim= NULL, d.max=d.max, spar = spar)[[1]])
                           )

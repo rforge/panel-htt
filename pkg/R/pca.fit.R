@@ -244,7 +244,7 @@ restrict.pca <- function(obj
 
 
 ############################################################################
-## main function
+## The rapper function 
 pca.fit <- function(dat, given.d=NULL 
 		, restrict.mode= c("restrict.factors","restrict.loadings")
 		, allow.dual = TRUE, neglect.neg.ev = TRUE){

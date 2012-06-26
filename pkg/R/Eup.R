@@ -1,5 +1,8 @@
 
 ####################### Entire Updated Estimation #########################
+# This function is constructed to estimate the iterated paramters according 
+# to Bai(2009), and Bada and Kneip (2010). 
+
 # Input:
 #	  1. dat.matrix	=  is a matrix where the first colomn containing 
 #		 the(NTx1) vector of Ys and the remaining colomns containing 
@@ -7,14 +10,12 @@
 # 	  2. dat.dim         dat.dim[1] is nr (nbr of rows) and dat.dim[2] 
 #		 isnc (nbr of colomns) of the panel matrix Y.
 #	  3. dim.criterion	= c("PC1", "PC2", "PC3", "IC1", "IC2" , "IC3"
-#		, "IPC1", "IPC2", "IPC3", "KSS.C1", "KSS.C2", "ED", "ER", "GR")
+#		, "IPC1", "IPC2", "ED", "ER", "GR")
 #	  4. factor.dim	= the number of factors if it is known (standard is 
 #		NULL)	 
 #	  5. d.max 		= the maximum number of factos (an argument needed 
 #		for the dimension selction)
 #	  6. sig2.hat = is an argument needed for the dimension selction
-#       7. level	= is an argument needed for the dimension selction
-#	  8. spar	= is an argument needed for the dimension selction
 #	  9. double.iteration =  logical argument, if TRUE the function will
 #		estimate the optimal dimension in an outer iteration 
 #		the convergence of all the paramters is obtained in a double 
@@ -79,8 +80,7 @@ FUN.Eup <- function(dat.matrix, dat.dim
 	given.d <- factor.dim
 	if(is.null(factor.dim)) factor.dim <- d.max
 
-#### Inner Iteration
-
+#### the inner Iteration function
 	inner.iteration <- function(y, x, inv.xx.x =inv.xx.x 
 				  , beta.0 = beta.0
 				  , factor.dim = factor.dim, d.max=d.max
@@ -133,7 +133,7 @@ FUN.Eup <- function(dat.matrix, dat.dim
 			,past.iterations = past.iterations, (i+1))
 	}
 
-####  outer and inner iterateion 
+####  integrating the inner iterateion in the outer iteration function
 
 	entire.iteration <- function(y=y, x=x, inv.xx.x =inv.xx.x 
 				    , beta.0 = beta.0, factor.dim = factor.dim 
@@ -205,36 +205,8 @@ FUN.Eup <- function(dat.matrix, dat.dim
 
 
 ############################### Eup.default ###############################
-# Input:
-#	  1. Formel
-#	  2. additive.effects = c("none", "individual", "time", "twoways")
-#	  3. dim.criterion	= c("PC1", "PC2", "PC3", "IC1", "IC2" 
-#			, "IC3", "IPC1", "IPC2", "IPC3", "KSS.C1"
-#			, "KSS.C2", "ED", "ER", "GR")
-#	     
-#	  4. factor.dim	= the number of factors if it is known 
-#			(standard is NULL)	
-#	  5. d.max 		= the maximum number of factos 
-#			(an argument needed for the dimension selction)
-#	  6. sig2.hat 	= is an argument needed for the dimension selction
-#       7. level		= is an argument needed for the dimension selction
-#	  8. spar		= is an argument needed for the dimension selction
-#	  9. double.iteration =  logical argument, if TRUE the function will 
-#			estimate the optimal dimension in an outer iteration the 
-#			convergence of all the paramters is obtained in a double 
-#			iteration. If FALSE the dimension will be estimated 
-#			parallelly with beta, lambda and F in order to reduce 
-#			the number of computation (desadvantege: convergence to 
-#			a local a local optimum). This argument will be neglected
-#			if factor.dim is specified.
-# Output:
-#	  1. $PCA   		= svd.pca object calculated at the optimal 
-#					dimension (or given factor.dim)
-#	  2. $beta  		= the slope estimator of the observed 
-#					regressors (beta.eup)
-#	  3. $opt.d			= optimal dimension according to the 
-#					dimensionalty criterion
-#	  4. $nbr.iterations 	= number of iteration
+# The rapper function of FUN.Eup(). Here, the data can be given in a formula
+# the user has the possibility to transform the data before iterating the estimator
 ###########################################################################
 Eup.default <- function(formula,
 		additive.effects = c("none", "individual", "time", "twoways"),

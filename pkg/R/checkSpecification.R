@@ -39,8 +39,12 @@ checkSpecif <- function(obj1, obj2, level = 0.05)
 	infbetaint <- Eup.inference(int.Obj)
 	D <- infbetaint$inv.ZZ
 	sig2.hat <- infbetaint$sig2.hat
+print(D*sig2.hat)
+print(C*add.Obj$sig2.hat)
+	DmC <- D-C
 
-	Test.Stat <- n*T*sig2.hat^{-1}*t(beta.int - beta.add)%*%solve(D - C)%*%(beta.int - beta.add)
+
+	Test.Stat <- n*T*sig2.hat^{-1}*t(beta.int - beta.add)%*%solve(DmC)%*%(beta.int - beta.add)
 	p.value <- 1 - pchisq(Test.Stat, df = P)
 	crit.value <- qchisq(level, df = P)
 	result <- list(Test.Stat= round(Test.Stat,2), p.value= round(p.value, 2)
