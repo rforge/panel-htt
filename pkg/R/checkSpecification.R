@@ -1,8 +1,28 @@
+########################################################################################
+## Model-Test (Kneip Sickles Song 2009 Section 3.4)  and Hausman type test of Bai (2009)
+##
+## obj1: Eup or KSS object
+## obj2: Eup or KSS object 
+## level      = numeric, significance level
+##
+## Gives:
+## Test-Statistic, p.value, crit.value and sig.level
+##
+## status 12..12
+########################################################################################
+
+## rm(list=ls())
+
 checkSpecif <- function(obj1, obj2, level = 0.05)
   {
 
     if(missing(obj2)) test.int <- TRUE
     else test.int <- FALSE
+    ##===================================================================================
+    ## check arguments
+
+    ## ==================================================================================
+    ## effects
 
     if(!test.int){
    	 if(class(obj1)!="Eup" & !class(obj2)!="Eup"){
@@ -21,7 +41,10 @@ checkSpecif <- function(obj1, obj2, level = 0.05)
 		add.Obj <- obj1
 		int.Obj <- obj2
 		additive.effects <- add.Obj$additive.effects
-		if(!additive.effects %in% c( "individual", "time", "twoways")) stop("'obj1' does not have additive effects")
+		if(!additive.effects %in% c( "individual", "time", "twoways")) stop("'obj1' does not have additive effects.")
+		if(d2==1 && additive.effects == "twoways") stop("The factor dimension in the model under the alternative hypothesis is wrong ('factor.dim' should be 2).")
+		if(d2==2 && additive.effects %in% c( "individual", "time")) stop("The factor dimension in the model under the alternative hypothesis is wrong ('factor.dim' should be 1).")
+		if(d2>2) stop("The used factor dimension in the model under the alternative hypothesis is larger than 2.")
 		}
 
 	else{
@@ -29,7 +52,10 @@ checkSpecif <- function(obj1, obj2, level = 0.05)
 		add.Obj <- obj2
 		int.Obj <- obj1
 		additive.effects <- add.Obj$additive.effects
-		if(!additive.effects %in% c( "individual", "time", "twoways")) stop("'obj2' does not have additive effects")
+		if(!additive.effects %in% c( "individual", "time", "twoways")) stop("'obj2' does not have additive effects.")
+		if(d1==1 && additive.effects == "twoways") stop("The factor dimension in the model under the alternative hypothesis is wrong ('factor.dim' should be 2).")
+		if(d1==2 && additive.effects %in% c( "individual", "time")) stop("The factor dimension in the model under the alternative hypothesis is wrong ('factor.dim' should be 1).")
+		if(d1>2) stop("The used factor dimension in the model under the alternative hypothesis is larger than 2.")
 	}
 
 	beta.add <- add.Obj$slope.para
@@ -39,12 +65,12 @@ checkSpecif <- function(obj1, obj2, level = 0.05)
 	infbetaint <- Eup.inference(int.Obj)
 	D <- infbetaint$inv.ZZ
 	sig2.hat <- infbetaint$sig2.hat
-print(D*sig2.hat)
-print(C*add.Obj$sig2.hat)
 	DmC <- D-C
 
 
 	Test.Stat <- n*T*sig2.hat^{-1}*t(beta.int - beta.add)%*%solve(DmC)%*%(beta.int - beta.add)
+	if(Test.Stat < 0)  stop(paste("The assumptions of the test are not fulfilled. The (unobserved) true number of factors is probably 
+					greater than ", max(d1,d2),".", sep=""))
 	p.value <- 1 - pchisq(Test.Stat, df = P)
 	crit.value <- qchisq(level, df = P)
 	result <- list(Test.Stat= round(Test.Stat,2), p.value= round(p.value, 2)
