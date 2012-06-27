@@ -58,7 +58,7 @@ OptDim(Obj,
 \item{KSSC:}{A logical vector required for further internal computations.}
 \item{OnatC:}{A logical vector required for further internal computations.}
 \item{RHC:}{A logical vector required for further internal computations.}
-\item{obj:}{The object 'Obj' given in the function 'OptDim'.}
+\item{obj:}{The argument '\code{Obj}' given to the function \code{OptDim()}.}
 \item{cl:}{Object of mode "call".}
 
 }

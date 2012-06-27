@@ -7,18 +7,24 @@
 Panel Data Analysis with Heterogeneous Time Trends
 }
 \description{
-  The Package \code{phtt} allows for the estimation of panel data models
-  with an unobserved factor structure of the error term. This class of
-  panel data models extends the classical within-models, which assume
-  that the unobserved individual effects a constant over the time, and
-  allows for the unobserved individual effects to vary with the time.
-}
+  The R-package \code{phtt} provides estimation procedures for panel data
+  with large dimensions n, T, and general forms of unobservable
+  heterogeneous effects. Particularly, the estimation procedures are
+  those of Bai 2009 and Kneip, Sickles, and Song (2012), which
+  complement one another very well: both models assume the unobservable
+  heterogeneous effects to have a factor structure. The method of Bai
+  (2009) assumes that the factors are stationary, whereas the method of
+  Kneip et al. (2012) allows the factors to be
+  non-stationary. Additionally, the \code{phtt} package provides a wide range
+  of dimensionality criteria in order to estimate the number of the
+  unobserved factors simultaneously with the remaining model
+  parameters.}
 \details{
   \tabular{ll}{
     Package: \tab phtt\cr
     Type: \tab Package\cr
     Version: \tab 1.0\cr
-    Date: \tab 2012-05-18\cr
+    Date: \tab 2012-06-27\cr
     License: \tab GPL-2\cr
     LazyLoad: \tab yes \cr
   }
