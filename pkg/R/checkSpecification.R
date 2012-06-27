@@ -28,9 +28,9 @@ checkSpecif <- function(obj1, obj2, level = 0.05){
       stop("\n >>obj1<< and >>obj2<< have to be Eup-objects.")
     }
     testname <- "Hausman type test as proposed by Bai (2009)"
-    T  <- obj1$dat.dim[1]; if(obj2$dat.dim[1]!=T) stop("The first and the second object don't have the same data dimension")
-    n  <- obj1$dat.dim[2]; if(obj2$dat.dim[2]!=n) stop("The first and the second object don't have the same data dimension")	
-    P  <- obj1$dat.dim[3]; if(obj2$dat.dim[3]!=P) stop("The first and the second object don't have the same data dimension")
+    T  <- obj1$dat.dim[1]; if(obj2$dat.dim[1]!=T) stop("The first and the second object don't have the same data dimensions.")
+    n  <- obj1$dat.dim[2]; if(obj2$dat.dim[2]!=n) stop("The first and the second object don't have the same data dimensions.")	
+    P  <- obj1$dat.dim[3]; if(obj2$dat.dim[3]!=P) stop("The first and the second object don't have the same data dimensions.")
     d1 <- obj1$used.dim
     d2 <- obj2$used.dim
     
@@ -39,18 +39,18 @@ checkSpecif <- function(obj1, obj2, level = 0.05){
       add.Obj <- obj1
       int.Obj <- obj2
       additive.effects <- add.Obj$additive.effects
-      if(!additive.effects %in% c( "individual", "time", "twoways")) stop("'obj1' does not have additive effects.")
-      if(d2==1 && additive.effects == "twoways") stop("The factor dimension in the model under the alternative hypothesis is wrong ('factor.dim' should be 2).")
-      if(d2==2 && additive.effects %in% c( "individual", "time")) stop("The factor dimension in the model under the alternative hypothesis is wrong ('factor.dim' should be 1).")
-      if(d2>2) stop("The used factor dimension in the model under the alternative hypothesis is larger than 2.")
+      if(!additive.effects %in% c("individual", "time", "twoways")) stop("'obj1' does not have classical individual, time, or twoways-effects.")
+      if(d2==1 && additive.effects == "twoways") stop("The factor dimension in the model under the alternative hypothesis is wrong.\n 'factor.dim' should be 2.")
+      if(d2==2 && additive.effects %in% c( "individual", "time")) stop("The factor dimension in the model under the alternative hypothesis is wrong.\n 'factor.dim' should be 1.")
+      if(d2>2) stop("The factor dimension in the model under the alternative hypothesis is larger than 2.")
     }else{
-      if(d2 != 0) stop("Both objects have interactive effects.")
+      if(d2 != 0) stop("Both models have time-varying interactive effects.")
       add.Obj <- obj2
       int.Obj <- obj1
       additive.effects <- add.Obj$additive.effects
-      if(!additive.effects %in% c( "individual", "time", "twoways")) stop("'obj2' does not have additive effects.")
-      if(d1==1 && additive.effects == "twoways") stop("The factor dimension in the model under the alternative hypothesis is wrong ('factor.dim' should be 2).")
-      if(d1==2 && additive.effects %in% c( "individual", "time")) stop("The factor dimension in the model under the alternative hypothesis is wrong ('factor.dim' should be 1).")
+      if(!additive.effects %in% c( "individual", "time", "twoways")) stop("'obj2' does not have classical individual, time, or twoways-effects.")
+      if(d1==1 && additive.effects == "twoways") stop("The factor dimension in the model under the alternative hypothesis is wrong.\n 'factor.dim' should be 2.")
+      if(d1==2 && additive.effects %in% c( "individual", "time")) stop("The factor dimension in the model under the alternative hypothesis is wrong\n 'factor.dim' should be 1.")
       if(d1>2) stop("The used factor dimension in the model under the alternative hypothesis is larger than 2.")
     }
     beta.add <- add.Obj$slope.para
@@ -64,7 +64,7 @@ checkSpecif <- function(obj1, obj2, level = 0.05){
     
     
     Test.Stat <- n*T*sig2.hat^{-1}*t(beta.int - beta.add)%*%solve(DmC)%*%(beta.int - beta.add)
-    if(Test.Stat < 0){stop(paste("The assumptions of the test are not fulfilled. The (unobserved) true number of factors is probably greater than ", max(d1,d2),".", sep=""))}
+    if(Test.Stat < 0){stop(paste("The assumptions of the test are not fulfilled.\n The (unobserved) true number of factors is probably greater than ", max(d1,d2),".", sep=""))}
     p.value      <- 1 - pchisq(Test.Stat, df = P)
     crit.value   <- qchisq(level, df = P)
     result       <- list(Test.Stat= round(Test.Stat,2), p.value= round(p.value, 2),
