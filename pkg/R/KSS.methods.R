@@ -145,11 +145,11 @@ print.summary.KSS <- function(x, ...){
   printCoefmat(x$coefficients)
   
   cat("\nAdditive Effects Type: ",                   as.name(x$KSS.obj$additive.effects)," \n")
-  cat("\nUsed Dimension of the Unobserved Factors:", x$KSS.obj$used.dim)
+  cat("\nUsed Dimension of the Unobserved Factors:", x$KSS.obj$used.dim, " \n")
 #  cat("\nOptimized Factor Dimension:              ", x$KSS.obj$optimal.dim," \n") 
   cat("\nResidual standard error:",             signif(x$KSS.obj$sig2.hat, digits=3), "on", 
                                                 x$KSS.obj$degrees.of.freedom, "degrees of freedom \n")
-  cat("Multiple R-squared:",                    signif(x$R2,digits=3),"\n")
+  cat("R-squared:",                    signif(x$R2,digits=3),"\n")
 #  cat("Adjusted R-squared:",                    signif(x$R2,digits=3),"\n")
 }
 
