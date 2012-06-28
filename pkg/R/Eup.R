@@ -1,8 +1,6 @@
-
 ####################### Entire Updated Estimation #########################
 # This function is constructed to estimate the iterated paramters according 
 # to Bai(2009), and Bada and Kneip (2010). 
-
 # Input:
 #	  1. dat.matrix	=  is a matrix where the first colomn containing 
 #		 the(NTx1) vector of Ys and the remaining colomns containing 
@@ -254,8 +252,8 @@ Eup.default <- function(formula,
 
 	PF.obj	<- FUN.Pformula(formula = formula
 						, effect = additive.effects)    
-	nc 		<- ncol(PF.obj[[1]]$ODM)
-	nr 		<- nrow(PF.obj[[1]]$ODM)
+	nc 		<- ncol(PF.obj[[1]]$ODM)#N
+	nr 		<- nrow(PF.obj[[1]]$ODM)#T
 	P  		<- length(PF.obj) - 1
   	intercept <- PF.obj[[1]]$I
 

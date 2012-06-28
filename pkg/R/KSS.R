@@ -208,7 +208,7 @@ KSS.default <- function(formula,
                                    beta.hat      = beta)
 
     ## degrees.of.freedom =======================================================================
-    degrees.of.freedom <- (T*N - N*used.dim - P - 
+    degrees.of.freedom <- (T*N - (N+T)*used.dim - P - 
                            is.intercept -
                            N*(effect == "individual" | effect == "twoways") - 
                            T*(effect == "time"       | effect == "twoways"))
