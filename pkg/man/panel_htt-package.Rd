@@ -10,7 +10,7 @@ Panel Data Analysis with Heterogeneous Time Trends
   The R-package \code{phtt} provides estimation procedures for panel data
   with large dimensions n, T, and general forms of unobservable
   heterogeneous effects. Particularly, the estimation procedures are
-  those of Bai 2009 and Kneip, Sickles, and Song (2012), which
+  those of Bai (2009) and Kneip, Sickles, and Song (2012), which
   complement one another very well: both models assume the unobservable
   heterogeneous effects to have a factor structure. The method of Bai
   (2009) assumes that the factors are stationary, whereas the method of
