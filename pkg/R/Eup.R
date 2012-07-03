@@ -116,9 +116,20 @@ FUN.Eup <- function(dat.matrix, dat.dim
 
   	# convergence condition
 		if(all( abs((beta.0 - beta.1)) < convergence)| (i + past.iterations) == max.iteration){
-			if((i + past.iterations) == max.iteration) 
+			if((i + past.iterations) == max.iteration) {
 			warning(paste("The maximal number of iterations is achieved ", max.iteration), call. = FALSE)
-			Result <- list(PCA=PCA.0, beta=beta.1
+				if(double.iteration && is.null(given.d)){
+				OptDim.0   <- EstDim(PCA.0
+					   , dim.criterion = dim.criterion 
+					   , d.max = d.max, sig2.hat= sig2.hat)
+				opt.dim.0  <- OptDim.0[,2]
+				factor.dim <- opt.dim.0
+				y.fitted.0 <- tcrossprod(PCA.0$L[, 0:opt.dim.0
+					, drop = FALSE])%*%W.0
+				}
+			
+			}
+			Result <- list(PCA=PCA.0, beta=beta.0
 			,factor.dim=factor.dim, Nbr.Iterations = i)
 			Result
 			}
@@ -280,7 +291,7 @@ Eup.default <- function(formula,
     # Eup beta and Nbr.iteration
 
 	Nbr.iteration	<- tr.model.est$nbr.iterations
-	beta.Eup		<- tr.model.est$beta
+	beta.Eup		<- as.matrix(tr.model.est$beta)
   	colnames(beta.Eup) <- ""
   	rownames(beta.Eup) <- names[-1]
 
