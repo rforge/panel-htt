@@ -18,13 +18,13 @@ checkSpecif(obj1, obj2, level = 0.05)
       \item{If \code{obj2} is left unspecified the specification test
       proposed by Kneip, Sickles, and Song (2012) is computed. In this
       case \code{obj1} can be an object of class '\code{KSS}' or
-      '\code{Eup}'. The given \code{KSS}- or \code{Eup}-model need unspecified
-      factor dimensions (\code{factor.dim=NULL}).}
+      '\code{Eup}'. The given \code{KSS}- or \code{Eup}-model needs unspecified
+      factor dimensions (\code{factor.dim=NULL}). See also the Details.}
       \item{If \code{obj2} is specified by an object of class
       '\code{Eup}' the Hausman-type test proposed by Bai (2009) is
       computed, which compares the model in \code{obj1} with the model in
       \code{obj2}. The Hausman-type test of Bai applies to
-      '\code{Eup}'-objects only.}
+      '\code{Eup}'-objects only. See also the Details.}
     }}
   \item{obj2}{An object of class '\code{Eup}'. If \code{obj2} is left
     unspecified the test proposed by Kneip, Sickles, and Song (2012) is
@@ -51,9 +51,9 @@ checkSpecif(obj1, obj2, level = 0.05)
       }
       Given the assumption that there are two unobserved common factors:
       \itemize{
-	\item{Null-Hypothesis: 'The unobserved common factors are classical
+	\item{Null-Hypothesis: 'The two unobserved common factors are classical
 	  \code{twoways} effects'.}
-	\item{Alternative-Hypothesis: 'The unobserved common factors are
+	\item{Alternative-Hypothesis: 'The two unobserved common factors are
 	  arbitrary processes'.}
     }} 
     \item{The second specification-test tests the existence of an additional

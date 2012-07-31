@@ -24,12 +24,14 @@ bai.dim.opt <- function(Obj, d.max = NULL, sig2.hat = NULL)
 	d.opt.PC2 <- order(PC2)[1]-1	
 	PC3 = w + ref * d.seq * (log(C)/C)
 	d.opt.PC3 <- order(PC3)[1]-1	
-
-	IC1 = log(w[1:(d.max+1)]) + d.seq[1:(d.max+1)] * ((nr+nc)/(nr*nc)) * log((nr*nc)/(nr + nc))
+        ## number of eigenvalues greater than zero: 
+        d.max.p1.gzero <- length(w[1:(d.max+1)][w[1:(d.max+1)]>0])
+        ##
+	IC1 = log(w[1:d.max.p1.gzero]) + d.seq[1:d.max.p1.gzero] * ((nr+nc)/(nr*nc)) * log((nr*nc)/(nr + nc))
 	d.opt.IC1 <- order(IC1)[1]-1	
-	IC2 = log(w[1:(d.max+1)]) + d.seq[1:(d.max+1)] * ((nr+nc)/(nr*nc)) * log(C)
+	IC2 = log(w[1:d.max.p1.gzero]) + d.seq[1:d.max.p1.gzero] * ((nr+nc)/(nr*nc)) * log(C)
 	d.opt.IC2 <- order(IC2)[1]-1	
-	IC3 = log(w[1:(d.max+1)]) + d.seq[1:(d.max+1)] * (log(C)/C)
+	IC3 = log(w[1:d.max.p1.gzero]) + d.seq[1:d.max.p1.gzero] * (log(C)/C)
 	d.opt.IC3 <- order(IC3)[1]-1	
 
 	IPC1 = w + ref * d.seq * (nr/(4*log(log(nr)))) *((nr+nc)/(nr*nc)) * log((nr*nc)/(nr + nc))
@@ -192,9 +194,14 @@ RH.dim.opt <- function(svd.pca.obj, d.max = NULL)
 		d.max <- max.rk
 		}
 
+        ## number of eigenvalues greater than zero: 
+        d.max.p1.gzero <- length(w[1:(d.max+1)][w[1:(d.max+1)]>0])
+        d.max.p2.gzero <- length(w[1:(d.max+2)][w[1:(d.max+2)]>0])
+        d.max.p3.gzero <- length(w[1:(d.max+3)][w[1:(d.max+3)]>0])
+        ##
 	ER = exa.ev[1:(d.max+1)]/exa.ev[2:(d.max+2)]
 	d.opt.ER <- order(ER, na.last = FALSE)[d.max]
-	GR = (log(w[1:(d.max+1)]) - log(w[2:(d.max+2)]))/(log(w[2:(d.max+2)]) - log(w[3:(d.max+3)]))
+	GR = (log(w[1:d.max.p1.gzero]) - log(w[2:d.max.p2.gzero]))/(log(w[2:d.max.p2.gzero]) - log(w[3:d.max.p3.gzero]))
 	d.opt.GR <- order(GR, na.last = FALSE)[d.max]
 
 	result <- matrix(c(d.opt.ER, d.opt.GR, w[d.opt.ER+1], w[d.opt.GR+1]), 2, 2)

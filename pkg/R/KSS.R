@@ -88,9 +88,19 @@ KSS.default <- function(formula,
     }
     #####################################################################################################
     t.seq <- seq(0, 1, length.out=T)
-    TR.Y.mat.smth  <- smooth.Pspline(x = t.seq, y = TR.Y.mat,      spar   = spar.low)$ysmth       #(T x N)    
-    TR.X.mat.smth  <- smooth.Pspline(x = t.seq, y = TR.X.mat,      spar   = spar.low)$ysmth       #(T x NP)
-    TR.X.mat.smth2 <- smooth.Pspline(x = t.seq, y = TR.X.mat.smth, spar   = spar.low)$ysmth       #(T x NP)
+    ## Determination of the 'norder' argument of function 'smooth.Pspline()'
+    if(T>=5){
+      norder <- 2
+    }
+    if(T=4){
+      norder <- 1
+    }
+    if(T<4){
+      stop("Time-Dimension T of the panel data has to be at least T=4.")
+    }
+    TR.Y.mat.smth  <- smooth.Pspline(x = t.seq, y = TR.Y.mat,      norder = norder, spar   = spar.low)$ysmth #(T x N)    
+    TR.X.mat.smth  <- smooth.Pspline(x = t.seq, y = TR.X.mat,      norder = norder, spar   = spar.low)$ysmth #(T x NP)
+    TR.X.mat.smth2 <- smooth.Pspline(x = t.seq, y = TR.X.mat.smth, norder = norder, spar   = spar.low)$ysmth #(T x NP)
     
     ## calculate beta coefficents
 
