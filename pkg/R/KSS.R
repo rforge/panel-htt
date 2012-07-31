@@ -92,7 +92,7 @@ KSS.default <- function(formula,
     if(T>=5){
       norder <- 2
     }
-    if(T=4){
+    if(T==4){
       norder <- 1
     }
     if(T<4){
