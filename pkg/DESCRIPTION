@@ -1,8 +1,8 @@
 Package: phtt
 Type: Package
 Title: Panel Data  Analysis with Heterogeneous Time Trends
-Version: 1.0
-Date: 2012-06-27
+Version: 2.07
+Date: 2012-07-31
 Author: Oualid Bada, Dominik Liebl
 Maintainer: <bada@uni-bonn.de>, <dliebl@uni-bonn.de>
 Depends: R(>= 2.10)
