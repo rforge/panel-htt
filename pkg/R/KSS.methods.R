@@ -54,14 +54,16 @@ coef.KSS <- function(object,...){
     Time.varying.ind.eff <- object$unob.fact.stru
     
     Factor.Dim <- object$used.dim
-
-    Var.shares.of.loadings.param      <- numeric(Factor.Dim)
-    Total.var.loadings.param          <- sum(apply(Ind.loadings.param,2,var))
-    for(i in 1:Factor.Dim){
-      Var.shares.of.loadings.param[i] <- round(var(c(Ind.loadings.param[,i]))/Total.var.loadings.param,
-                    digits=4)*100
+    if(Factor.Dim>0){
+      Var.shares.of.loadings.param      <- numeric(Factor.Dim)
+      Total.var.loadings.param          <- sum(apply(Ind.loadings.param,2,var))
+      for(i in 1:Factor.Dim){
+        Var.shares.of.loadings.param[i] <- round(var(c(Ind.loadings.param[,i]))/Total.var.loadings.param,
+                                                 digits=4)*100
+      }
+    }else{
+      Var.shares.of.loadings.param      <- NULL
     }
-    
     coef.list <- list(
         Intercept                    = Intercept,
         Slope.Coef                   = Slope.Coef,
