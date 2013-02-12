@@ -728,7 +728,6 @@ plot.OptDim <- function(x, main, border, col, ...){
 	frq <- hist(Resultcrit, plot= FALSE, right = FALSE, breaks =seq.int(0, (max(Resultcrit)+1)))
 	dims <- seq.int(0, max(Resultcrit))[frq$intensities != 0]
 
-
 	dcol <- rainbow(length(dims))
 
 	Obj <- x$obj
@@ -753,8 +752,11 @@ plot.OptDim <- function(x, main, border, col, ...){
 	if(missing(main)) main = "Screeplot"
 	if(missing(border)) border = FALSE
 	if(missing(col)) col = "lightslategrey"
+	if(dims[1]==0 && perceig[2] > 0) Ylim <- (3/2)*perceig[1]-0.5*perceig[2]
+	else Ylim <- perceig[1]
+
 	xaxis <- barplot(perceig,  main = main, border = border 
-		,axes = FALSE, col = col, ylim = c(0, ifelse(dims[1]==0, ycords[1], perceig[1]))
+		,axes = FALSE, col = col, ylim = c(0, Ylim)
 		, ylab = "Proportion of variance"
 		, xlab = "Ordered eigenvalues")
 	
