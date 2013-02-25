@@ -724,15 +724,14 @@ summary.OptDim <- function(object,...){
  }
 
 plot.OptDim <- function(x, main, border, col, ...){
-	Resultcrit <- x$summary	
-	frq <- hist(Resultcrit, plot= FALSE, right = FALSE, breaks =seq.int(0, (max(Resultcrit)+1)))
-	dims <- seq.int(0, max(Resultcrit))[frq$intensities != 0]
+	Resultcrit <- x$summary
 
+	dims <- as.numeric(levels(as.factor(Resultcrit)))
 	dcol <- rainbow(length(dims))
 
 	Obj <- x$obj
-	nr <- nrow(Obj)
-	nc <- ncol(Obj)
+	nr  <- nrow(Obj)
+	nc  <- ncol(Obj)
 	dual = FALSE
 	if(nr > nc) dual = TRUE
 	if(dual)  Q <- t(Obj)%*%Obj
