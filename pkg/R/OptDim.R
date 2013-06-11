@@ -92,7 +92,6 @@ B.OptDim <- function(Obj, criteria = c("PC1","PC2","PC3","IC1","IC2","IC3"
 	}
 
 #####################################################################################################################
-
 onatski.dim.opt <- function(svd.pca.obj, d.max = NULL)
 	{
 	nr      <- svd.pca.obj$nr
@@ -102,43 +101,22 @@ onatski.dim.opt <- function(svd.pca.obj, d.max = NULL)
 	max.rk  <- length(ev)
 
 	exa.ev  <- c(sum(ev), ev)
-	d.max   <- ifelse(is.null(d.max), max.rk-5, min(d.max, (max.rk-5)))	
-	j       <- max(1, (d.max - 1))
-
+	d.max   <- ifelse(is.null(d.max), round(sqrt(max.rk)), min(d.max, (max.rk-5)))
+	if(d.max < 1) stope("the data dimension is not sufficient to run the method of Onatski (2009)")
+	j       <- d.max - 1
+	repeat{
 	c.reg   <- as.matrix(seq((j - 1), (j + 3))^{(2/3)}, 4, 1)
 	delta   <- 2* abs(coef(lm.fit(c.reg, ev[j:(j+4)])))
-	dist.ev <- exa.ev[1:(max.rk-1)] -  exa.ev[2:max.rk] - delta
+	dist.ev <- -diff(ev[1:(j+2)]) - delta
+	dhat    <- sum(dist.ev > 0)
+	if(j == dhat| dhat == 0) break 
+	else j = dhat
+	}
 
-	FUN.o.dim <- function(o.dist.ev, d)
-		{
-		if(o.dist.ev[d] < 0) (d - 2)
-		else {
-			if (d == (max.rk-1)){
-				(d - 2)
-				warning(expression("ED faild to find an appropriate dimension")) 
-				}
-			else FUN.o.dim(o.dist.ev, (d+1))
-			}
-		}
-	
-	d.opt.i <- FUN.o.dim(dist.ev, 1)
 
-	if(d.opt.i==d.max) {
-			result <- data.frame(I("ED")
-					, matrix(c(d.opt.i, w[d.opt.i+1]), 1, 2))
-			colnames(result) <- c("Criterion", "Optimal Dimension", "sd2")
-			return(result)
-			}
-	else {
-		if (d.opt.i == (max.rk-1)) {
-			result <- data.frame(I("ED")
-					, matrix(c(d.opt.i, w[d.opt.i+1]), 1, 2))
-			colnames(result) <- c("Criterion", "Optimal Dimension", "sd2")
-			return(result)
-			warning(expression("ED faild to find an appropriate dimension")) 
-			}
-		else onatski.dim.opt(svd.pca.obj, d.opt.i)
-		}
+	result <- data.frame(I("ED"), matrix(c(dhat, w[dhat+1]), 1, 2))
+	colnames(result) <- c("Criterion", "Optimal Dimension", "sd2")
+	result
 	}
 
 O.OptDim <- function(Obj, d.max = NULL){
