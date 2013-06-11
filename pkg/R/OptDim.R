@@ -102,7 +102,7 @@ onatski.dim.opt <- function(svd.pca.obj, d.max = NULL)
 
 	exa.ev  <- c(sum(ev), ev)
 	d.max   <- ifelse(is.null(d.max), round(sqrt(max.rk)), min(d.max, (max.rk-5)))
-	if(d.max < 1) stope("the data dimension is not sufficient to run the method of Onatski (2009)")
+	if(d.max < 1) stop("the data dimension is not sufficient to run the method of Onatski (2009)")
 	j       <- d.max - 1
 	repeat{
 	c.reg   <- as.matrix(seq((j - 1), (j + 3))^{(2/3)}, 4, 1)
