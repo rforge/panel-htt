@@ -111,6 +111,7 @@ summary.Eup <- function(object, error.type =c(1, 2, 3, 4, 5, 6, 7, 8), kernel.we
   if(error.type[1]==7|error.type[1]==8){
 	BC.pca <- pca.fit(dat = TAB.obj$BC.remeind, given.d = object$used.dim, restrict.mode = object$restrict.mode)
 	Resids <- TAB.obj$BC.remeind - BC.pca$fitted.values
+	nr <- ncol(Resids)
 	sig2.hat <- sum(diag(var(Resids)))*(nr-1)/object$degrees.of.freedom
 	}
   else {
