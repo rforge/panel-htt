@@ -339,12 +339,12 @@ Eup.default <- function(formula,
 	# calculate the additive indivudal effects
 
 	ind.means <- sapply(1:(P+1),  function(i) PF.obj[[i]]$TRm$InC)
-	Ind.Eff <- ind.means[,1] - ind.means[,-1]%*%beta.Eup - c(ConsCoef)
+	Ind.Eff <- ind.means[,1, drop = FALSE] - ind.means[,-1, drop = FALSE]%*%beta.Eup - c(ConsCoef)
 
 	# calculate the additive time effecs
 
 	tim.means <- sapply(1:(P+1),  function(i) PF.obj[[i]]$TRm$TiVC)
-	Tim.Eff <- tim.means[,1] - tim.means[,-1]%*%beta.Eup - c(ConsCoef)
+	Tim.Eff <- tim.means[,1, drop = FALSE] - tim.means[,-1, drop = FALSE]%*%beta.Eup - c(ConsCoef)
 
 
     # factor dimension 
@@ -378,8 +378,8 @@ Eup.default <- function(formula,
                     intercept -
                     nc*(additive.effects == "individual"| additive.effects == "twoways") - 
                     nr*(additive.effects == "time"| additive.effects == "twoways"))
-  sig2.hat <- sum(diag(crossprod(residuals)))/degrees.of.freedom
-
+  #sig2.hat <- sum(diag(crossprod(residuals)))/degrees.of.freedom
+  sig2.hat <- sum(diag(var(residuals)))*(nr-1)/degrees.of.freedom
 ## Results
 				
 	final.result <- list(
@@ -416,6 +416,7 @@ Eup.default <- function(formula,
     , sig2.hat.dim = sig2.hat.dim
     , sig2.hat = sig2.hat
     , degrees.of.freedom = degrees.of.freedom
+    , restrict.mode = restrict.mode
     , call = match.call())
   class(final.result) <- "Eup"
   return(final.result)  
