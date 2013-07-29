@@ -203,7 +203,7 @@ plot.summary.KSS <- function(x,...){
                      main="Additive Individual Effects", ylab="",xlab="Time", type="l", ...)
       matplot(x$KSS.obj$unob.factors,
             main=paste("Estimated Factors\n(Used Dimension = ",x$KSS.obj$used.dim,")",sep=""),
-            xlab="Time",ylab="", type="l",...)
+            xlab="Time",ylab="", type="o",...)
       matplot(x$KSS.obj$unob.fact.stru,
             main=paste("Estimated Factor-Structure"),
             xlab="Time",ylab="", type="l",...)
