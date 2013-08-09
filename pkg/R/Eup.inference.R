@@ -90,8 +90,11 @@ Eup.inference <- function(Eup.Obj, error.type, kernel.weights){
 	for(p in 1:P) X.mat.list[[p]] <- matrix(x[,p], nr, nc)
 
   # Z_i = M.F * X_i - sum{M.F * X_k*a_ik}/n
-	Z.list	<- sapply (X.mat.list, function(X) M.F %*% X %*% M.A 
-				, simplify = FALSE)
+	if(d==0) Z.list <- X.mat.list
+	else{
+		Z.list <- sapply (X.mat.list, function(X) M.F %*% X %*% M.A 
+			    , simplify = FALSE)
+	}
 
   # construct the matrix D= sum Z_i'Z_i/NT
 	Z	 <- sapply (Z.list, function(Z) c(Z), simplify = TRUE)

@@ -698,7 +698,7 @@ EstDim <- function(Obj,
                    sig2.hat,
 			 spar,
                    level = 0.01,
-			 c.grid,
+			 c.grid = seq(0, 5, length.out = 128),
 			 T.seq,
 			 n.seq
                    )
@@ -708,7 +708,6 @@ EstDim <- function(Obj,
   	 if(missing(d.max))      d.max       <- NULL
  	 if(missing(sig2.hat))   sig2.hat    <- NULL
 	 if(missing(spar))       spar        <- NULL
-	 if(missing(c.grid))	 c.grid 	 <- NULL
 	 if(missing(T.seq))	 T.seq 	 <- NULL
 	 if(missing(n.seq))	 n.seq 	 <- NULL
 
@@ -772,7 +771,7 @@ OptDim.default <- function(Obj,
 			sig2.hat,
 			spar,
 			level = 0.01,
-			c.grid,
+			c.grid = seq(0, 5, length.out = 128),
 			T.seq,
 			n.seq){
   ## if Eup or KSS classes
@@ -877,7 +876,7 @@ OptDim.default <- function(Obj,
 			sig2.hat,
 			spar,
 			level = 0.01,
-			c.grid,
+			c.grid = seq(0, 5, length.out = 128),
 			T.seq,
 			n.seq){ UseMethod("OptDim")}
 

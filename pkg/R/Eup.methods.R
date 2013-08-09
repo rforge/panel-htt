@@ -35,11 +35,11 @@ print.Eup <- function(x,...){
   cat("\nAdditive Effects Type: ", as.name(x$additive.effects)," \n")
   cat("\nDimension of the Unobserved Factors:", x$used.dim," \n")
   cat("\nNumber of iterations:", x$Nbr.iteration,"\n\n")
-  cat("\nNOTE: If the panel data dimensions,'N' and  'T', are proprtional, i.e., \n") 
-  cat("the ratio 'N/T' converges asymptotically to a constant, and correlation\n")
-  cat("and/or heteroscedasticity affect the idiosyncratic errors, the user can\n") 
-  cat("specify the type of the  error structure  in the  'summary()' method to\n") 
-  cat("calculate the bias corrected estimator and obtain appropriate inference.\n")
+#  cat("\nNOTE: If the panel data dimensions,'N' and  'T', are proprtional, i.e., \n") 
+#  cat("the ratio 'N/T' converges asymptotically to a constant, and correlation\n")
+#  cat("and/or heteroscedasticity affect the idiosyncratic errors, the user can\n") 
+#  cat("specify the type of the  error structure  in the  'summary()' method to\n") 
+#  cat("calculate the bias corrected estimator and obtain appropriate inference.\n")
 }
 
 
@@ -97,13 +97,13 @@ residuals.Eup <- resid.Eup <- function(object,...){
   return(Residual.mat)
 }
 
-summary.Eup <- function(object, error.type =c(1, 2, 3, 4, 5, 6, 7, 8), kernel.weights,...){
+summary.Eup <- function(object, error.type =c(1, 2, 3, 4, 5, 6, 7, 8), kernel.weights = NULL,...){
 	if(!all((error.type)%in%c(1, 2, 3, 4, 5, 6, 7, 8))) 
 		stop("The user specified argument 'error.type' should be on of the following numbers: 1, 2, 3, 4, 5, 6, 7, or 8.")
 
 
   ## Coefficients:
-  if(missing(kernel.weights)) kernel.weights = NULL
+  #if(missing(kernel.weights)) kernel.weights = NULL
   TAB.obj  <-  Eup.inference(Eup.Obj=object, error.type = error.type[1], kernel.weights = kernel.weights)
   TAB  <- TAB.obj$inf.result
   yy <- sum(diag(crossprod(object$orig.Y - mean(object$orig.Y))))
@@ -153,7 +153,7 @@ print.summary.Eup <- function(x,...){
   printCoefmat(x$coefficients)
   cat("\nAdditive Effects Type: ", as.name(x$Eup.obj$additive.effects)," \n")
   cat("\nDimension of the Unobserved Factors:", x$Eup.obj$used.dim," \n")
-  cat("\nResidual standard error:", signif(x$sig2.hat, 4), "on",
+  cat("\nResidual standard error:", signif(sqrt(x$sig2.hat), 4), "on",
             x$Eup.obj$degrees.of.freedom, "degrees of freedom, ", "\nR-squared:", x$R2,"\n")
 }
 
