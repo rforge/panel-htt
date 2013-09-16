@@ -891,7 +891,7 @@ print.OptDim <- function(x,...){
 
 	if(sum(x$KSSC) > 0){
 	cat("\n---------")
-	cat("\nCriterion of Kneip, Sickles, and Song (2009):\n\n")
+	cat("\nCriterion of Kneip, Sickles, and Song (2012):\n\n")
 		KSS2009 <- numeric(0)
 		for(l in 1:ll) if(x$KSSC[l]) KSS2009 <- rbind(KSS2009, x[[l]][,1:2])
 		dimKSS2009 <- matrix(KSS2009[, 2], 1, length(KSS2009[, 2]))
@@ -988,7 +988,7 @@ summary.OptDim <- function(object,...){
 
 	if(sum(object$KSSC) > 0){
 	cat("\n---------")
-	cat("\nSequential testing of Kneip, Sickles, and Song (2009):\n\n")
+	cat("\nSequential testing of Kneip, Sickles, and Song (2012):\n\n")
 		KSS2009 <- numeric(0)
 		for(l in 1:ll) if(object$KSSC[l]) KSS2009 <- rbind(KSS2009, object[[l]])
 		dimKSS2009 <- KSS2009[, c(2, 6)]
