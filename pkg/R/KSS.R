@@ -134,7 +134,7 @@ KSS.default <- function(formula,
                           "ABC.IC1", "ABC.IC2", 
                           "KSS.C",
                           "ED",
-                          "ER",  "GR"
+                          "ER", "GR")
     Opt.dim.Output   <- as.matrix(sapply(dim.criterion, function(dim.criterion){
       EstDim(dim.criterion, Obj=Residu.mat, d.max=d.max, factor.dim=factor.dim,
              sig2.hat=sig2.hat, level=level)[2]}))
