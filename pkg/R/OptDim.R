@@ -913,8 +913,8 @@ print.OptDim <- function(x,...){
 	}
 	if(sum(x$RHC) > 0){
 	cat("\n--------")
-	if(sum(x$RHC) > 1) cat("\nCriteria of Ahn and Horenstein (2008):\n\n")
-	else cat("\nCriterion of Ahn and Horenstein (2008):\n\n") 
+	if(sum(x$RHC) > 1) cat("\nCriteria of Ahn and Horenstein (2013):\n\n")
+	else cat("\nCriterion of Ahn and Horenstein (2013):\n\n") 
 		AH2008 <- numeric(0)
 		for(l in 1:ll) if(x$RHC[l]) AH2008 <- rbind(AH2008, x[[l]][,1:2])
 		dimAH2008 <- matrix(AH2008[, 2], 1, length(AH2008[, 2]))
@@ -950,8 +950,8 @@ print.OptDim <- function(x,...){
 		colnames(dimABC) <- ABC[, 1]
 		rownames(dimABC) <- " "
 	cat("\n---------")
-	if(sum(x$ABCC) > 1) cat("\nABC calibration of IC1 and IC2 (Alessi and all (2010)):\n\n") 
-	else cat(paste("\nABC calibration of", ifelse(colnames(dimABC) == "ABC.IC1", "IC1", "IC2"), "(Alessi and all (2010)):\n\n"))
+	if(sum(x$ABCC) > 1) cat("\nABC calibration of IC1 and IC2 (Alessi et al. (2010)):\n\n") 
+	else cat(paste("\nABC calibration of", ifelse(colnames(dimABC) == "ABC.IC1", "IC1", "IC2"), "(Alessi et al. (2010)):\n\n"))
 	print(dimABC)
 	}
 	if(sum(x$EupC) > 0){

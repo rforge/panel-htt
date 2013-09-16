@@ -122,9 +122,8 @@ choosing the corresponding number for the argument \code{error.type = c(1, 2, 3,
 	long-run covariance  can be externally specified by given a
 	vector of weights in the argument \code{kernel.weights}. By
 	default, the function uses internally the linearly decreasing
-	weights of Newey and West (1987) and a truncation at
-	\eqn{$\left\lfloor \min\{\sqrt{n},\sqrt{T}\}
-	  \right\rfloor$}{lower integer part of min(sqrt{n}, sqrt{T})}. If case 7 or 8 are chosen, the method \code{summary()} calculates the realization of the bias corrected estimators and gives appropriate inference. The bias corrected coefficients can be called by using the method \code{coef()} to the object produced by \code{summary()}. 
+	weights of Newey and West (1987) and a truncation at the lower
+	integer part of \eqn{$min(\sqrt{n},\sqrt{T})$}{\min(\sqrt{n},\sqrt{T})}. If case 7 or 8 are chosen, the method \code{summary()} calculates the realization of the bias corrected estimators and gives appropriate inference. The bias corrected coefficients can be called by using the method \code{coef()} to the object produced by \code{summary()}. 
 }
 \value{
       'Eup' returns an object of 'class' '"Eup"' containing the
