@@ -127,8 +127,6 @@ KSS.default <- function(formula,
     fpca.fit.obj     <- fpca.fit(Residu.mat, spar=spar.low)
 
     ## Estimation of Dimension
-    ## dim.criterion    <- c("PC1",  "PC2",  "PC3",   "IC1",   "IC2", "IC3",
-    ##                       "IPC1", "IPC2", "IPC3" , "KSS.C", "ED",  "ER", "GR")
     dim.criterion    <- c("PC1", "PC2", "PC3", "BIC3","IC1", "IC2", "IC3",
                           "IPC1","IPC2", "IPC3",
                           "ABC.IC1", "ABC.IC2", 
@@ -195,7 +193,7 @@ KSS.default <- function(formula,
         used.dim <- factor.dim
       }
     if(is.null(factor.dim) && !consult.dim.crit){
-      used.dim <- c(as.numeric(Opt.dim.Output[10,1]))
+      used.dim <- c(as.numeric(Opt.dim.Output[13,1]))# KSS.C
     }
     ## now: 'used.dim' is specified 
     if(used.dim > 0){
