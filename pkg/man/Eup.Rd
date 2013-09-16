@@ -109,13 +109,13 @@ Eup(formula,
 choosing the corresponding number for the argument \code{error.type = c(1, 2, 3, 4, 5, 6, 7, 8)} in \code{summary()}, where 
 	\itemize{
 	\item \code{1}: indicates the presence of i.i.d. errors, 
-	\item \code{2}: indicates the presence of cross-section heteroskedasticity with  \eqn{$n/T \to 0$}, 
-	\item \code{3}: indicates the presence of  cross-section correlation and heteroskedasticity with \eqn{$n/T \to 0$},
-	\item \code{4}: indicates the presence of  heteroskedasticity in the time dimension with \eqn{$T/n \to 0$},
-	\item \code{5}: indicates the presence of  correlation and heteroskedasticity in the time dimension with \eqn{$T/n \to 0$},
-	\item \code{6}: indicates the presence of  both time and cross-section dimensions with \eqn{$T/n^2 \to$} and \eqn{$n/T^2 \to 0$},
-	\item \code{7}: indicates the presence of  both time and cross-section dimensions with \eqn{$n/T \to c > 0$}, and
-	\item \code{8}: indicates the presence of  correlation and heteroskedasticity in both time and cross-section dimensions with \eqn{$n/T \to c > 0$}.
+	\item \code{2}: indicates the presence of cross-section heteroskedasticity with  \eqn{$n/T \to 0$}{n/T \to 0}, 
+	\item \code{3}: indicates the presence of  cross-section correlation and heteroskedasticity with \eqn{$n/T \to 0$}{n/T \to 0},
+	\item \code{4}: indicates the presence of  heteroskedasticity in the time dimension with \eqn{$T/n \to 0$}{T/n \to 0},
+	\item \code{5}: indicates the presence of  correlation and heteroskedasticity in the time dimension with \eqn{$T/n \to 0$}{T/n \to 0},
+	\item \code{6}: indicates the presence of  both time and cross-section dimensions with \eqn{$T/n^2 \to$}{T/n^2 \to} and \eqn{$n/T^2 \to 0$}{n/T^2 \to 0},
+	\item \code{7}: indicates the presence of  both time and cross-section dimensions with \eqn{$n/T \to c > 0$}{n/T \to c > 0}, and
+	\item \code{8}: indicates the presence of  correlation and heteroskedasticity in both time and cross-section dimensions with \eqn{$n/T \to c > 0$}{n/T \to c > 0}.
 	}
 	The default is \code{1}.  In presence of serial correlations (cases 5 and 8), the kernel weights required for estimating the long-run covariance  can be externally specified by given a vector of weights in the argument \code{kernel.weights}. By default, the function uses internally the linearly decreasing weights of Newey and West (1987) and a truncation at \eqn{$\left\lfloor \min\{\sqrt{n},\sqrt{T}\} \right\rfloor$}. If case 7 or 8 are chosen, the method \code{summary()} calculates the realization of the bias corrected estimators and gives appropriate inference. The bias corrected coefficients can be called by using the method \code{coef()} to the object produced by \code{summary()}. 
 }
