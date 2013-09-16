@@ -1014,8 +1014,8 @@ summary.OptDim <- function(object,...){
 	}
 	if(sum(object$RHC) > 0){
 	cat("\n\n--------")
-	if(sum(object$RHC) > 1) cat("\nCriteria of Ahn and Horenstein (2008):\n\n")
-	else cat("\nCriterion of Ahn and Horenstein (2008):\n\n") 
+	if(sum(object$RHC) > 1) cat("\nCriteria of Ahn and Horenstein (2013):\n\n")
+	else cat("\nCriterion of Ahn and Horenstein (2013):\n\n") 
 		AH2008 <- numeric(0)
 		for(l in 1:ll) if(object$RHC[l]) AH2008 <- rbind(AH2008, object[[l]])
 		dimAH2008 <- AH2008[, 2:3]
