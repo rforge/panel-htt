@@ -66,7 +66,6 @@ OptDim(Obj,
 \item{RHC:}{A logical vector required for further internal computations.}
 \item{obj:}{The argument '\code{Obj}' given to the function \code{OptDim()}.}
 \item{cl:}{Object of mode "call".}
-
 }
 \references{
   \itemize{
