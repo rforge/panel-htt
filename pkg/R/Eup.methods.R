@@ -230,7 +230,7 @@ plot.summary.Eup <- function(x,...){
       par(mfrow=c(1,2))
       matplot(coef(x)$Common.factors,
             main=paste("Estimated Factors\n(Used Dimension = ",x$Eup.obj$used.dim,")",sep=""),
-            xlab="Time",ylab="", type="l",...)
+            xlab="Time",ylab="", type="o",...)
       matplot(coef(x)$Time.varying.ind.eff,
             main=paste("Estimated Factor-Structure"),
             xlab="Time",ylab="", type="l",...)
@@ -241,7 +241,7 @@ plot.summary.Eup <- function(x,...){
       plot.ts(coef(x)$Add.Tim.Eff, main="Additive Time Effect", ylab="",xlab="Time",...)
       matplot(coef(x)$Common.factors,
             main=paste("Estimated Factors\n(Used Dimension = ",x$Eup.obj$used.dim,")",sep=""),
-            xlab="Time",ylab="", type="l",...)
+            xlab="Time",ylab="", type="o",...)
       matplot(coef(x)$Time.varying.ind.eff,
             main=paste("Estimated Factor-Structure"),
             xlab="Time",ylab="", type="l",...)
@@ -255,7 +255,7 @@ plot.summary.Eup <- function(x,...){
                      main="Additive Individual Effects", ylab="",xlab="Time", type="l", ...)
       matplot(coef(x)$Common.factors,
             main=paste("Estimated Factors\n(Used Dimension = ",x$Eup.obj$used.dim,")",sep=""),
-            xlab="Time",ylab="", type="l",...)
+            xlab="Time",ylab="", type="o",...)
       matplot(coef(x)$Time.varying.ind.eff,
             main=paste("Estimated Factor-Structure"),
             xlab="Time",ylab="", type="l",...)
@@ -268,7 +268,7 @@ plot.summary.Eup <- function(x,...){
                      main="Additive Individual Effects", ylab="",xlab="Time", type="l", ...)
       matplot(coef(x)$Common.factors,
             main=paste("Estimated Factors\n(Used Dimension = ",x$Eup.obj$used.dim,")",sep=""),
-            xlab="Time",ylab="", type="l",...)
+            xlab="Time",ylab="", type="o",...)
       matplot(coef(x)$Time.varying.ind.eff,
             main=paste("Estimated Factor-Structure"),
             xlab="Time",ylab="", type="l",...)
