@@ -2,12 +2,8 @@
 \alias{OptDim}
 \alias{OptDim.default}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-  Estimation of the Factor Dimension
-}
-\description{
-  Functions for the Estimation of the Factor Dimension
-}
+\title{Estimation of the Factor Dimension}
+\description{Functions for the Estimation of the Factor Dimension}
 \usage{
 OptDim(Obj, 
        criteria = c("PC1", "PC2", "PC3", "BIC3",
@@ -43,7 +39,6 @@ OptDim(Obj,
 \value{
 'OptDim' returns an object of 'class' '"OptDim"' containing a list with the
       following components:
-      
 \item{criteria:}{The name of the criteria specified by the user.}
 \item{PC1:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max} and/ or \code{sig2.hat}.}
 \item{PC2:}{If specified in \code{criteria} a table is returned with the optimal dimension, the empirical standard deviation of the residuals, and some other informations required internally by the criterion, such as \code{d.max} and/ or \code{sig2.hat}.}

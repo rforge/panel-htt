@@ -1,14 +1,8 @@
 \name{Eup}
 \alias{Eup}
 \alias{Eup.default}
-
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-Eup-Routine
-}
-\description{
-Estimation of Panel Data Models with Interactive Fixed Effects. 
-}
+\title{Eup-Routine}
+\description{Estimation of Panel Data Models with Interactive Fixed Effects.}
 \usage{
 Eup(formula,
     additive.effects = c("none", "individual", "time", "twoways"),
@@ -181,9 +175,7 @@ Time-Varying Effects to Estimate Risk Premium of Corporate Bonds}, \emph{Working
 % \note{
 % %%  ~~further notes~~
 % }
-
 % %% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
 KSS, OptDim
 }
@@ -217,16 +209,6 @@ Eup.fit      <- Eup(d.l.Consumption~d.l.Price+d.l.Income)
 ## Plot the components of the estimated individual effects
 
 plot(Eup.fit.sum)
-
-## Estimate the factor dimension with other criteria
-
-OptDim(Eup.fit)
-
-## Display the magnitude of the eigenvalues in percentage of the total variance of the individual effecs
-
-plot(OptDim(Eup.fit))
-
-
 }
 % % Add one or more standard keywords, see file 'KEYWORDS' in the
 % % R documentation directory.
