@@ -1,4 +1,4 @@
-%\VignetteIndexEntry{phtt-vignette}
+%\VignetteIndexEntry{Introduction to the phtt Package.}
 
 \documentclass[nojss]{jss}  %\documentclass{jss}
 \usepackage{amsmath}
@@ -148,7 +148,7 @@ The \code{Cigar} dataset can be obtained from the \pkg{phtt} package using the f
 ## Install package
 ## install.packages("phtt", repos="http://R-Forge.R-project.org")
 ## Load package
-library("phtt", lib.loc="/home/dom/Dokumente/Uni/Forschung/Projects_Open/R_Package_phtt/our_package/panel_htt_Arbeitskopie/test_lib")
+library("phtt", lib.loc="/home/dom/Dokumente/Uni/Forschung/Projects_Open/R_Package_phtt/phtt_package/panel_htt_Arbeitskopie/test_lib")
 ## vignette(lib.loc="/home/dom/Dokumente/Uni/Forschung/Projects_Open/R_Package_phtt/our_package/panel_htt_Arbeitskopie/test_lib")
 ## vignette("jss954", lib.loc="/home/dom/Dokumente/Uni/Forschung/Projects_Open/R_Package_phtt/our_package/panel_htt_Arbeitskopie/test_lib")
 ## Load Data
@@ -944,7 +944,7 @@ Under $H_0$ the slope parameters $\beta$ can be estimated by the classical withi
 \end{equation*}
 where $\hat{\Sigma}_w$ is the covariance matrix of the within residuals. The reason for this simplification is that under $H_0$ there is no need for smoothing, which allows us to set $\kappa = 0$. 
                 
-We reject $H_0\textrm{: }d=0$ at a significance level $\alpha$, if $J_{KSS} > z_{1 - \alpha}$, where $z_{1 - \alpha}$ is the $(1-\alpha)$-quantile of the standard normal distribution. It is important to note that the performance of the test depends heavily on the accuracy of the variance estimator $\hat{\sigma}^2$. We propose to use the variance estimators~\eqref{sig2s2} or~???, which are consistent under both hypotheses as long as $\hat{d}$ is greater than the unknown dimension $d$. Internally, the test procedure sets $\hat{d}=$\code{d.max} and $\sigma^2$ as in \eqref{sig2s6}.
+We reject $H_0\textrm{: }d=0$ at a significance level $\alpha$, if $J_{KSS} > z_{1 - \alpha}$, where $z_{1 - \alpha}$ is the $(1-\alpha)$-quantile of the standard normal distribution. It is important to note that the performance of the test depends heavily on the accuracy of the variance estimator $\hat{\sigma}^2$. We propose to use the variance estimators~\eqref{sig2s2} or \eqref{sig2s6}, which are consistent under both hypotheses as long as $\hat{d}$ is greater than the unknown dimension $d$. Internally, the test procedure sets $\hat{d}=$\code{d.max} and $\sigma^2$ as in \eqref{sig2s6}.
 
 		
 This test can be performed for \code{Eup}- as well as for \code{KSS}-objects by using the function \code{checkSpecif()} leaving the second argument \code{obj2} unspecified. In the following, we apply the test for both models:  
