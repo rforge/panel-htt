@@ -10,7 +10,7 @@
 
 %% almost as usual  
 \author{Oualid Bada\\University of Bonn \And 
-        Dominik Liebl\\Universities of Cologne and Bonn}
+        Dominik Liebl\\Universit\'e libre de Bruxelles}
 \title{The \proglang{R}-package \pkg{phtt}: Panel Data Analysis with Heterogeneous Time Trends}
 
 %% for pretty printing and a nice hypersummary also set: 
