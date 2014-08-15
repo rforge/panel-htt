@@ -148,9 +148,9 @@ The \code{Cigar} dataset can be obtained from the \pkg{phtt} package using the f
 
 <<echo=FALSE>>=
 ## Install package
-## install.packages("phtt", repos="http://R-Forge.R-project.org")
+## install.packages("phtt")
 ## Load package
-library("phtt", lib.loc="/home/dom/Dokumente/Uni/Forschung/Projects_Open/R_Package_phtt/phtt_package/panel_htt_Arbeitskopie/test_lib")
+library("phtt")
 ## Load Data
 data("Cigar")
 N <- 46
