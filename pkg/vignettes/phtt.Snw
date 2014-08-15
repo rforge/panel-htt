@@ -1,3 +1,5 @@
+%\VignetteIndexEntry{Introduction to the phtt Package.}
+
 \documentclass[nojss]{jss}
 %% \documentclass{jss}
 \usepackage{amsmath}
@@ -19,7 +21,8 @@
  
 %% an abstract and keywords 
 \Abstract{
-  % A slightly modified version of this introduction to the \pkg{phtt} package is submitted to the Journal of Statistical Software.
+    A slightly modified version of this introduction to the \pkg{phtt} package is published in the Journal of Statistical Software \citep{JSSBadaLiebl}.\\[2ex]
+  
   The \proglang{R}-package \pkg{phtt} provides estimation procedures for panel data with large dimensions $n$, $T$, and general forms of unobservable heterogeneous effects. Particularly, the estimation procedures are those of \Citet{Bai2009a} and \Citet{Kneip2009}, which complement one another very well: both models assume the unobservable heterogeneous effects to have a factor structure. \Citet{Kneip2009} considers the case in which the time varying common factors have relatively smooth patterns including strongly positive auto-correlated stationary as well as non-stationary factors, whereas the method of \Citet{Bai2009a} focuses on stochastic bounded factors such as ARMA processes. 
 %The method of \Citet{Bai2009a} assumes that the factors are stationary, whereas the method of \Citet{Kneip2009} allows the factors to be non-stationary. 
 Additionally, the \pkg{phtt} package provides a wide range of dimensionality criteria in order to estimate the number of the unobserved factors simultaneously with the remaining model parameters.  %(A slightly different version of this vignette is forthcoming at the Journal of Statistical Software)
