@@ -163,7 +163,7 @@ l.Price          <- log(matrix(Cigar$price, T, N)/cpi)
 ## Real Disposable Income per Capita  
 l.Income         <- log(matrix(Cigar$ndi, T, N)/cpi)
 
-pdf("Bilder/Cigar.pdf")
+pdf("Cigar.pdf")
 scl <- 1.6
 par(mfrow=c(1,3), mar=c(6, 5, 5, 2.1))
 matplot(l.Consumption,type="l", main="Log's of\nCigar-Consumption",ylab="",xlab="Time",cex.main=scl,cex.lab=scl,cex.axis=scl)
@@ -176,7 +176,7 @@ graphics.off()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=1\textwidth,height=.5\textwidth]{Bilder/Cigar.pdf} 
+    \includegraphics[width=1\textwidth,height=.5\textwidth]{Cigar.pdf} 
     \caption{Plots of the dependent variable $\ln({\tt Consumption}_{it})$ and regressor variables $\ln({\tt Price}_{it})$ and $\ln({\tt Income}_{it})$.}  
   \label{Cigar_Fig} 
 \end{figure} 
@@ -331,7 +331,7 @@ Cigar.KSS <- KSS(formula = l.Consumption ~ l.Price + l.Income)
 The effects of the log-real prices for cigarettes and the log-real incomes on the log-sales of cigarettes are highly significant and in line with results in the literature. The summary output reports an estimated factor dimension of $\hat{d}=6$. In order to get a visual impression of the six estimated common factors $\hat{f}_1(t),\dots,\hat{f}_6(t)$ and the estimated time-varying individual effects $\hat{v}_1(t),\dots,\hat{v}_n(t)$, we provide a \code{plot()}-method for the \code{KSS}-summary object.
 <<echo=FALSE>>=
 ## Figure 2:
-pdf("Bilder/KSSM1.pdf")
+pdf("KSSM1.pdf")
 scl <- 1
 plot(Cigar.KSS.summary,cex.main=scl,cex.lab=scl,cex.axis=scl)
 graphics.off()
@@ -345,7 +345,7 @@ plot(Cigar.KSS.summary)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1\textwidth,height=.5\textwidth]{Bilder/KSSM1.pdf} 
+    \includegraphics[width=1\textwidth,height=.5\textwidth]{KSSM1.pdf} 
     \caption{{\sc Left panel:} Estimated factors $\hat{f}_1(t),\dots,\hat{f}_6(t)$. {\sc Right panel:} Estimated time-varying individual effects $\hat{v}_1(t),\dots,\hat{v}_n(t)$.}  
   \label{KSSM1_Fig} 
 \end{figure} 
@@ -456,7 +456,7 @@ OptDim(Obj = l.Consumption, criteria = "PC1")
 In order to help users to choose the most appropriate dimensionality criterion for the data, \code{OptDim}-objects are provided with a \code{plot()}-method. This method displays, in descending order, the magnitude of the eigenvalues in percentage of the total variance and indicates where the selected criteria detect the dimension; see Figure~\ref{OptDim_Fig}.
 
 <<echo=FALSE>>=
-pdf("Bilder/OptDimv.pdf")
+pdf("OptDimv.pdf")
 plot(OptDim.obj)
 graphics.off()
 @  
@@ -469,7 +469,7 @@ plot(OptDim.obj)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.65\textwidth,height= 0.65\textwidth]{Bilder/OptDimv.pdf} 
+    \includegraphics[width=0.65\textwidth,height= 0.65\textwidth]{OptDimv.pdf} 
     \caption{Scree plot produced by the \code{plot()}-method for \code{OptDim}-objects. Most of the dimensionality criteria (ER, GR, IPC1 and IPC2) suggest using the dimension $\hat{d}=3$.}  
   \label{OptDim_Fig} 
 \end{figure} 
@@ -726,7 +726,7 @@ The summary output reports that \code{"PC3"} detects $5$ common factors. The eff
 
 The estimated factors $\hat{f}_{tl}$ as well as the individual effects $\hat{v}_{it}$ can be plotted using the \code{plot()}-method for \code{summary.Eup}-objects. The corresponding graphics are shown in Figure~\ref{EupPlot}.
 <<echo=FALSE>>=
-pdf("Bilder/EupPlot.pdf")
+pdf("EupPlot.pdf")
 plot(summary(Cigar.Eup))
 graphics.off()
 @ 
@@ -739,7 +739,7 @@ plot(summary(Cigar.Eup))
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1\textwidth,height= 0.5\textwidth]{Bilder/EupPlot.pdf} 
+    \includegraphics[width=1\textwidth,height= 0.5\textwidth]{EupPlot.pdf} 
     \caption{{\sc Left Panel:} Estimated factors $\hat{f}_{1t},\dots,\hat{f}_{7t}$. {\sc Right panel:} Estimated time-varying individual effects $\hat{v}_{1t},\dots,\hat{v}_{nt}$.}  
   \label{EupPlot} 
 \end{figure}
@@ -844,7 +844,7 @@ plot(Cigar2.KSS.summary)
 @ 
 
 <<echo=FALSE>>=
-pdf("Bilder/KSSM2.pdf")
+pdf("KSSM2.pdf")
 scl <- 1.75
 par(mar=c(6, 5, 5, 2.1))
 plot(Cigar2.KSS.summary,cex.main=1.25,cex.lab=scl,cex.axis=scl)
@@ -856,7 +856,7 @@ The \code{"individual"}-transformation of the data does not affect the estimatio
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=1\textwidth,height=0.5\textwidth]{Bilder/KSSM2.pdf} 
+    \includegraphics[width=1\textwidth,height=0.5\textwidth]{KSSM2.pdf} 
     \caption{{\sc Left Panel:} Estimated time-constant state-specific effects $\hat\alpha_1,\dots,\hat\alpha_n$. {\sc Middle Panel:} Estimated common factors $\hat{f}_1(t),\dots,\hat{f}_5(t)$. {\sc Right Panel:} Estimated time-varying individual effects $\hat{v}_1(t),\dots,\hat{v}_n(t)$.}  
   \label{KSSM2_Fig} 
 \end{figure} 
@@ -1029,7 +1029,7 @@ round(range(coef(Cigar2.KSS)$Ind.loadings.param[-7,1]), digits=2)
 @ 
 
 <<echo=FALSE>>=
-pdf("Bilder/Factor2.pdf")
+pdf("Factor2.pdf")
 scl <- 1
 par(mfrow=c(1,2))
 matplot(coef(Cigar2.KSS)$Common.factors[,1]%*%t(coef(Cigar2.KSS)$Ind.loadings.param[,1]),type="l",main="Variance of time-varying indiv. effects\n in direction of the 1. common factor",xlab="Time",ylab="",cex.main=scl,cex.lab=scl,cex.axis=scl)
@@ -1041,7 +1041,7 @@ graphics.off()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1\textwidth,height=.7\textwidth]{Bilder/Factor2.pdf} 
+    \includegraphics[width=1\textwidth,height=.7\textwidth]{Factor2.pdf} 
     \caption{{\sc Left Panel: }Visualization of the differences of the time-varying individual effects $v_i(t)$ in the direction of the first factor $\hat{f}_1(t)$ (i.e., $\hat\lambda_{i1}\hat{f}_1(t)$). {\sc Right Panel: }Visualization of the differences of the time-varying individual effects $v_i(t)$ in the direction of the second factor $\hat{f}_2(t)$ (i.e., $\hat\lambda_{i2}\hat{f}_2(t)$).}  
   \label{Factor2_Fig} 
 \end{figure} 
